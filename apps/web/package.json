@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "eslint-config": "*",
+    "eslint-config-custom": "*",
     "ui": "*",
     "server": "*",
     "next": "13.4.6",
