@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["jsonProtocol"]
+}
+
+datasource db {
+  provider = "postgresql"
+  // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
+  // Further reading:
+  // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
+  // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+  url      = env("DATABASE_URL")
+}
+
+model Example {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Necessary for Next auth
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? // @db.Text
+  access_token      String? // @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? // @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  role          UserRole  @default(USER)
+  wishlist      Project[]
+  team          Team?      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId        String?
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Project {
+  id             String   @id @default(cuid())
+  title          String
+  description    String
+  paidProject    Boolean
+  features       String?
+  components     String?
+  implementation String?
+  skills         String?
+  company        String
+  relatedInfo    String?
+  specifications String?
+  videoLink      String?
+  tags           String[]
+  images         String[]
+  categories     String[]
+  User           User[]   
+  Team           Team[] 
+}
+
+model Team {
+  id             String   @id @default(cuid())
+  referral_code  String   @unique  
+  college        String
+  year           Int
+  leader         String   @unique
+  mentor         String?   
+  members        User[]   
+  // memberIds     String    @relation()
+  project        Project  @relation(fields: [projectId], references: [id])
+  projectId      String
+  status         Int      @default(0)
+  appliedAt      DateTime @default(now())
+  milestone1      String[]
+  milestone2      String[]
+  milestone3      String[]
+  milestone4      String[]
+  milestone5      String[]
+  milestone6      String[]
+  presentMilestone Int
+  payment_status Boolean  @default(false)
+}
+
+model College {
+  code          String  @id @unique
+  name          String
+}

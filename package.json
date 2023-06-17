@@ -1,6 +1,8 @@
 {
   "private": true,
   "scripts": {
+    "db:generate": "turbo db:generate",
+    "db:push": "turbo db:push",
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
@@ -13,7 +15,7 @@
     "prettier": "^2.5.1",
     "turbo": "latest"
   },
-  "name": "another-turbo",
+  "name": "studo",
   "packageManager": "npm@9.5.1",
   "workspaces": [
     "apps/*",
