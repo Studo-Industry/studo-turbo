@@ -1,4 +1,5 @@
 {
+  "name": "studo",
   "private": true,
   "scripts": {
     "db:generate": "turbo db:generate",
@@ -15,7 +16,6 @@
     "prettier": "^2.5.1",
     "turbo": "latest"
   },
-  "name": "studo",
   "packageManager": "npm@9.5.1",
   "workspaces": [
     "apps/*",

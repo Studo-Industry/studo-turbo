@@ -30,6 +30,7 @@
   },
   "globalEnv": [
     "CI",
+    "EXPO_ROUTER_APP_ROOT",
     "DATABASE_URL",
     "DISCORD_CLIENT_ID",
     "DISCORD_CLIENT_SECRET",
