@@ -5,6 +5,10 @@
       "inputs": ["prisma/schema.prisma"],
       "cache": false
     },
+    "prisma:studio": {
+      "inputs": ["prisma/schema.prisma"],
+      "cache": false
+    },
     "db:push": {
       "inputs": ["prisma/schema.prisma"],
       "cache": false
