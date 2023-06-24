@@ -59,11 +59,18 @@ model User {
   email         String?   @unique
   emailVerified DateTime?
   image         String?
+  firstName     String?
+  middleName    String?
+  lastName      String?
+  college       String?
+  branch        String?
+  year          Int?
+  contact       Int?
   accounts      Account[]
   sessions      Session[]
   role          UserRole  @default(USER)
   wishlist      Project[]
-  team          Team?      @relation(fields: [teamId], references: [id])
+  team          Team?     @relation(fields: [teamId], references: [id])
   teamId        String?
 }
 
@@ -91,35 +98,35 @@ model Project {
   tags           String[]
   images         String[]
   categories     String[]
-  User           User[]   
-  Team           Team[] 
+  User           User[]
+  Team           Team[]
 }
 
 model Team {
-  id             String   @id @default(cuid())
-  referral_code  String   @unique  
-  college        String
-  year           Int
-  leader         String   @unique
-  mentor         String?   
-  members        User[]   
+  id                String   @id @default(cuid())
+  referral_code     String   @unique
+  college           String
+  year              Int
+  leader            String   @unique
+  mentor            String?
+  members           User[]
   // memberIds     String    @relation()
-  project        Project  @relation(fields: [projectId], references: [id])
-  projectId      String
-  status         Int      @default(0)
-  appliedAt      DateTime @default(now())
-  milestone1      String[]
-  milestone2      String[]
-  milestone3      String[]
-  milestone4      String[]
-  milestone5      String[]
-  milestone6      String[]
-  presentMilestone Int 
+  project           Project  @relation(fields: [projectId], references: [id])
+  projectId         String
+  status            Int      @default(0)
+  appliedAt         DateTime @default(now())
+  milestone1        String[]
+  milestone2        String[]
+  milestone3        String[]
+  milestone4        String[]
+  milestone5        String[]
+  milestone6        String[]
+  presentMilestone  Int
   approvedMilestone Int
-  payment_status Boolean  @default(false)
+  payment_status    Boolean  @default(false)
 }
 
 model College {
-  code          String  @id @unique
-  name          String
+  code String @id @unique
+  name String
 }
