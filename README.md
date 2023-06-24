@@ -1,8 +1,6 @@
-# Studo Turborepo
+# Studo Industry App and Website Documentation
 
-## Using the repo
-
-Run the following commands:
+## Steps
 
 1.  Install Dependencies.
 
@@ -20,19 +18,35 @@ Run the following commands:
 
          npm run dev
 
-Done!
+## Build for production environment
 
-## What's inside?
+        npm run build
 
-This Turborepo includes the following packages/apps:
+## Imports
+
+Imports are mainly divided into 2 wide sections in each file the first section contains imports from 3rd party packages and internal components/functions are seperated.
+While installing 3rd party packages for a particular package/app always cd into the package/app and then run the npm install command , unless you want to use the package in multiple pacakges/apps do not install the pacakge in the root directory.
+
+## Tailwind (Website)
+
+Custom Box Shadow (Mainly used in Admin Panel)
+
+        'rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px'
+
+Custom colors
+
+        blue: "#39B9B6"
+        orange: "#F39920"
 
 ### Apps and Packages
 
-- `web`: Next.js app
-- `native`: React Native App
+- `web`: The main website that is a Next.js app.
+- `native`: Application which is made with React Native.
 <!-- - `ui`: a stub React component library shared by both `web` and `docs` applications -->
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+- `eslint-config-custom`: `eslint` configurations. (includes `eslint-config-next` and `eslint-config-prettier`)
+- `tsconfig`: `tsconfig.json`s used throughout the monorepo.
+- `db`: Generating prisma node_module for typescript intellisense and such.
+- `server`: Basically the collection of all the endpoints made using trpc and run using Next.js app.
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
