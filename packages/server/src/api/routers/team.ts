@@ -65,6 +65,7 @@ export const teamRouter = createTRPCRouter({
           leader: ctx.session.user.id,
           payment_status: false,
           presentMilestone: 1,
+          approvedMilestone: 0,
         },
       });
       await ctx.prisma.user.update({
@@ -106,7 +107,7 @@ export const teamRouter = createTRPCRouter({
             if (input.type === 'mentor') {
               if (team.mentor === null) {
                 if (team.leader !== ctx.session.user.id) {
-                  const mentorTeam = await ctx.prisma.team.update({
+                  await ctx.prisma.team.update({
                     where: {
                       id: team?.id,
                     },
@@ -128,7 +129,7 @@ export const teamRouter = createTRPCRouter({
         }
       } catch (error) {
         console.log(error);
-        throw new Error('' + error);
+        throw new Error('' + String(error));
       }
     }),
   getTeam: protectedProcedure
@@ -151,6 +152,9 @@ export const teamRouter = createTRPCRouter({
         throw new Error('error creating team');
       }
     }),
+  getAll: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.team.findMany();
+  }),
   mileStoneSubmit: protectedProcedure
     .input(
       z.object({
@@ -262,17 +266,83 @@ export const teamRouter = createTRPCRouter({
           team: true,
         },
       });
-      if (user) {
-        if (user.team?.milestone1.length === 0) return 1;
-        if (user.team?.milestone2.length === 0) return 2;
-        if (user.team?.milestone3.length === 0) return 3;
-        if (user.team?.milestone4.length === 0) return 4;
-        if (user.team?.milestone5.length === 0) return 5;
-        if (user.team?.milestone6.length === 0) return 6;
+      if (user && user.team?.presentMilestone) {
+        return user.team?.presentMilestone;
       }
+      return 0;
     } catch (error) {
       console.log(error);
       throw new Error('User doesnt exist');
     }
   }),
+  getRecentTeams: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.team.findMany({
+      take: 5,
+      orderBy: {
+        appliedAt: 'desc',
+      },
+    });
+  }),
+
+  // creating procedure for delete team
+
+  deleteTeam: protectedProcedure
+    .input(z.object({ teamId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const team = await ctx.prisma.team.delete({
+          where: {
+            id: input.teamId,
+          },
+        });
+        return team;
+      } catch (error) {
+        throw new Error('Unable to delete Team.');
+      }
+    }),
+
+  // Creating procedure for leaving the Team
+
+  leaveTeam: protectedProcedure
+    .input(z.object({ teamId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const team = await ctx.prisma.team.findUnique({
+          where: {
+            id: input.teamId,
+          },
+        });
+        if (team?.mentor === ctx.session.user.id) {
+          await ctx.prisma.user.update({
+            where: {
+              id: ctx.session.user.id,
+            },
+            data: {
+              teamId: null,
+            },
+          });
+          const updateTeam = await ctx.prisma.team.update({
+            where: {
+              id: team.id,
+            },
+            data: {
+              mentor: null,
+            },
+          });
+          return updateTeam;
+        } else {
+          const user = await ctx.prisma.user.update({
+            where: {
+              id: ctx.session.user.id,
+            },
+            data: {
+              teamId: null,
+            },
+          });
+          return user;
+        }
+      } catch (error) {
+        throw new Error('Unable to leave team!');
+      }
+    }),
 });

@@ -63,7 +63,7 @@ model User {
   sessions      Session[]
   role          UserRole  @default(USER)
   wishlist      Project[]
-  team          Team?      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  team          Team?      @relation(fields: [teamId], references: [id])
   teamId        String?
 }
 
@@ -114,7 +114,8 @@ model Team {
   milestone4      String[]
   milestone5      String[]
   milestone6      String[]
-  presentMilestone Int
+  presentMilestone Int 
+  approvedMilestone Int
   payment_status Boolean  @default(false)
 }
 

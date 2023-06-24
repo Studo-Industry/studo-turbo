@@ -1,7 +1,6 @@
 import { S3 } from 'aws-sdk';
 import { randomUUID } from 'crypto';
 import { z } from 'zod';
-// import { env } from '~/env.mjs';
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '../trpc';
 
 const s3 = new S3({
