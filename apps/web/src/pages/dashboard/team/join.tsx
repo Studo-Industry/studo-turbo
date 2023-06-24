@@ -1,8 +1,9 @@
-import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { BsLightningFill } from "react-icons/bs";
-import { api } from "~/utils/api";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/router";
+import { BsLightningFill } from "react-icons/bs";
+
+import { api } from "~/utils/api";
 
 const Join = () => {
   let toastid: string;

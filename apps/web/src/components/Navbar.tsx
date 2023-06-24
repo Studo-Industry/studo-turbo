@@ -1,11 +1,13 @@
-import Link from "next/link";
 import React, { useState } from "react";
+import { GetServerSidePropsContext, NextPage } from "next";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
-import Image from "next/image";
-import LOGO from "../images/studoindustry logo.png";
-import { getSession, signIn, signOut, useSession } from "next-auth/react";
-import { GetServerSidePropsContext, NextPage } from "next";
+
+import LOGO from "~/images/studoindustry logo.png";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
@@ -16,6 +18,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 }
 const Navbar: NextPage = () => {
+  const router = useRouter();
   const [position1, setPosition1] = useState(false);
   const [position2, setPosition2] = useState(false);
   const [position3, setPosition3] = useState(false);
@@ -44,7 +47,7 @@ const Navbar: NextPage = () => {
     { name: "Instrumentation technology engineering" },
   ];
 
-  return (
+  return data?.user.role !== "ADMIN" ? (
     <>
       <nav className=" flex items-center justify-between px-10 py-2 shadow-2xl md:px-20 md:py-4">
         {/* <img src={require("../images/studoindustry logo.png")} alt="LOGO" /> */}
@@ -234,7 +237,7 @@ const Navbar: NextPage = () => {
                   </Link>
                   <div
                     className="m-2 flex items-center justify-center  gap-4 rounded-full bg-red-500 px-8 py-4 font-bold  text-white hover:cursor-pointer hover:bg-red-600"
-                    onClick={() => signOut()}
+                    onClick={() => void signOut()}
                   >
                     Logout
                   </div>
@@ -360,13 +363,19 @@ const Navbar: NextPage = () => {
         >
           <p
             className="my-2 block rounded-md p-4 hover:cursor-pointer hover:bg-gray-300"
-            onClick={() => void signOut()}
+            onClick={() => {
+              void signOut({
+                callbackUrl: "/",
+              });
+            }}
           >
             Sign Out
           </p>
         </div>
       </div>
     </>
+  ) : (
+    <></>
   );
 };
 

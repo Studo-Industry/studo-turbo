@@ -1,45 +1,74 @@
-import { GetServerSidePropsContext, type NextPage } from "next";
-import { getSession, signIn, signOut, useSession } from "next-auth/react";
-import Head from "next/head";
-import Link from "next/link";
-import { api } from "~/utils/api";
-import React, { useState } from "react";
-import Image from "next/image";
-import { useRouter } from "next/router";
-import vector1 from "~/images/vector2.png";
-import vector2 from "~/images/vector3.png";
-import vector3 from "~/images/vector1.png";
-import group from "~/images/Group 21.png";
-import image1 from "~/images/image 1.png";
-import image2 from "~/images/image 2.png";
-import LandingPageCard from "~/components/LandingPageCard";
-import company1 from "~/images/companies/company1.png"
-import company2 from "~/images/companies/company2.png"
-import company3 from "~/images/companies/company3.png"
-import company4 from "~/images/companies/company4.png"
-import company5 from "~/images/companies/company5.png"
-import company6 from "~/images/companies/company6.png"
-import company7 from "~/images/companies/company7.png"
-import company8 from "~/images/companies/company8.png"
-import company9 from "~/images/companies/company9.png"
-import company10 from "~/images/companies/company10.png"
-import company11 from "~/images/companies/company11.png"
-import company12 from "~/images/companies/company12.png"
-import company13 from "~/images/companies/company13.png"
-import company14 from "~/images/companies/company14.png"
-import company15 from "~/images/companies/company15.png"
-import company16 from "~/images/companies/company16.png"
-import company17 from "~/images/companies/company17.png"
-import company18 from "~/images/companies/company18.png"
-import company19 from "~/images/companies/company19.png"
-import company20 from "~/images/companies/company20.png"
+import React from 'react';
+import type { GetServerSidePropsContext, NextPage } from 'next';
+import Head from 'next/head';
+import Image from 'next/image';
+import { getSession, signIn } from 'next-auth/react';
+
+import LandingPageCard from '~/components/LandingPageCard';
+import vector1 from '~/images/vector2.png';
+import vector2 from '~/images/vector3.png';
+import vector3 from '~/images/vector1.png';
+import image1 from '~/images/image 1.png';
+import image2 from '~/images/image 2.png';
+import company1 from '~/images/companies/company1.png';
+import company2 from '~/images/companies/company2.png';
+import company3 from '~/images/companies/company3.png';
+import company4 from '~/images/companies/company4.png';
+import company5 from '~/images/companies/company5.png';
+import company6 from '~/images/companies/company6.png';
+import company7 from '~/images/companies/company7.png';
+import company8 from '~/images/companies/company8.png';
+import company9 from '~/images/companies/company9.png';
+import company10 from '~/images/companies/company10.png';
+import company11 from '~/images/companies/company11.png';
+import company12 from '~/images/companies/company12.png';
+import company13 from '~/images/companies/company13.png';
+import company14 from '~/images/companies/company14.png';
+import company15 from '~/images/companies/company15.png';
+import company16 from '~/images/companies/company16.png';
+import company17 from '~/images/companies/company17.png';
+import company18 from '~/images/companies/company18.png';
+import company19 from '~/images/companies/company19.png';
+import company20 from '~/images/companies/company20.png';
+import Link from 'next/link';
+
+const images = [
+  company1,
+  company2,
+  company3,
+  company4,
+  company5,
+  company6,
+  company7,
+  company8,
+  company9,
+  company10,
+  company11,
+  company12,
+  company13,
+  company14,
+  company15,
+  company16,
+  company17,
+  company18,
+  company19,
+  company20,
+];
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
   if (session) {
+    if (session.user.role === 'ADMIN') {
+      return {
+        redirect: {
+          destination: '/admin/dashboard/',
+          permanent: false,
+        },
+      };
+    }
     return {
       redirect: {
-        destination: "/dashboard",
+        destination: '/dashboard',
         permanent: false,
       },
     };
@@ -50,232 +79,105 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 const Home: NextPage = () => {
-  // const { status } = useSession();
-  // const router = useRouter();
-
-  // // const hello = api.example.hello.useQuery({ text: "from tRPC" });
-
-  // if (status === "loading") {
-  //   return (
-  //     <h1 className="flex flex-1 items-center  justify-center p-10 text-2xl">
-  //       Loading
-  //     </h1>
-  //   );
-  // }
-
-  // if (status === "authenticated") {
-  //   router.push("/dashboard");
-  // }
-
   return (
     <>
       <Head>
         <title>Studo Industry</title>
-        <meta name="description" content="Generated by create-t3-app" />
-        <link rel="icon" href="/favicon.ico" />
+        <meta name='description' content='Generated by create-t3-app' />
+        <link rel='icon' href='/favicon.ico' />
       </Head>
-      <main className="mx-10 my-10 md:mx-20 ">
+      <main className='mx-10 my-10 md:mx-20 '>
         <div>
-          <div className="flex flex-col-reverse justify-center  text-center md:my-40 md:flex-col">
+          <div className='flex flex-col-reverse justify-center  text-center md:my-40 md:flex-col'>
             <div>
-              <h1 className=" blue-orange-gradient bg-gradient-to-r bg-clip-text pb-5 text-3xl font-bold text-transparent md:text-5xl ">
+              <h1 className=' blue-orange-gradient bg-gradient-to-r bg-clip-text pb-5 text-3xl font-bold text-transparent md:text-5xl '>
                 Create your Best Work Together
               </h1>
-              <p className="pb-7 text-xl text-gray-500  md:text-3xl">
+              <p className='pb-7 text-xl text-gray-500  md:text-3xl'>
                 All in One solution for connecting link between student,
                 industry and mentors.
               </p>
-              <button
-                className="Button blue-orange-gradient gradient-btn mb-6 bg-gradient-to-bl text-lg"
-                onClick={() => {
-                  void signIn();
-                }}
+              <Link
+                href='/auth/signin'
+                className='Button blue-orange-gradient gradient-btn mb-6 bg-gradient-to-bl text-lg'
+                // onClick={() => {
+                //   void signIn();
+                // }}
               >
                 Sign Up for free
-              </button>
+              </Link>
             </div>
-            <div className="grid place-items-center md:grid-cols-3">
+            <div className='grid place-items-center md:grid-cols-3'>
               <Image
                 src={vector1}
                 width={280}
                 height={130}
-                alt="vector image1"
-                className=""
+                alt='vector image1'
+                className=''
               />
               <Image
                 src={vector2}
                 width={280}
                 height={130}
-                alt="vector image2"
-                className="hidden md:block"
+                alt='vector image2'
+                className='hidden md:block'
               />
               <Image
                 src={vector3}
                 width={280}
                 height={130}
-                alt="vector image3"
-                className="hidden md:block"
+                alt='vector image3'
+                className='hidden md:block'
               />
             </div>
           </div>
           <hr />
-          <div className="my-10 md:my-28">
-            <h1 className="mb-20 text-center text-3xl font-bold md:text-5xl">
+          <div className='my-10 md:my-28'>
+            <h1 className='mb-20 text-center text-3xl font-bold md:text-5xl'>
               Perfect fit for everyone
             </h1>
-            <div className="flex flex-col items-center gap-8 md:flex-row md:justify-evenly md:gap-20">
+            <div className='flex flex-col items-center gap-8 md:flex-row md:justify-evenly md:gap-20'>
               <LandingPageCard
-                title="Student"
+                title='Student'
                 description="StudoIndustry offers students real-world experience, skill development, networking, and career advancement. It bridges academia-industry gaps, prepares them for the professional world, and enhances employability. It's a holistic learning experience that boosts resumes and opens doors to long-term opportunities"
               />
               <LandingPageCard
-                title="Industry"
+                title='Industry'
                 description="StudoIndustry bridges academia and industry, fostering innovation through collaboration with students. It offers fresh industry-relevant projects, while industries gain access to the latest trends and potential future employees. It's a win-win for driving innovation and addressing industry challenges."
               />
               <LandingPageCard
-                title="Mentor"
+                title='Mentor'
                 description="StudoIndustry empowers mentors to shape the future by sharing expertise, guiding students, and contributing to industry development. It offers a platform to stay updated, nurture talent, showcase leadership, expand networks, and find personal fulfillment in positively impacting students' lives."
               />
             </div>
           </div>
-          <div className="my-20">
-            <h1 className="font-inter mb-20 text-center text-3xl font-bold md:text-5xl">
+          <div className='my-20'>
+            <h1 className='font-inter mb-20 text-center text-3xl font-bold md:text-5xl'>
               Trusted by well known companies
             </h1>
-            <div className="grid grid-cols-4 md:flex flex-row items-center gap-10 justify-evenly overflow-x-scroll md:flex-wrap md:scrollbar-none scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-400 animate-sliding">
-              <Image
-                width={100}
-                height={100}
-                src={company1}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company2}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company3}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company4}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company5}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company6}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company7}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company8}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company9}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company10}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company11}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company12}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company13}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company14}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company15}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company16}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company17}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company18}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company19}
-                alt="company"
-              />
-              <Image
-                width={100}
-                height={100}
-                src={company20}
-                alt="company"
-              />
+            <div className='animate-sliding scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-400 md:scrollbar-none grid grid-cols-4 flex-row items-center justify-evenly gap-10 overflow-x-scroll md:flex md:flex-wrap'>
+              {images.map((image, index) => (
+                <Image
+                  key={index}
+                  width={100}
+                  height={100}
+                  src={image}
+                  alt='company'
+                />
+              ))}
             </div>
           </div>
           <hr />
-          <div className="my-20 flex flex-col items-center gap-20 text-center md:mx-20 md:gap-0 ">
-            <div className="flex flex-col items-center gap-20 md:h-screen md:flex-row">
+          <div className='my-20 flex flex-col items-center gap-20 text-center md:mx-20 md:gap-0 '>
+            <div className='flex flex-col items-center gap-20 md:h-screen md:flex-row'>
               <Image
                 width={450}
                 height={300}
                 src={image1}
-                alt="vector image1"
+                alt='vector image1'
               />
               <div>
-                <h1 className="mb-7 text-3xl  font-bold md:text-5xl">
+                <h1 className='mb-7 text-3xl  font-bold md:text-5xl'>
                   Live Industrial Projects
                 </h1>
                 <p>
@@ -294,16 +196,19 @@ const Home: NextPage = () => {
                   offer a dynamic learning experience that prepares students for
                   the demands and expectations of the professional world.
                 </p>
-                <button className="Button blue-orange-gradient gradient-btn mt-7 bg-gradient-to-bl text-lg" onClick={() => {
-                  void signIn();
-                }}>
+                <button
+                  className='Button blue-orange-gradient gradient-btn mt-7 bg-gradient-to-bl text-lg'
+                  onClick={() => {
+                    void signIn();
+                  }}
+                >
                   Apply Now
                 </button>
               </div>
             </div>
-            <div className="flex flex-col-reverse items-center gap-20  md:h-screen md:flex-row">
+            <div className='flex flex-col-reverse items-center gap-20  md:h-screen md:flex-row'>
               <div>
-                <h1 className="mb-7 text-3xl  font-bold md:text-5xl">
+                <h1 className='mb-7 text-3xl  font-bold md:text-5xl'>
                   Build for teamwork
                 </h1>
                 <p>
@@ -321,9 +226,12 @@ const Home: NextPage = () => {
                   StudoIndustry emphasizes the value of teamwork in creating a
                   supportive and dynamic learning environment.
                 </p>
-                <button className="Button blue-orange-gradient gradient-btn mt-7 bg-gradient-to-bl text-lg" onClick={() => {
-                  void signIn();
-                }}>
+                <button
+                  className='Button blue-orange-gradient gradient-btn mt-7 bg-gradient-to-bl text-lg'
+                  onClick={() => {
+                    void signIn();
+                  }}
+                >
                   Apply Now
                 </button>
               </div>
@@ -331,18 +239,18 @@ const Home: NextPage = () => {
                 width={450}
                 height={300}
                 src={image1}
-                alt="vector image1"
+                alt='vector image1'
               />
             </div>
-            <div className="flex flex-col items-center  gap-20 md:h-screen md:flex-row">
+            <div className='flex flex-col items-center  gap-20 md:h-screen md:flex-row'>
               <Image
                 width={450}
                 height={300}
                 src={image1}
-                alt="vector image1"
+                alt='vector image1'
               />
               <div>
-                <h1 className="mb-7 text-3xl  font-bold md:text-5xl">
+                <h1 className='mb-7 text-3xl  font-bold md:text-5xl'>
                   Industry Certified Projects
                 </h1>
                 <p>
@@ -362,25 +270,28 @@ const Home: NextPage = () => {
                   that are not only academically rigorous but also relevant and
                   recognized by the industry
                 </p>
-                <button className="Button blue-orange-gradient gradient-btn mt-7 bg-gradient-to-bl text-lg" onClick={() => {
-                  void signIn();
-                }}>
+                <button
+                  className='Button blue-orange-gradient gradient-btn mt-7 bg-gradient-to-bl text-lg'
+                  onClick={() => {
+                    void signIn();
+                  }}
+                >
                   Apply Now
                 </button>
               </div>
             </div>
           </div>
           <hr />
-          <div className="my-36 text-center">
-            <h1 className="font-inter mb-2 text-center text-3xl  font-bold md:text-5xl">
+          <div className='my-36 text-center'>
+            <h1 className='font-inter mb-2 text-center text-3xl  font-bold md:text-5xl'>
               Industrial Projects for Everyone
             </h1>
             <p>Make your projects with the guidance of industrial experts.</p>
             <Image
               width={1100}
               src={image2}
-              alt="vector image1"
-              className=" my-16 md:mx-auto"
+              alt='vector image1'
+              className=' my-16 md:mx-auto'
             />
           </div>
         </div>

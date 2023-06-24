@@ -2,6 +2,7 @@ import React from "react";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { RiInstagramFill } from "react-icons/ri";
 import { AiFillTwitterCircle } from "react-icons/ai";
+
 const Footer = () => {
   return (
     <div
@@ -37,7 +38,10 @@ const Footer = () => {
             <h1 className="mt-2 text-2xl font-medium">Keep In Touch.</h1>
 
             <ul className="mx-3 mt-2 flex gap-6 text-3xl md:justify-evenly">
-              <a href="https://www.instagram.com/studoindustry_projects/" target="new">
+              <a
+                href="https://www.instagram.com/studoindustry_projects/"
+                target="new"
+              >
                 <RiInstagramFill />
               </a>
               <a href="#">

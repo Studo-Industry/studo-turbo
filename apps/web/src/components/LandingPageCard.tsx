@@ -1,11 +1,12 @@
 import React from "react";
 
-type props = {
+const LandingPageCard = ({
+  title,
+  description,
+}: {
   title: string;
   description: string;
-};
-
-const LandingPageCard = ({ title, description }: props) => {
+}) => {
   return (
     <div className="rounded-md p-4 text-center shadow-2xl">
       <h1 className="my-5 text-3xl font-semibold">{title}</h1>

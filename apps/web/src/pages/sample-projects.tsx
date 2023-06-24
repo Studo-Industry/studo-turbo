@@ -1,12 +1,12 @@
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React from 'react';
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import { api } from '~/utils/api';
-import img1 from '~/images/wallpaper.jpg';
 import { signIn } from 'next-auth/react';
-import { TfiHandPointDown } from 'react-icons/tfi';
-import { env } from '~/env.mjs';
+import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+
+import { api } from '~/utils/api';
+import PreLoader from '~/components/PreLoader';
+import { SampleProjectCard } from '~/components/Cards';
 
 const projectCategories = [
   { name: 'Computer science engineering' },
@@ -33,28 +33,22 @@ const SampleProjects = () => {
   const router = useRouter();
   const { data: projectData, status: projectStatus } =
     api.project.getSample.useQuery({
-      category: String(router.query.category)!,
+      category: String(router.query.category),
     });
+
+  if (projectStatus === 'error')
+    return <h2 className='text-2xl'>Error loading data..</h2>;
   return (
     <>
       <div className='my-10'>
         <h1 className='font-inter mb-20 text-center text-4xl font-bold'>
           Sample Projects
         </h1>
-        <div
-          // onScroll={handleScroll}
-          className='flex justify-center gap-3 rounded-2xl px-5 shadow-xl md:mx-20'
-        >
-          <button
-            className='mb-1 text-xl'
-            // onClick={() => scrollTo(-100)}
-            // disabled={isAtStart}
-          >
+        <div className='flex justify-center gap-3 rounded-2xl px-5 shadow-xl md:mx-20'>
+          <button className='mb-1 text-xl'>
             <IoIosArrowBack />
           </button>
           <div
-            // ref={scrollContainerRef as React.RefObject<HTMLDivElement>}
-            // onScroll={handleScroll}
             className='scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-400 my-5 flex gap-8 overflow-x-scroll whitespace-nowrap py-4'
             id='container'
           >
@@ -71,48 +65,27 @@ const SampleProjects = () => {
               </Link>
             ))}
           </div>
-          <button
-            className='mb-1 text-xl'
-            // onClick={() => scrollTo(100)}
-            // disabled={isAtEnd}
-          >
+          <button className='mb-1 text-xl'>
             <IoIosArrowForward />
           </button>
         </div>
         <div className='mx-6 my-14 md:mx-20'>
           <h1 className='text-2xl font-semibold'>Projects</h1>
           <div className='my-2 grid grid-cols-1 gap-3 py-10 md:grid-cols-3'>
-            {projectStatus === 'loading'
-              ? 'Loading'
-              : projectData!
-                  // .filter((project) =>
-                  //   project.title.toLowerCase().includes(searchInput.toLowerCase())
-                  // )
-                  .map((project) => (
-                    <div
-                      key={project.id}
-                      className='project rounded-2xl shadow-2xl'
-                    >
-                      {project.images.length !== 0 ? (
-                        <img
-                          src={
-                            String(env.NEXT_PUBLIC_AWS_S3) +
-                            String(project.images[0])
-                          }
-                          alt={project.title}
-                          className='max-w-48 mx-auto  mb-5 mt-8 max-h-48 rounded-md'
-                        />
-                      ) : (
-                        <img
-                          className='max-w-48 mx-auto  mb-5 mt-8 max-h-48 rounded-md'
-                          src={img1.src}
-                        />
-                      )}
-                      <h1 className='mb-8 px-4 text-center text-sm font-bold'>
-                        {project.title}
-                      </h1>
-                    </div>
-                  ))}
+            {projectStatus === 'loading' ? (
+              <div className='md:col-span-3'>
+                <PreLoader />
+              </div>
+            ) : (
+              projectData.map((project) => (
+                <SampleProjectCard
+                  id={project.id}
+                  key={project.id}
+                  title={project.title}
+                  images={project.images}
+                />
+              ))
+            )}
           </div>
         </div>
         <div className='mb-20 flex flex-col items-center gap-3'>
