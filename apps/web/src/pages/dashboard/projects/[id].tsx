@@ -15,6 +15,8 @@ import img1 from '~/images/wallpaper.jpg';
 import { api } from '~/utils/api';
 import PreLoader from '~/components/PreLoader';
 import { TeamCard } from '~/components/Cards';
+import { number } from 'zod';
+
 
 const Project = () => {
   let toastId: string;
@@ -349,6 +351,8 @@ const CreateTeam = ({
   });
   const { data: colleges, status: collegeStatus } =
     api.college.getAll.useQuery();
+ const options=[1,2,3,4]
+  const [selectedOption,setSelectedOption]=useState(options[0])  
   return (
     <div className=' rounded-md bg-white px-20'>
       <div className='flex justify-between'>
@@ -368,15 +372,21 @@ const CreateTeam = ({
           <label className='text-sm font-semibold' htmlFor=''>
             Year
           </label>
-          <input
-            className='border-grey-600 mx-0 rounded-full border-2 bg-white  p-3'
-            type='number'
-            placeholder='Year'
-            value={year}
-            onChange={(event) => setYear(Number(event.target.value))}
-            min={1}
-            max={4}
-          />
+          <select
+                className="border-grey-600 mx-10 rounded-full border-2 bg-white p-3"
+                id="category"
+                name="category"
+                value={selectedOption}
+                onChange={(event) => {
+                  setSelectedOption(Number(event.target.value));
+                }}
+              >
+                {options.map((option) => (
+                  <option key={option} value={option} className='m-2 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300'>
+                    {option}
+                  </option>
+                ))}
+              </select>
         </div>
 
         <div className='flex flex-1 flex-col gap-2'>
@@ -399,20 +409,20 @@ const CreateTeam = ({
                 .filter((data) =>
                   data.name.toLowerCase().includes(college.toLowerCase()),
                 )
-                .map((data) => (
-                  <p
-                    className='m-2 w-96 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300 '
-                    key={data.code}
-                    onClick={() => setCollege(data.name)}
-                    placeholder='College'
-                  >
-                    {data.name}
-                  </p>
+                .map((data) => (<p
+                  className='m-2 w-96 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300 '
+                  key={data.code}
+                  onClick={() => setCollege(data.name)}
+                  placeholder='College'
+                >
+                  {data.name}
+                </p>
                 ))}
           </div>
         </div>
       </div>
-
+      <p className='text-sm font-semibold text-gray-500'><span className='text-red-500'>Note-</span>If your college is not in the listPlease contact 1233456789 to add your college</p>
+      
       {/* <div className="w-full py-10 text-base text-gray-600">
         <p>Is your Mentor going to join the website ?</p>
 

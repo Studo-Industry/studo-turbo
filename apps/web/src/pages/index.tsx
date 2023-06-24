@@ -3,6 +3,7 @@ import type { GetServerSidePropsContext, NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { getSession, signIn } from 'next-auth/react';
+import Link from 'next/link';
 
 import LandingPageCard from '~/components/LandingPageCard';
 import vector1 from '~/images/vector2.png';
@@ -30,7 +31,6 @@ import company17 from '~/images/companies/company17.png';
 import company18 from '~/images/companies/company18.png';
 import company19 from '~/images/companies/company19.png';
 import company20 from '~/images/companies/company20.png';
-import Link from 'next/link';
 
 const images = [
   company1,

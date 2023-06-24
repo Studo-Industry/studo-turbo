@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc"
+    "dev": "tsc --watch"
   },
   "dependencies": {
     "db": "*",

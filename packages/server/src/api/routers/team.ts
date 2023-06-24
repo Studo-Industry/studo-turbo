@@ -345,4 +345,23 @@ export const teamRouter = createTRPCRouter({
         throw new Error('Unable to leave team!');
       }
     }),
+
+  // Removing member 
+  removeTeam: protectedProcedure
+    .input(z.object({ userId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const user = await ctx.prisma.user.update({
+          where: {
+            id: input.userId
+          },
+          data: {
+            teamId: null
+          }
+        })
+        return user
+      } catch (error) {
+        throw new Error('Something went wrong!')
+      }
+    }),
 });

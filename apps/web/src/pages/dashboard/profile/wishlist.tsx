@@ -1,8 +1,17 @@
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
+import { GetServerSidePropsContext } from 'next';
 
 import { api } from '~/utils/api';
 import PreLoader from '~/components/PreLoader';
 import { ProjectCard } from '~/components/Cards';
+export async function getServerSideProps(context:GetServerSidePropsContext) {
+  const session = await getSession(context);
+  return {
+    props: {
+      data: session,
+    },
+  };
+}
 
 const Wishlist = () => {
   const session = useSession();
