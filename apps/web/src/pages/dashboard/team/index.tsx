@@ -208,7 +208,7 @@ const Team = ({data}:InferGetServerSidePropsType<typeof getServerSideProps>) => 
                     member.id !== leader?.id && member.id !== mentor?.id
                 )
                 .map((member) => (
-                  <div className="flex flex-row gap-10 items-center rounded-md  p-2  hover:cursor-pointer hover:bg-gray-300">
+                  <div key={member.id} className="flex flex-row gap-10 items-center rounded-md  p-2  hover:cursor-pointer hover:bg-gray-300">
                     <Link
                       className="m-2 flex items-center gap-4"
                       href={`/dashboard/team/${member.id}`}
