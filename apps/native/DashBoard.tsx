@@ -147,11 +147,17 @@ const Dashboard = () => {
         case 'Wishlist':
           navigation.navigate('Wishlist');
           break;
+        // case 'Milestone':
+        //   navigation.navigate('Milestone');
+        //   break;
         case 'Milestone':
-          navigation.navigate('Milestone');
+          navigation.navigate('Screen3');
           break;
+        // case 'Profile':
+        //   navigation.navigate('Profile');
+        //   break;
         case 'Profile':
-          navigation.navigate('Profile');
+          navigation.navigate('Screen4');
           break;
         case 'My Projects':
           navigation.navigate('MyProject');
