@@ -17,9 +17,7 @@ import Website from './screens/Website';
 import AboutUsScreen from './screens/AboutUsScreen';
 import Screen4 from './screens/Screen4';
 
-const Tab = createBottomTabNavigator<RootStackParamList>()
-
-
+const Tab = createBottomTabNavigator<RootStackParamList>();
 
 // Add new screen here
 export type RootStackParamList = {
@@ -33,25 +31,21 @@ export type RootStackParamList = {
   About: undefined;
   Project: undefined;
   Projects: undefined;
-  
+
   AllBranches: undefined;
 
-  
-  
   Home: undefined;
   Screen2: undefined;
-  Screen3: undefined;
+  Screen3: { id: string };
   Screen4: undefined;
 };
 const Stack = createStackNavigator<RootStackParamList>();
-
 
 // Name Screen here
 const App = () => {
   return (
     <TRPCProvider>
       <NavigationContainer>
-      
         <Stack.Navigator initialRouteName='DashBoard'>
           <Stack.Screen name='DashBoard' component={Dashboard} />
           <Stack.Screen name='MyTeam' component={MyTeam} />
@@ -68,9 +62,7 @@ const App = () => {
           <Stack.Screen name='Screen4' component={Screen4} />
         </Stack.Navigator>
       </NavigationContainer>
-      <NavigationContainer>
-        
-      </NavigationContainer>
+      {/* <NavigationContainer></NavigationContainer> */}
     </TRPCProvider>
   );
 };

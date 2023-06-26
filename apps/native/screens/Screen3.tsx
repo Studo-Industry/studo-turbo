@@ -2,48 +2,51 @@ import React from 'react';
 import { View, Text, Button, Image, StyleSheet } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../App';
+import { api } from '../utils/trpc';
 
 type Screen3Props = StackScreenProps<RootStackParamList, 'Screen3'>;
 
-const Screen3: React.FC<Screen3Props> = ({ navigation }) => {
+const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
+  const { data, status } = api.project.getOne.useQuery({ id: route.params.id });
+  if (status === 'loading') return <Text> Loading...</Text>;
+  if (status === 'error') return <Text> Error loading data...</Text>;
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <View style={styles.card}>
-        <Image
-          source={{ uri: 'https://studoindustry.s3.ap-south-1.amazonaws.com/c529779b-6e63-4462-a815-5afa537871b7.jpeg' }}
-          style={styles.image}
-        />
-        <Text style={styles.title}>Card Title</Text>
+    <View>
+      <Text>{data?.title}</Text>
+      <Text>{data?.description}</Text>
+      <View style={styles.imageContainer}>
+        {data?.images.map((image, index) => (
+          <Image
+            key={index}
+            source={{
+              uri: `https://studoindustry.s3.ap-south-1.amazonaws.com/${image}`,
+            }}
+            style={styles.image}
+          />
+        ))}
       </View>
+
       <Button title='Go back' onPress={() => navigation.goBack()} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#ffffff',
+  imageContainer: {
+    width: '100%',
+    height: '70%',
+    overflow: 'hidden',
     borderRadius: 8,
-    padding: 16,
-    shadowColor: '#000000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    marginBottom: 16,
   },
   image: {
-    width: 200,
-    height: 200,
-    marginBottom: 8,
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
 });
-
 export default Screen3;

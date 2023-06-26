@@ -6,7 +6,7 @@
   "scripts": {
     "db:generate": "npx prisma generate",
     "db:push": "npx prisma db push --skip-generate",
-    "dev": "tsc",
+    "dev": "tsc --watch",
     "build": "tsc",
     "prisma:studio": "npx prisma studio"
   },

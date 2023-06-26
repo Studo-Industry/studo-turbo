@@ -37,16 +37,16 @@ export { type RouterInputs, type RouterOutputs } from 'server';
  * A wrapper for your app that provides the TRPC context.
  * Use only in _app.tsx
  */
-export const TRPCProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const TRPCProvider: React.FC<{
+  children: string | JSX.Element | JSX.Element[];
+}> = ({ children }) => {
   const [queryClient] = useState(() => new QueryClient());
   const [trpcClient] = useState(() =>
     api.createClient({
       transformer: superjson,
       links: [
         httpBatchLink({
-          url: 'http://192.168.0.106:3000/api/trpc',
+          url: 'http://192.168.1.6:3000/api/trpc',
         }),
       ],
     }),
