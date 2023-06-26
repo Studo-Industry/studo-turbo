@@ -1,8 +1,10 @@
+import { useRouter } from 'next/router';
 import React, { FormEvent, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { api } from '~/utils/api';
 
 const UserInfo = () => {
+  const router = useRouter();
   const branchs = [
     'Computer science engineering',
     'Information technology engineering',
@@ -67,7 +69,7 @@ const UserInfo = () => {
           setYear(null);
           setContact(null);
           toast.success('Information Recevied');
-          // ('/dashboard');
+          router.push('/dashboard');
         });
     } else {
       toast.error('Please fill in the details properly.');
@@ -207,7 +209,7 @@ const UserInfo = () => {
           name='contact'
           id='contact'
           onChange={(event) => {
-            setContact(event.target.value);
+            setContact(Number(event.target.value));
           }}
         />
         <button className='hover:blue-orange-gradient col-span-3 rounded-md border-2 border-black bg-transparent p-2 font-semibold text-black shadow-xl transition-all hover:border-none hover:bg-gradient-to-bl hover:text-white'>

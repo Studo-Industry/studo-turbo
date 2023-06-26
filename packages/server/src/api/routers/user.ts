@@ -149,8 +149,9 @@ export const userRouter = createTRPCRouter({
           college: input.college,
           branch: input.branch,
           year: input.year,
-          contact: input.contact,
+          contact: Number(input.contact),
         },
       });
+      return info;
     }),
 });

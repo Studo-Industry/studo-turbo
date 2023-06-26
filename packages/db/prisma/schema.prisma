@@ -65,7 +65,7 @@ model User {
   college       String?
   branch        String?
   year          Int?
-  contact       String?
+  contact       BigInt?
   accounts      Account[]
   sessions      Session[]
   role          UserRole  @default(USER)
