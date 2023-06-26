@@ -1,6 +1,7 @@
 import { TRPCClientError } from '@trpc/client';
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '../trpc';
+import { TRPCError } from '@trpc/server';
 
 function generateRandomCharacter() {
   let result = '';
@@ -77,6 +78,17 @@ export const teamRouter = createTRPCRouter({
         },
       });
       return team;
+    }),
+  getTeamByReferral: protectedProcedure
+    .input(z.object({ referral: z.string() }))
+    .query(({ ctx, input }) => {
+      const team = ctx.prisma.team.findUnique({
+        where: { referral_code: input.referral },
+      });
+      if (team) {
+        return team;
+      }
+      throw new TRPCError({ code: 'NOT_FOUND' });
     }),
   join: protectedProcedure
     .input(z.object({ referral: z.string(), type: z.string() }))
@@ -346,22 +358,22 @@ export const teamRouter = createTRPCRouter({
       }
     }),
 
-  // Removing member 
+  // Removing member
   removeTeam: protectedProcedure
     .input(z.object({ userId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       try {
         const user = await ctx.prisma.user.update({
           where: {
-            id: input.userId
+            id: input.userId,
           },
           data: {
-            teamId: null
-          }
-        })
-        return user
+            teamId: null,
+          },
+        });
+        return user;
       } catch (error) {
-        throw new Error('Something went wrong!')
+        throw new Error('Something went wrong!');
       }
     }),
 });

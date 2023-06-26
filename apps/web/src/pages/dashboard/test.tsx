@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
+import { ProjectCard } from '~/components/Cards';
+import PreLoader from '~/components/PreLoader';
 import { api } from '~/utils/api';
 
 const Test = () => {
   const [page, setPage] = useState(0);
-  const { data, fetchNextPage } = api.project.getBatch.useInfiniteQuery(
-    {
-      limit: 10,
-    },
-    {
-      getNextPageParam: (lastPage) => lastPage.nextCursor,
-    },
-  );
+  const { data, fetchNextPage, hasNextPage, hasPreviousPage, isFetching } =
+    api.project.getBatch.useInfiniteQuery(
+      {
+        limit: 40,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      },
+    );
   const handleFetchNextPage = () => {
     fetchNextPage();
     setPage((prev) => prev + 1);
@@ -24,13 +27,30 @@ const Test = () => {
   const toShow = data?.pages[page]?.items;
 
   return (
-    <div>
-      <div>
+    <div className='m-10'>
+      <div className='grid grid-cols-1 md:grid-cols-3'>
+        {isFetching && (
+          <div className='col-span-3'>
+            <PreLoader />
+          </div>
+        )}
         {toShow?.map((project) => (
-          <p key={project.title}>{project.title}</p>
+          <ProjectCard
+            key={project.id}
+            id={project.id}
+            title={project.title}
+            images={project.images}
+          />
         ))}
       </div>
-      <button onClick={() => handleFetchNextPage}>Load More</button>
+      {!hasPreviousPage && (
+        <button onClick={() => handleFetchPreviousPage()}>LoadPrevious</button>
+      )}
+      {!hasNextPage ? (
+        <p> No more projects </p>
+      ) : (
+        <button onClick={() => handleFetchNextPage()}>Load More</button>
+      )}
     </div>
   );
 };
