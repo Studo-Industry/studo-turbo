@@ -4,6 +4,7 @@ import type {
 } from 'next';
 import { getProviders, signIn } from 'next-auth/react';
 import { getServerSession } from 'next-auth/next';
+
 import { authOptions } from 'server';
 
 export default function SignIn({
@@ -29,7 +30,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Note: Make sure not to redirect to the same page
   // To avoid an infinite loop!
   if (session) {
-    return { redirect: { destination: '/dashboard' } };
+    return { redirect: { destination: context.query.callbackUrl } };
   }
 
   const providers = await getProviders();

@@ -1,11 +1,12 @@
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { getSession, signIn } from 'next-auth/react';
+import { BsLightningFill } from 'react-icons/bs';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import { useRouter } from 'next/router';
+import { getSession } from 'next-auth/react';
+import { toast } from 'react-hot-toast';
+
 import PreLoader from '~/components/PreLoader';
 import { api } from '~/utils/api';
-import { toast } from 'react-hot-toast';
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
-import { BsLightningFill } from 'react-icons/bs';
 import { env } from '~/env.mjs';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -13,7 +14,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   if (!session) {
     return {
       redirect: {
-        destination: `${env.NEXTAUTH_URL}/auth/signin?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fteam%2Fjoin%2F${context.params.referral}`,
+        destination: `${env.NEXTAUTH_URL}/auth/signin?callbackUrl=http%3A%2F%2Flocalhost%3A3000%2Fdashboard%2Fteam%2Fjoin%2F${context.params.referral}`,
         permanent: false,
       },
     };
