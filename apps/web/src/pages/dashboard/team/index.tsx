@@ -3,11 +3,12 @@ import { toast } from "react-hot-toast";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { getQueryKey } from "@trpc/react-query";
 import { useQueryClient } from "@tanstack/react-query";
 import { AiFillCopy } from "react-icons/ai";
 import { HiClipboardCheck } from "react-icons/hi";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 
 import { api } from "~/utils/api";
 import { env } from "~/env.mjs";
@@ -17,21 +18,28 @@ import PreLoader from "~/components/PreLoader";
 import Stepper from "~/components/Stepper";
 import Milestone from "~/components/Milestones";
 
-const Team = () => {
+export async function getServerSideProps(context:GetServerSidePropsContext) {
+  const session = await getSession(context);
+  return {
+    props: {
+      data: session,
+    },
+  };
+}
+
+const Team = ({data}:InferGetServerSidePropsType<typeof getServerSideProps>) => {
   let toastid: string;
   const router = useRouter();
   const queryClient = useQueryClient();
   const [copied, setCopied] = useState(false);
   const [files, setFiles] = useState<Array<string>>([]);
   const steps = [1, 2, 3, 4, 5, 6];
-  const { data: sessionData, status: sessionStatus } = useSession();
-
   const deleteTeam = api.team.deleteTeam.useMutation({
     onMutate: () => {
       toast.loading("Deleting team...", { id: toastid });
     },
     onSuccess: () => {
-      const getTeamKey = getQueryKey(api.team.getTeam);
+      const getTeamKey = getQueryKey(api.user.getOne);
       void queryClient.invalidateQueries({
         queryKey: [...getTeamKey],
       });
@@ -49,7 +57,7 @@ const Team = () => {
       toast.loading("Leaving team...", { id: toastid });
     },
     onSuccess: () => {
-      const getTeamKey = getQueryKey(api.team.getTeam);
+      const getTeamKey = getQueryKey(api.user.getOne);
       void queryClient.invalidateQueries({
         queryKey: [...getTeamKey],
       });
@@ -62,6 +70,24 @@ const Team = () => {
       toast.error(`Error: ${error.message}`, { id: toastid });
     },
   });
+  const removeTeam=api.team.removeTeam.useMutation({
+    onMutate: () => {
+      toast.loading("Removing from team...", { id: toastid });
+    },
+    onSuccess: () => {
+      const getTeamKey = getQueryKey(api.user.getOne);
+      void queryClient.invalidateQueries({
+        queryKey: [...getTeamKey],
+      });
+      toast.dismiss(toastid);
+      toast.success("Member is removed from team", { id: toastid });
+      void router.push("/dashboard/team");
+    },
+    onError: (error) => {
+      toast.dismiss(toastid);
+      toast.error(`Error: ${error.message}`, { id: toastid });
+    },
+  })
 
   const { data: milestoneData, status: mileStoneStatus } =
     api.team.getMilestone.useQuery(undefined, {
@@ -72,7 +98,7 @@ const Team = () => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const { data: userData, status: userStatus } = api.user.getOne.useQuery({
-    id: sessionData?.user?.id!,
+    id: data?.user?.id,
   });
 
   if (userStatus === "loading" || mileStoneStatus === "loading")
@@ -120,7 +146,7 @@ const Team = () => {
           </>
         )}
       </div>
-      <div className="grid grid-cols-1 rounded-xl bg-white px-4 py-10 shadow-xl md:grid-cols-3 md:px-20">
+      <div className="grid grid-cols-1 rounded-xl bg-white px-4 py-10 shadow-xl md:grid-cols-3 md:px-20 gap-28">
         <div className="flex flex-col justify-between">
           <div>
             <h3 className="font-bold">Leader</h3>
@@ -182,25 +208,37 @@ const Team = () => {
                     member.id !== leader?.id && member.id !== mentor?.id
                 )
                 .map((member) => (
-                  <Link
-                    className="m-2 flex items-center gap-4 rounded-md  p-2  hover:cursor-pointer hover:bg-gray-300"
-                    href={`/dashboard/team/${member.id}`}
-                    key={member.id}
-                  >
-                    {member.image && (
-                      <Image
-                        height={40}
-                        width={40}
-                        src={member?.image}
-                        alt="image user"
-                        className="rounded-full"
-                      />
-                    )}
-                    <div>
-                      <p className="font-bold">{member.name}</p>
-                      <p className="text-black/75">{member.email}</p>
-                    </div>
-                  </Link>
+                  <div key={member.id} className="flex flex-row gap-10 items-center rounded-md  p-2  hover:cursor-pointer hover:bg-gray-300">
+                    <Link
+                      className="m-2 flex items-center gap-4"
+                      href={`/dashboard/team/${member.id}`}
+                      key={member.id}
+                    >
+                      {member.image && (
+                        <Image
+                          height={40}
+                          width={40}
+                          src={member?.image}
+                          alt="image user"
+                          className="rounded-full"
+                        />
+                      )}
+                      <div>
+                        <p className="font-bold">{member.name}</p>
+                        <p className="text-black/75">{member.email}</p>
+                      </div>
+                    </Link>
+                    {userData.team.leader === userData.id &&
+                    <Link
+                      href="/dashboard/team"
+                      className="rounded-full bg-red-500 text-sm px-5 py-4 h-14 font-semibold text-white shadow-xl transition-all hover:scale-110"
+                      onClick={() => {
+                          void removeTeam.mutateAsync({ userId:member.id});
+                      }}
+                    >
+                      Remove
+                    </Link>}
+                  </div>
                 ))
             ) : (
               <p>No Members in the team yet</p>

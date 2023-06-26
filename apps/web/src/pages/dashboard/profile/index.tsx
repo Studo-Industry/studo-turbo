@@ -1,15 +1,24 @@
-import { useSession } from 'next-auth/react';
+import { getSession, useSession } from 'next-auth/react';
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import Image from 'next/image';
 
 import { api } from '~/utils/api';
 import PreLoader from '~/components/PreLoader';
 import { ProjectCard } from '~/components/Cards';
 
-const Profile = () => {
-  const { data, status } = useSession();
+export async function getServerSideProps(context:GetServerSidePropsContext) {
+  const session = await getSession(context);
+  return {
+    props: {
+      data: session,
+    },
+  };
+}
+
+const Profile = ({data}:InferGetServerSidePropsType <typeof getServerSideProps>) => {
 
   const { data: userData, status: userStatus } = api.user.getOne.useQuery({
-    id: data?.user?.id!,
+    id: data?.user?.id,
   });
   if (status === 'loading' || userStatus === 'loading') return <PreLoader />;
   if (userStatus === 'error')
