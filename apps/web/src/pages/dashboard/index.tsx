@@ -80,7 +80,16 @@ const Dashboard = ({
   if (data?.user.role === 'ADMIN') {
     void router.push('/admin/dashboard');
   }
-  if (userData?.teamId) {
+  // if(data && userData.firstName === "" &&
+  // userData.middleName === "" &&
+  // userData.lastName === "" &&
+  // userData.college === "" &&
+  // userData.branch === "" &&
+  // userData.year === null &&
+  // userData.contact === null){
+  //   void router.push('/user-info');
+  // }
+  if (userData?.teamId ) {
     void router.push('/dashboard/team/');
     return <></>;
   }
