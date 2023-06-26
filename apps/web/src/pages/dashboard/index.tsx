@@ -89,7 +89,7 @@ const Dashboard = ({
   // userData.contact === null){
   //   void router.push('/user-info');
   // }
-  if (userData?.teamId ) {
+  if (userData?.teamId) {
     void router.push('/dashboard/team/');
     return <></>;
   }
