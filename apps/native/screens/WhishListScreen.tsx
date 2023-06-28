@@ -1,90 +1,88 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import React from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useWishlist } from './WishlistContext';
 
-const WishlistPage = ({ route }) => {
-  const [wishlistItems, setWishlistItems] = useState(route.params?.wishlistItems || []);
+type WishlistItem = {
+  id: string;
+  name: string;
+};
 
-  const removeProject = (projectId: any) => {
-    const updatedWishlist = wishlistItems.filter((project: { id: any; }) => project.id !== projectId);
-    setWishlistItems(updatedWishlist);
+const WishlistScreen = () => {
+  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
+
+  const navigation = useNavigation();
+  const route = useRoute();
+
+  // Get the project name from the route params
+  const projectName = route.params?.projectName;
+
+  const handleAddToWishlist = () => {
+    const newWishlistItem: WishlistItem = {
+      id: String(Date.now()),
+      name: projectName || 'New Project',
+    };
+
+    addToWishlist(newWishlistItem);
   };
 
+  const handleRemoveFromWishlist = (id: string) => {
+    removeFromWishlist(id);
+  };
+
+  const renderItem = ({ item }: { item: WishlistItem }) => (
+    <TouchableOpacity
+      style={styles.wishlistItem}
+      onPress={() => handleRemoveFromWishlist(item.id)}
+    >
+      <Text style={styles.wishlistItemText}>{item.name}</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.contentContainer}>
-        <Text style={styles.title}>Wishlist</Text>
-        {wishlistItems.map((item) => (
-          <TouchableOpacity
-            key={item.id}
-            style={styles.card}
-            onPress={() => removeProject(item.id)}
-          >
-            <Image source={{ uri: item.image }} style={styles.image} />
-            <View style={styles.detailsContainer}>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.details}>{item.details}</Text>
-              <Text style={styles.details}>{item.timeline}</Text>
-            </View>
-            <AntDesign name="delete" size={24} color="black" />
-          </TouchableOpacity>
-        ))}
-        {wishlistItems.length === 0 && (
-          <Text style={styles.emptyText}>Your wishlist is empty</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Wishlist</Text>
+      <FlatList
+        data={wishlist}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.wishlistContainer}
+        ListEmptyComponent={() => (
+          <Text style={styles.emptyMessage}>No projects in the wishlist</Text>
         )}
-      </View>
-    </ScrollView>
+      />
+      {/* Remove the Add Project button */}
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
-  },
-  contentContainer: {
-    padding: 15,
+    padding: 16,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 16,
   },
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+  wishlistContainer: {
+    flexGrow: 1,
+    marginBottom: 16,
+  },
+  wishlistItem: {
+    backgroundColor: '#f0f0f0',
+    padding: 10,
     borderRadius: 5,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    marginBottom: 10,
-    elevation: 3,
+    marginBottom: 8,
   },
-  image: {
-    width: 80,
-    height: 80,
-    resizeMode: 'cover',
-    borderRadius: 5,
-    marginRight: 10,
-  },
-  detailsContainer: {
-    flex: 1,
-    marginRight: 10,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  details: {
+  wishlistItemText: {
     fontSize: 16,
   },
-  emptyText: {
+  emptyMessage: {
     fontSize: 16,
-    fontStyle: 'italic',
     textAlign: 'center',
-    marginTop: 20,
   },
 });
 
-export default WishlistPage;
+export default WishlistScreen;
