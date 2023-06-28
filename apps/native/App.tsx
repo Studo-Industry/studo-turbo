@@ -24,7 +24,10 @@ const Tab = createBottomTabNavigator<RootStackParamList>();
 export type RootStackParamList = {
   DashBoard: undefined;
   MyTeam: undefined;
-  Wishlist: undefined;
+  Wishlist: {id: string,
+  name: string,
+  details: string,
+  timeline: string};
   Milestone: undefined;
   Profile: undefined;
   MyProject: undefined;
@@ -38,7 +41,7 @@ export type RootStackParamList = {
   Home: undefined;
   Screen2: undefined;
   Screen3: { id: string };
-  Screen4: undefined;
+  Screen4: {categoryName: string};
 };
 const Stack = createStackNavigator<RootStackParamList>();
 

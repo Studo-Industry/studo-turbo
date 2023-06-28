@@ -7,14 +7,17 @@ import {
   Text,
   TouchableOpacity,
 } from 'react-native';
-import Card from '../Components/Card'; // Import the Card component
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../App';
-import { StackScreenProps } from '@react-navigation/stack';
-import { api } from '../utils/trpc';
 
-type AllBranchesProps = StackScreenProps<RootStackParamList, 'AllBranches'>;
+type AllBranchesProps = {
+  navigation: StackNavigationProp<RootStackParamList, 'AllBranches'>;
+  route: RouteProp<RootStackParamList, 'AllBranches'>;
+};
+
 const projectCategories = [
-  { name: 'All Projects' },
+  // { name: 'All Projects' },
   { name: 'Computer science engineering' },
   { name: 'Information technology engineering' },
   { name: 'Electrical engineering' },
@@ -34,27 +37,26 @@ const projectCategories = [
   { name: 'Cyber security engineering' },
   { name: 'Instrumentation technology engineering' },
 ];
+
 const AllBranches: React.FC<AllBranchesProps> = ({ navigation }) => {
-  const { data } = api.project.getSample.useQuery({
-    category: 'Computer science engineering',  
-  });
-  
+  const handleCardPress = (categoryName: string) => {
+    navigation.navigate('Screen4', { categoryName });
+  };
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-                  style={[styles.card]}
-                >
-                  <Text
-                    style={[
-                      styles.Text,
-                      { color: '#000', fontSize: 18 },
-                    ]}
-                  >
-                    Branch
-                  </Text>
-                  
-                </TouchableOpacity>
-      <Button title='Go back' onPress={() => navigation.goBack()} />
+      <ScrollView>
+        {projectCategories.map((category, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.card}
+            onPress={() => handleCardPress(category.name)}
+          >
+            <Text style={styles.Text}>{category.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+      <Button title="Go back" onPress={() => navigation.goBack()} />
     </View>
   );
 };
@@ -68,8 +70,9 @@ const styles = StyleSheet.create({
   },
   card: {
     width: '90%',
-    margin:20,
+    margin: 20,
     marginTop: 10,
+    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
