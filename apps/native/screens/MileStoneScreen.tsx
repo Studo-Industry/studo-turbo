@@ -1,94 +1,218 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  ScrollView,
+} from "react-native";
 
-const MileStoneScreen = () => {
-  const [completedMilestones, setCompletedMilestones] = useState(2);
-  const totalMilestones = 4;
+interface CardProps {
+  index: number;
+  isCurrentCard: boolean;
+  isPreviousCardSubmitted: boolean;
+  handleCardSubmit: () => void;
+}
 
-  const renderMilestoneIndicators = () => {
-    const indicators = [];
-    for (let i = 0; i < totalMilestones; i++) {
-      const isCompleted = i < completedMilestones;
-      const indicatorStyle = isCompleted
-        ? styles.milestoneIndicatorCompleted
-        : styles.milestoneIndicator;
-      indicators.push(
-        <View
-          key={i}
-          style={[styles.milestoneIndicatorContainer, indicatorStyle]}
-        />
-      );
-    }
-    return indicators;
+const Card: React.FC<CardProps> = ({ index, isCurrentCard, isPreviousCardSubmitted, handleCardSubmit }) => {
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [completed, setCompleted] = useState(false);
+
+  const handleUploadImage = () => {
+    // Code for uploading the image goes here
+    // After uploading, set the uploaded image URL using setUploadedImage
+    setUploadedImage(
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnL8UdZ553sonNaZyy_mvsJWxq7ky6gx6B_YsncYQ8&s"
+    );
   };
 
-  const handleCompleteMilestone = () => {
-    if (completedMilestones < totalMilestones) {
-      setCompletedMilestones((prev) => prev + 1);
+  const handleDeleteImage = () => {
+    setUploadedImage(null);
+    setCompleted(false);
+  };
+
+  const handleSubmit = () => {
+    // Code for handling the submit action goes here
+    if (uploadedImage) {
+      setCompleted(true);
+      handleCardSubmit(); // Notify the parent component that the card has been submitted
+      console.log("Submitted!");
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Milestones</Text>
-      <View style={styles.progressContainer}>
-        {renderMilestoneIndicators()}
+    <View style={styles.card}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.number}>{index + 1}</Text>
+        <Text style={styles.title}>Milestone Title</Text>
+        {!completed ? (
+          <Text style={styles.incompleteText}>Incomplete</Text>
+        ) : (
+          <Text style={styles.completedText}>Completed!</Text>
+        )}
       </View>
-      <Text style={styles.progressText}>
-        Group completed {completedMilestones} out of {totalMilestones} milestones
-      </Text>
-      {completedMilestones < totalMilestones && (
-        <TouchableOpacity
-          style={styles.button}
-          onPress={handleCompleteMilestone}
-        >
-          <Text style={styles.buttonText}>Complete Milestone</Text>
-        </TouchableOpacity>
+      {isCurrentCard && (
+        <>
+        <Text style={styles.descriptionT}>Description</Text>
+          <Text style={styles.description}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</Text>
+          {uploadedImage && (
+            <View style={styles.imageContainer}>
+              <Image source={{ uri: uploadedImage }} style={styles.image} />
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={handleDeleteImage}
+              >
+                <Text style={styles.buttonText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+          {!uploadedImage && (
+            <TouchableOpacity
+              style={styles.uploadButton}
+              onPress={handleUploadImage}
+            >
+              <Text style={styles.buttonText}>Upload</Text>
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity
+            style={[
+              styles.submitButton,
+              !uploadedImage && styles.disabledButton,
+            ]}
+            onPress={handleSubmit}
+            disabled={!uploadedImage}
+          >
+            <Text style={styles.buttonText}>Submit</Text>
+          </TouchableOpacity>
+        </>
       )}
     </View>
+  );
+};
+
+const MileStoneScreen: React.FC = () => {
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [submittedCardIndex, setSubmittedCardIndex] = useState(-1);
+
+  const handleCardSubmit = () => {
+    setSubmittedCardIndex(currentCardIndex);
+    setCurrentCardIndex((prevIndex) => prevIndex + 1);
+  };
+
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.cardContainer}>
+        {[0, 1, 2, 3].map((index) => {
+          const isCurrentCard = index === currentCardIndex;
+          const isPreviousCardSubmitted = index < submittedCardIndex;
+
+          return (
+            <Card
+              key={index}
+              index={index}
+              isCurrentCard={isCurrentCard}
+              isPreviousCardSubmitted={isPreviousCardSubmitted}
+              handleCardSubmit={handleCardSubmit}
+            />
+          );
+        })}
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "#F5F5F5",
+  },
+  cardContainer: {
     padding: 20,
+    alignItems: "center",
+  },
+  card: {
+    width: "90%",
+    padding: 20,
+    borderRadius: 10,
+    backgroundColor: "#FFF",
+    elevation: 3,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  number: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginRight: 5,
   },
   title: {
-    fontSize: 24,
+    flex: 1,
+    fontSize: 20,
     fontWeight: "bold",
-    marginBottom: 20,
   },
-  progressContainer: {
-    flexDirection: "row",
-    marginBottom: 20,
+  incompleteText: {
+    color: "#FF0000",
+    fontWeight: "bold",
   },
-  milestoneIndicatorContainer: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    marginHorizontal: 5,
-    borderWidth: 2,
-    borderColor: "#000",
+  completedText: {
+    color: "#00FF00",
+    fontWeight: "bold",
   },
-  milestoneIndicator: {
-    backgroundColor: "#FFF",
-  },
-  milestoneIndicatorCompleted: {
-    backgroundColor: "#00FF00",
-    borderColor: "#00FF00",
-  },
-  progressText: {
+  description: {
     fontSize: 16,
     marginBottom: 10,
   },
-  button: {
+  descriptionT :{
+    fontSize: 18,
+    marginBottom: 1,
+    fontWeight: "bold",
+  },
+  imageContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  image: {
+    width: 50,
+    height: 50,
+    marginRight: 10,
+  },
+  deleteButton: {
+    backgroundColor: "#FF0000",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 5,
+  },
+  uploadButton: {
     backgroundColor: "#F39920",
-    paddingVertical: 10,
+    paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 5,
+    marginBottom: 10,
+    alignItems: "center",
+  },
+  submitButton: {
+    backgroundColor: "#4287f5",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: "center",
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
   buttonText: {
     color: "#FFF",
