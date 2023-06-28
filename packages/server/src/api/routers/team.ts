@@ -287,34 +287,122 @@ export const teamRouter = createTRPCRouter({
       throw new Error('User doesnt exist');
     }
   }),
-  getRecentTeams: protectedProcedure.query(async ({ ctx }) => {
-    return await ctx.prisma.team.findMany({
-      take: 5,
-      orderBy: {
-        appliedAt: 'desc',
-      },
-    });
-  }),
-
-  // creating procedure for delete team
-
-  deleteTeam: protectedProcedure
-    .input(z.object({ teamId: z.string() }))
+  milestoneRejection: protectedProcedure
+    .input(z.object({ teamId: z.string(), milestone: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      let team;
+      try {
+        switch (input.milestone) {
+          case 1:
+            team = await ctx.prisma.team.update({
+              where: {
+                id: input.teamId,
+              },
+              data: {
+                milestone1: {
+                  set: [],
+                },
+                presentMilestone: 1,
+              },
+            });
+            break;
+          case 2:
+            team = await ctx.prisma.team.update({
+              where: {
+                id: input.teamId,
+              },
+              data: {
+                milestone2: {
+                  set: [],
+                },
+                presentMilestone: 1,
+              },
+            });
+            break;
+          case 3:
+            team = await ctx.prisma.team.update({
+              where: {
+                id: input.teamId,
+              },
+              data: {
+                milestone3: {
+                  set: [],
+                },
+                presentMilestone: 2,
+              },
+            });
+            break;
+          case 4:
+            team = await ctx.prisma.team.update({
+              where: {
+                id: input.teamId,
+              },
+              data: {
+                milestone4: {
+                  set: [],
+                },
+                presentMilestone: 3,
+              },
+            });
+            break;
+          case 5:
+            team = await ctx.prisma.team.update({
+              where: {
+                id: input.teamId,
+              },
+              data: {
+                milestone5: {
+                  set: [],
+                },
+                presentMilestone: 4,
+              },
+            });
+            break;
+          case 6:
+            team = await ctx.prisma.team.update({
+              where: {
+                id: input.teamId,
+              },
+              data: {
+                milestone6: {
+                  set: [],
+                },
+                presentMilestone: 5,
+              },
+            });
+            break;
+          default:
+            return new Error('Some error occured, try again');
+        }
+        return team;
+      } catch (error) {
+        console.log(error);
+        return new Error('Something went wrong!');
+      }
+    }),
+  milestoneApproval: protectedProcedure
+    .input(
+      z.object({
+        teamId: z.string(),
+        presentMilestone: z.number(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       try {
-        const team = await ctx.prisma.team.delete({
+        const team = ctx.prisma.team.update({
           where: {
             id: input.teamId,
+          },
+          data: {
+            approvedMilestone: input.presentMilestone,
           },
         });
         return team;
       } catch (error) {
-        throw new Error('Unable to delete Team.');
+        console.log(error);
+        return new Error('Something went wrong,try again');
       }
     }),
-
-  // Creating procedure for leaving the Team
-
   leaveTeam: protectedProcedure
     .input(z.object({ teamId: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -355,6 +443,31 @@ export const teamRouter = createTRPCRouter({
         }
       } catch (error) {
         throw new Error('Unable to leave team!');
+      }
+    }),
+
+  getRecentTeams: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.team.findMany({
+      take: 5,
+      orderBy: {
+        appliedAt: 'desc',
+      },
+    });
+  }),
+
+  // creating procedure for delete team
+  deleteTeam: protectedProcedure
+    .input(z.object({ teamId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const team = await ctx.prisma.team.delete({
+          where: {
+            id: input.teamId,
+          },
+        });
+        return team;
+      } catch (error) {
+        throw new Error('Unable to delete Team.');
       }
     }),
 

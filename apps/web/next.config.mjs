@@ -7,6 +7,10 @@ await import('./src/env.mjs');
 /** @type {import("next").NextConfig} */
 const config = {
   reactStrictMode: true,
+  env: {
+    NEXT_PUBLIC_WEBSITE_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
+    NEXT_PUBLIC_AWS_S3: process.env.NEXT_PUBLIC_AWS_S3,
+  },
   images: {
     remotePatterns: [
       {
