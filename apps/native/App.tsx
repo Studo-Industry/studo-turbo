@@ -16,6 +16,7 @@ import MyProjectScreen from './screens/MyProjectsScreen';
 import Website from './screens/Website';
 import AboutUsScreen from './screens/AboutUsScreen';
 import Screen4 from './screens/Screen4';
+import AllBranches from './screens/AllBranches';
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
 
@@ -55,6 +56,7 @@ const App = () => {
           <Stack.Screen name='MyProject' component={MyProjectScreen} />
           <Stack.Screen name='Website' component={Website} />
           <Stack.Screen name='About' component={AboutUsScreen} />
+          <Stack.Screen name='AllBranches' component={AllBranches} />
 
           <Stack.Screen name='Home' component={HomeScreen} />
           <Stack.Screen name='Screen2' component={Screen2} />
