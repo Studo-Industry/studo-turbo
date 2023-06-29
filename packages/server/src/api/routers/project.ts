@@ -21,55 +21,140 @@ export const projectRouter = createTRPCRouter({
   //       };
   //     }),
 
-getAll: protectedProcedure.query(({ ctx }) => {
-  return ctx.prisma.project.findMany();
-}),
-getBatch: protectedProcedure
-  .input(
-    z.object({
-      limit: z.number(),
-      // cursor is a reference to the last item in the previous batch
-      // it's used to fetch the next batch
-      cursor: z.string().nullish(),
-      skip: z.number().optional(),
-      categoryId: z.number().optional(),
-    }),
-  )
-  .query(async ({ ctx, input }) => {
-    const { limit, skip, cursor } = input;
-    const items = await ctx.prisma.project.findMany({
-      take: limit + 1,
-      skip: skip,
-      cursor: cursor ? { id: cursor } : undefined,
-      orderBy: {
-        id: 'asc',
-      },
-    });
-    let nextCursor: typeof cursor | undefined = undefined;
-    if (items.length > limit) {
-      const nextItem = items.pop(); // return the last item from the array
-      nextCursor = nextItem?.id;
-    }
-    return {
-      items,
-      nextCursor,
-    };
+  getAll: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.project.findMany();
   }),
-getOne: publicProcedure
-  .input(z.object({ id: z.string() }))
-  .query(async ({ ctx, input }) => {
-    const project = await ctx.prisma.project.findUnique({
-      where: {
-        id: input.id,
-      },
-      include: {
-        Team: {
-          orderBy: {
-            presentMilestone: 'desc',
+  getBatch: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        // cursor is a reference to the last item in the previous batch
+        // it's used to fetch the next batch
+        cursor: z.string().nullish(),
+        skip: z.number().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, skip, cursor } = input;
+      const items = await ctx.prisma.project.findMany({
+        take: limit + 1,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          id: 'asc',
+        },
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop(); // return the last item from the array
+        nextCursor = nextItem?.id;
+      }
+      return {
+        items,
+        nextCursor,
+      };
+    }),
+  getBatchByCategory: protectedProcedure
+    .input(
+      z.object({
+        category: z.string(),
+        limit: z.number(),
+        cursor: z.string().nullish(),
+        skip: z.number().optional(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, skip, cursor } = input;
+      const items = await ctx.prisma.project.findMany({
+        take: limit + 1,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          id: 'asc',
+        },
+        where: {
+          categories: {
+            has: input.category,
           },
         },
-      },
-    });
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop(); // return the last item from the array
+        nextCursor = nextItem?.id;
+      }
+      return {
+        items,
+        nextCursor,
+      };
+    }),
+  getBatchBySearch: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+        // cursor is a reference to the last item in the previous batch
+        // it's used to fetch the next batch
+        cursor: z.string().nullish(),
+        skip: z.number().optional(),
+        search: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const { limit, skip, cursor } = input;
+      const items = await ctx.prisma.project.findMany({
+        take: limit + 1,
+        skip: skip,
+        cursor: cursor ? { id: cursor } : undefined,
+        orderBy: {
+          id: 'asc',
+        },
+        where: {
+          OR: [
+            {
+              title: {
+                contains: input.search,
+                mode: 'insensitive',
+              },
+            },
+            {
+              categories: {
+                has: input.search,
+              },
+            },
+            {
+              company: {
+                contains: input.search,
+                mode: 'insensitive',
+              },
+            },
+          ],
+        },
+      });
+      let nextCursor: typeof cursor | undefined = undefined;
+      if (items.length > limit) {
+        const nextItem = items.pop(); // return the last item from the array
+        nextCursor = nextItem?.id;
+      }
+      return {
+        items,
+        nextCursor,
+      };
+    }),
+  getOne: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const project = await ctx.prisma.project.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          Team: {
+            orderBy: {
+              presentMilestone: 'desc',
+            },
+          },
+        },
+      });
 
       return project;
     }),

@@ -62,20 +62,57 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 const Dashboard = ({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const [page, setPage] = useState(0);
   const [searchInput, setSearchInput] = useState('');
   const { data: userData, status: userStatus } = api.user.getOne.useQuery({
     id: data?.user?.id,
   });
+  const handleFetchNextPage = () => {
+    fetchNextPage();
+    setPage((prev) => prev + 1);
+  };
 
+  const handleFetchPreviousPage = () => {
+    setPage((prev) => prev - 1);
+  };
   const router = useRouter();
-  const { status: projectStatus, data: projects } =
-    searchInput === ''
-      ? Object.keys(router.query).length === 0
-        ? api.project.getAll.useQuery()
-        : api.project.getProjectByCategory.useQuery({
-            category: String(router.query.category)!,
-          })
-      : api.project.getProjectBySearch.useQuery({ search: searchInput });
+  const {
+    data: projects,
+    fetchNextPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetching,
+    isLoading,
+    status: projectStatus,
+  } = searchInput === ''
+    ? Object.keys(router.query).length === 0
+      ? api.project.getBatch.useInfiniteQuery(
+          {
+            limit: 6,
+          },
+          {
+            getNextPageParam: (lastPage) => lastPage.nextCursor,
+          },
+        )
+      : api.project.getBatchByCategory.useInfiniteQuery(
+          {
+            limit: 6,
+            category: String(router.query.category),
+          },
+          {
+            getNextPageParam: (lastPage) => lastPage.nextCursor,
+          },
+        )
+    : api.project.getBatchBySearch.useInfiniteQuery(
+        {
+          search: searchInput,
+          limit: 6,
+        },
+        {
+          getNextPageParam: (lastPage) => lastPage.nextCursor,
+        },
+      );
+  const toShow = projects?.pages[page]?.items;
 
   if (data?.user.role === 'ADMIN') {
     void router.push('/admin/dashboard');
@@ -162,12 +199,12 @@ const Dashboard = ({
         <div className='mx-6 my-14 md:mx-20'>
           <h1 className='text-2xl font-semibold'>Projects</h1>
           <div className='my-2 grid w-full grid-cols-1 gap-3 py-10 md:grid-cols-3'>
-            {projectStatus === 'loading' ? (
+            {isFetching || isLoading ? (
               <div className='w-full md:col-span-3'>
                 <PreLoader />
               </div>
             ) : (
-              projects.map((project) => (
+              toShow?.map((project) => (
                 <ProjectCard
                   key={project.id}
                   id={project.id}
@@ -176,6 +213,22 @@ const Dashboard = ({
                 />
               ))
             )}
+          </div>
+          <div className='my-10 flex w-full justify-between p-10'>
+            <button
+              onClick={() => handleFetchPreviousPage()}
+              className='rounded-md bg-black p-4 text-white disabled:cursor-not-allowed disabled:bg-red-500 disabled:text-gray-500'
+              disabled={!hasPreviousPage}
+            >
+              Previous Page
+            </button>
+            <button
+              className='rounded-md bg-black  p-4 text-white disabled:cursor-not-allowed disabled:bg-red-500 disabled:text-gray-500'
+              disabled={!hasNextPage}
+              onClick={() => handleFetchNextPage()}
+            >
+              Next Page
+            </button>
           </div>
         </div>
       </div>

@@ -316,7 +316,7 @@ const Team = ({
               <HiClipboardCheck size={40} />
             ) : (
               <AiFillCopy
-                size={40}
+                size={20}
                 onClick={() => {
                   void navigator.clipboard.writeText(
                     'http://localhost:3000/' +
