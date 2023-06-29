@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-} from "react-native";
+} from 'react-native';
+import * as DocumentPicker from 'expo-document-picker';
 
 interface CardProps {
   index: number;
@@ -15,29 +16,50 @@ interface CardProps {
   handleCardSubmit: () => void;
 }
 
-const Card: React.FC<CardProps> = ({ index, isCurrentCard, isPreviousCardSubmitted, handleCardSubmit }) => {
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+const Card: React.FC<CardProps> = ({
+  index,
+  isCurrentCard,
+  isPreviousCardSubmitted,
+  handleCardSubmit,
+}) => {
+  const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
   const [completed, setCompleted] = useState(false);
 
-  const handleUploadImage = () => {
-    // Code for uploading the image goes here
-    // After uploading, set the uploaded image URL using setUploadedImage
-    setUploadedImage(
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSnL8UdZ553sonNaZyy_mvsJWxq7ky6gx6B_YsncYQ8&s"
-    );
+  const handleUploadFile = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: '*/*',
+      copyToCacheDirectory: false,
+      multiple: true,
+    });
+
+    if (result.type === 'success') {
+      const { uri, name } = result;
+      const fileType = name.split('.').pop()?.toLowerCase();
+
+      const fileObject = {
+        uri,
+        name,
+        fileType,
+      };
+
+      setUploadedFiles((prevFiles) => [...prevFiles, fileObject]);
+    }
   };
 
-  const handleDeleteImage = () => {
-    setUploadedImage(null);
+  const handleDeleteFile = (index: number) => {
+    setUploadedFiles((prevFiles) => {
+      const newFiles = [...prevFiles];
+      newFiles.splice(index, 1);
+      return newFiles;
+    });
     setCompleted(false);
   };
 
   const handleSubmit = () => {
-    // Code for handling the submit action goes here
-    if (uploadedImage) {
+    if (uploadedFiles.length > 0) {
       setCompleted(true);
-      handleCardSubmit(); // Notify the parent component that the card has been submitted
-      console.log("Submitted!");
+      handleCardSubmit();
+      console.log('Submitted!');
     }
   };
 
@@ -54,34 +76,44 @@ const Card: React.FC<CardProps> = ({ index, isCurrentCard, isPreviousCardSubmitt
       </View>
       {isCurrentCard && (
         <>
-        <Text style={styles.descriptionT}>Description</Text>
-          <Text style={styles.description}>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</Text>
-          {uploadedImage && (
-            <View style={styles.imageContainer}>
-              <Image source={{ uri: uploadedImage }} style={styles.image} />
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={handleDeleteImage}
-              >
-                <Text style={styles.buttonText}>Delete</Text>
-              </TouchableOpacity>
+          <Text style={styles.descriptionT}>Description</Text>
+          <Text style={styles.description}>
+            Lorem Ipsum is simply dummy text of the printing and typesetting
+            industry. Lorem Ipsum has been the industry's standard dummy text
+            ever since the 1500s
+          </Text>
+          {uploadedFiles.length > 0 && (
+            <View style={styles.fileContainer}>
+              {uploadedFiles.map((file, index) => (
+                <View key={index} style={styles.fileItem}>
+                  {file.fileType === 'image' ? (
+                    <Image source={{ uri: file.uri }} style={styles.image} />
+                  ) : (
+                    <Text>{file.name}</Text>
+                  )}
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => handleDeleteFile(index)}
+                  >
+                    <Text style={styles.buttonText}>Delete</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
             </View>
           )}
-          {!uploadedImage && (
-            <TouchableOpacity
-              style={styles.uploadButton}
-              onPress={handleUploadImage}
-            >
-              <Text style={styles.buttonText}>Upload</Text>
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            style={styles.uploadButton}
+            onPress={handleUploadFile}
+          >
+            <Text style={styles.buttonText}>Upload</Text>
+          </TouchableOpacity>
           <TouchableOpacity
             style={[
               styles.submitButton,
-              !uploadedImage && styles.disabledButton,
+              uploadedFiles.length === 0 && styles.disabledButton,
             ]}
             onPress={handleSubmit}
-            disabled={!uploadedImage}
+            disabled={uploadedFiles.length === 0}
           >
             <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
@@ -125,20 +157,21 @@ const MileStoneScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F5F5",
+    backgroundColor: '#ffff',
   },
   cardContainer: {
     padding: 20,
-    alignItems: "center",
+    alignItems: 'center',
   },
   card: {
-    width: "90%",
-    padding: 20,
+    width: '92%',
+    margin: 20,
+    padding: 15,
     borderRadius: 10,
-    backgroundColor: "#FFF",
+    backgroundColor: '#FFF',
+    marginBottom: 10,
+    shadowColor: '#000',
     elevation: 3,
-    marginBottom: 20,
-    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -147,75 +180,83 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
   titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     marginBottom: 10,
   },
   number: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'normal',
     marginRight: 5,
   },
   title: {
     flex: 1,
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'normal',
   },
   incompleteText: {
-    color: "#FF0000",
-    fontWeight: "bold",
+    color: '#FF0000',
+    fontWeight: 'bold',
   },
   completedText: {
-    color: "#00FF00",
-    fontWeight: "bold",
+    color: '#00FF00',
+    fontWeight: 'bold',
   },
   description: {
     fontSize: 16,
     marginBottom: 10,
+    color: '#666',
   },
-  descriptionT :{
-    fontSize: 18,
+  descriptionT: {
+    fontSize: 16,
     marginBottom: 1,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
-  imageContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginTop: 10,
+  fileContainer: {
     marginBottom: 20,
+  },
+  fileItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 30,
   },
   image: {
     width: 50,
     height: 50,
     marginRight: 10,
+    borderRadius: 10,
   },
   deleteButton: {
-    backgroundColor: "#FF0000",
+    backgroundColor: '#FF0000',
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 5,
+    marginLeft:10,
+    position: 'absolute',
+    right:0,
+    paddingBottom:10,
   },
   uploadButton: {
-    backgroundColor: "#F39920",
+    backgroundColor: '#F39920',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 5,
     marginBottom: 10,
-    alignItems: "center",
+    alignItems: 'center',
   },
   submitButton: {
-    backgroundColor: "#4287f5",
+    backgroundColor: '#4287f5',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 5,
-    alignItems: "center",
+    alignItems: 'center',
   },
   disabledButton: {
     opacity: 0.5,
   },
   buttonText: {
-    color: "#FFF",
+    color: '#FFF',
     fontSize: 16,
   },
 });

@@ -1,70 +1,57 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useWishlist } from './WishlistContext';
 
-const WishlistPage = () => {
-  const [wishlistItems, setWishlistItems] = useState([
-    {
-      id: '1',
-      name: 'Project 1',
-      details: 'Project details 1',
-      timeline: 'Timeline 1',
-      // image: require('../img/project.png'), // Replace with your own image source
-    },
-    {
-      id: '2',
-      name: 'Project 2',
-      details: 'Project details 2',
-      timeline: 'Timeline 2',
-      // image: require('../img/project.png'), // Replace with your own image source
-    },
-    {
-      id: '3',
-      name: 'Project 3',
-      details: 'Project details 3',
-      timeline: 'Timeline 3',
-      // image: require('../img/project.png'), // Replace with your own image source
-    },
-  ]);
+type WishlistItem = {
+  id: string;
+  name: string;
+};
 
-  const removeProject = (projectId) => {
-    const updatedWishlist = wishlistItems.filter((project) => project.id !== projectId);
-    setWishlistItems(updatedWishlist);
+const WishlistScreen = () => {
+  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
+
+  const navigation = useNavigation();
+  const route = useRoute();
+
+  // Get the project name from the route params
+  const projectName = route.params?.projectName;
+
+  const handleAddToWishlist = () => {
+    const newWishlistItem: WishlistItem = {
+      id: String(Date.now()),
+      name: projectName || 'New Project',
+    };
+
+    addToWishlist(newWishlistItem);
   };
 
-  const RenderImage = ({ image }) => (
-    <View style={styles.imageContainer}>
-      <View style={styles.imageBox}>
-        <Image source={image} style={styles.image} />
-      </View>
-    </View>
-  );
+  const handleRemoveFromWishlist = (id: string) => {
+    removeFromWishlist(id);
+  };
 
-  const renderItem = ({ item }) => (
-    <View style={styles.card}>
-      <RenderImage image={item.image} />
-      <View style={styles.textContainer}>
-        <Text style={styles.projectName}>{item.name}</Text>
-        <Text style={styles.details}>{item.details}</Text>
-        <Text style={styles.timeline}>{item.timeline}</Text>
-      </View>
-      <TouchableOpacity style={styles.removeButton} onPress={() => removeProject(item.id)}>
-        <Ionicons name="close" size={16} color="#FFFFFF" />
-        <Text style={styles.removeButtonText}>Remove</Text>
-      </TouchableOpacity>
-    </View>
+  const renderItem = ({ item }: { item: WishlistItem }) => (
+    <TouchableOpacity
+      style={styles.wishlistItem}
+      onPress={() => handleRemoveFromWishlist(item.id)}
+    >
+      <Text style={styles.wishlistItemText}>{item.name}</Text>
+    </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Wishlist</Text>
       <FlatList
-        data={wishlistItems}
+        data={wishlist}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.wishlistContainer}
+        ListEmptyComponent={() => (
+          <Text style={styles.emptyMessage}>No projects in the wishlist</Text>
+        )}
       />
+      {/* Remove the Add Project button */}
     </View>
   );
 };
@@ -73,83 +60,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#F5F5F5',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
-    color: '#333333',
   },
-  listContainer: {
-    paddingTop: 8,
-  },
-  card: {
-    flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 8,
+  wishlistContainer: {
+    flexGrow: 1,
     marginBottom: 16,
-    padding: 16,
-    shadowColor: '#000000',
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 4,
   },
-  imageContainer: {
-    marginRight: 16,
-  },
-  imageBox: {
-    borderWidth: 0.5,
-    borderColor: '#888888', // or 'gray'
-    borderRadius: 4,
-    elevation: 4,
-    shadowColor: '#000000',
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    shadowOffset: { width: 0, height: 2 },
-  },
-  image: {
-    width: 90,
-    height: 90,
-    borderRadius: 4,
-    
-  },
-  textContainer: {
-    flex: 1,
-  },
-  projectName: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  wishlistItem: {
+    backgroundColor: '#f0f0f0',
+    padding: 10,
+    borderRadius: 5,
     marginBottom: 8,
   },
-  details: {
+  wishlistItemText: {
     fontSize: 16,
-    marginBottom: 8,
-    color: '#888',
   },
-  timeline: {
+  emptyMessage: {
     fontSize: 16,
-    marginBottom: 16,
-    color: '#666',
-  },
-  removeButton: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FF6B6B',
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 4,
-  },
-  removeButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginLeft: 4,
+    textAlign: 'center',
   },
 });
 
-export default WishlistPage;
+export default WishlistScreen;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Button, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { RootStackParamList } from '../App';
@@ -7,10 +7,48 @@ import { AntDesign } from '@expo/vector-icons';
 
 type Screen3Props = StackScreenProps<RootStackParamList, 'Screen3'>;
 
+type WishlistItem = {
+  id: string;
+  name: string;
+  details: string;
+  timeline: null;
+  image: string;
+};
+
 const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
   const { data, status } = api.project.getOne.useQuery({ id: route.params.id });
-  if (status === 'loading') return <Text>Loading...</Text>;
-  if (status === 'error') return <Text>Error loading data...</Text>;
+  const [wishlistItems, setWishlistItems] = useState<WishlistItem[]>(route.params?.wishlistItems || []);
+
+  const addToWishlist = () => {
+    if (data) {
+      const newItem: WishlistItem = {
+        id: data.id,
+        name: data.title,
+        details: data.description,
+        timeline: data.implementation,
+        image: `https://studoindustry.s3.ap-south-1.amazonaws.com/${data.images[0]}`,
+      };
+      const updatedWishlistItems = [...wishlistItems, newItem];
+      setWishlistItems(updatedWishlistItems);
+      navigation.navigate('Wishlist', { projectName: data.title, wishlistItems: updatedWishlistItems });
+    }
+  };
+
+  if (status === 'loading') {
+    return (
+      <View style={styles.container2}>
+        <Text style={styles.loadingText}>Loading Projects</Text>
+      </View>
+    );
+  }
+
+  if (status === 'error') {
+    return (
+      <View style={styles.container2}>
+        <Text style={styles.errorText}>Error loading Projects</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -28,7 +66,7 @@ const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
         </View>
         <Text style={styles.title}>{data?.title}</Text>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={addToWishlist}>
             <AntDesign name="heart" size={24} color="black" />
             <Text style={styles.buttonText}>Wishlist</Text>
           </TouchableOpacity>
@@ -37,23 +75,12 @@ const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
             <Text style={styles.buttonText}>Apply</Text>
           </TouchableOpacity>
         </View>
-          {/* Avaibility */}
-        <TouchableOpacity
-                  style={[styles.card, styles.viewRankingsCard]}
-                >
-                  <Text
-                    style={[
-                      styles.viewRankingsText,
-                      { color: '#000', fontSize: 18 },
-                    ]}
-                  >
-                    View Rankings
-                  </Text>
-                  
-                </TouchableOpacity>
-        <Text style={styles.descriptionT}>Description: </Text>
+        <TouchableOpacity style={[styles.card, styles.viewRankingsCard]}>
+          <Text style={[styles.viewRankingsText, { color: '#000', fontSize: 18 }]}>View Rankings</Text>
+        </TouchableOpacity>
+        <Text style={styles.descriptionT}>Description:</Text>
         <Text style={styles.description}>{data?.description}</Text>
-        <Text style={styles.descriptionT}>Implementation: </Text>
+        <Text style={styles.descriptionT}>Implementation:</Text>
         <Text style={styles.description}>{data?.implementation}</Text>
 
         <Button title="Go back" onPress={() => navigation.goBack()} />
@@ -65,91 +92,95 @@ const Screen3: React.FC<Screen3Props> = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#fff',
+  },
+  container2: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    fontSize: 20,
+  },
+  errorText: {
+    fontSize: 20,
+    color: 'red',
   },
   contentContainer: {
-    padding: 15,
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   imageContainer: {
-    width: '100%',
-    height: 300,
-    borderRadius: 8,
-    overflow: 'hidden',
-    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginVertical: 16,
   },
   image: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
+    width: 200,
+    height: 200,
     resizeMode: 'cover',
+    borderRadius: 5,
+    marginHorizontal: 8,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  description: {
-    
-    fontSize: 16,
-    marginBottom: 10,
-    color: '#666',
-    textAlign: 'left',
-    marginHorizontal: 12,
-  },
-  descriptionT: {
-    marginTop:20,
-    fontSize: 18,
-    marginBottom: 4,
+    marginBottom: 16,
   },
   buttonContainer: {
-    width: '100%',
-    flexDirection: 'column',
-    paddingHorizontal: 20,
-    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
   },
   button: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f39920',
-    borderRadius: 30,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    marginBottom: 10,
-    width: '100%',
-    height: 50,
+    backgroundColor: '#ccc',
+    padding: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: 'black',
   },
   buttonText: {
-    color: '#FFF',
-    marginLeft: 10,
-    fontSize: 17,
+    marginLeft: 5,
   },
   card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: 'white',
     borderRadius: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 13,
-    borderWidth: 1,
-    borderColor: '#DDDDDD',
-    shadowColor: 'rgba(0, 0, 0, 1)',
-    shadowOpacity: 1,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
     shadowOffset: {
-      width: 2,
-      height: 10,
+      width: 0,
+      height: 1,
     },
-    shadowRadius: 4,
-    elevation: 10,
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+    elevation: 3,
   },
   viewRankingsCard: {
-    marginTop: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    borderColor: '#f0f0f0',
+    borderWidth: 1,
   },
   viewRankingsText: {
+    color: '#222',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  descriptionT: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginRight: 10,
-    color: '#000',
+    marginBottom: 8,
+  },
+  description: {
+    fontSize: 16,
+    marginBottom: 16,
   },
 });
 
