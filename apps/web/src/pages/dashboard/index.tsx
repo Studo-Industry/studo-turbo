@@ -67,14 +67,7 @@ const Dashboard = ({
   const { data: userData, status: userStatus } = api.user.getOne.useQuery({
     id: data?.user?.id,
   });
-  const handleFetchNextPage = () => {
-    fetchNextPage();
-    setPage((prev) => prev + 1);
-  };
 
-  const handleFetchPreviousPage = () => {
-    setPage((prev) => prev - 1);
-  };
   const router = useRouter();
   const {
     data: projects,
@@ -84,20 +77,25 @@ const Dashboard = ({
     isFetching,
     isLoading,
     status: projectStatus,
+    isFetchingPreviousPage,
+    isFetchingNextPage,
   } = searchInput === ''
     ? Object.keys(router.query).length === 0
       ? api.project.getBatch.useInfiniteQuery(
           {
             limit: 6,
+            keepPreviousData: true,
           },
           {
             getNextPageParam: (lastPage) => lastPage.nextCursor,
+            keepPreviousData: true,
           },
         )
       : api.project.getBatchByCategory.useInfiniteQuery(
           {
             limit: 6,
             category: String(router.query.category),
+            keepPreviousData: true,
           },
           {
             getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -107,6 +105,7 @@ const Dashboard = ({
         {
           search: searchInput,
           limit: 6,
+          keepPreviousData: true,
         },
         {
           getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -216,16 +215,22 @@ const Dashboard = ({
           </div>
           <div className='my-10 flex w-full justify-between p-10'>
             <button
-              onClick={() => handleFetchPreviousPage()}
-              className='rounded-md bg-black p-4 text-white disabled:cursor-not-allowed disabled:bg-red-500 disabled:text-gray-500'
-              disabled={!hasPreviousPage}
+              onClick={() => {
+                setPage((prev) => prev - 1);
+              }}
+              className='rounded-md bg-black p-4 text-white  disabled:cursor-not-allowed disabled:bg-red-500 disabled:text-gray-500'
+              disabled={!hasPreviousPage || isFetchingPreviousPage}
             >
               Previous Page
             </button>
             <button
               className='rounded-md bg-black  p-4 text-white disabled:cursor-not-allowed disabled:bg-red-500 disabled:text-gray-500'
-              disabled={!hasNextPage}
-              onClick={() => handleFetchNextPage()}
+              disabled={!hasNextPage || isFetchingNextPage}
+              onClick={() => {
+                fetchNextPage();
+                console.log(hasNextPage, hasPreviousPage);
+                setPage((prev) => prev + 1);
+              }}
             >
               Next Page
             </button>

@@ -29,7 +29,12 @@
   },
   "packageManager": "npm@9.5.1",
   "workspaces": [
-    "apps/*",
-    "packages/*"
+    "apps/native",
+    "apps/web",
+    "packages/db",
+    "packages/server",
+    "packages/eslint-config-custom",
+    "packages/eslint-config-custom",
+    "packages/tsconfig"
   ]
 }

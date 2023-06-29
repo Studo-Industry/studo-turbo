@@ -44,12 +44,22 @@ const Test = () => {
         ))}
       </div>
       {!hasPreviousPage && (
-        <button onClick={() => handleFetchPreviousPage()}>LoadPrevious</button>
+        <button
+          onClick={() => handleFetchPreviousPage()}
+          className='rounded-md bg-black p-4 text-white'
+        >
+          LoadPrevious
+        </button>
       )}
       {!hasNextPage ? (
         <p> No more projects </p>
       ) : (
-        <button onClick={() => handleFetchNextPage()}>Load More</button>
+        <button
+          onClick={() => handleFetchNextPage()}
+          className='rounded-md bg-black p-4 text-white'
+        >
+          Load More
+        </button>
       )}
     </div>
   );
