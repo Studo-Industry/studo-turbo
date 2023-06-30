@@ -17,6 +17,7 @@ import img1 from '~/images/wallpaper.jpg';
 import PreLoader from '~/components/PreLoader';
 import Stepper from '~/components/Stepper';
 import Milestone from '~/components/Milestones';
+import MentorMilestone from '~/components/MentorMilestone';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
@@ -38,40 +39,7 @@ const Team = ({
   const [copiedLink, setCopiedLink] = useState(false);
   const [files, setFiles] = useState<Array<string>>([]);
   const steps = [1, 2, 3, 4, 5, 6];
-  const approveMilestone = api.team.milestoneApproval.useMutation({
-    onMutate: () => {
-      toast.loading('Submitting Milestone...', { id: toastid });
-    },
-    onSuccess: () => {
-      const getTeamKey = getQueryKey(api.user.getOne);
-      void queryClient.invalidateQueries({
-        queryKey: [...getTeamKey],
-      });
-      toast.dismiss(toastid);
-      toast.success('Approved Successfully', { id: toastid });
-    },
-    onError: (error) => {
-      toast.dismiss(toastid);
-      toast.error(`Error: ${error.message}`, { id: toastid });
-    },
-  });
-  const rejectMilestone = api.team.milestoneRejection.useMutation({
-    onMutate: () => {
-      toast.loading('Submitting Milestone...', { id: toastid });
-    },
-    onSuccess: () => {
-      const getTeamKey = getQueryKey(api.user.getOne);
-      void queryClient.invalidateQueries({
-        queryKey: [...getTeamKey],
-      });
-      toast.dismiss(toastid);
-      toast.success('Rejected Successfully', { id: toastid });
-    },
-    onError: (error) => {
-      toast.dismiss(toastid);
-      toast.error(`Error: ${error.message}`, { id: toastid });
-    },
-  });
+
   const deleteTeam = api.team.deleteTeam.useMutation({
     onMutate: () => {
       toast.loading('Deleting team...', { id: toastid });
@@ -397,58 +365,59 @@ const Team = ({
         </div>
       </div>
       <h1 className='py-10 text-2xl font-bold'>Milestones</h1>
-      <div className='relative rounded-xl bg-white px-10 py-10 shadow-xl '>
+      <div className='relative  rounded-xl bg-white px-10 py-10 shadow-xl '>
         {userData.team.members.length === 5 ? (
-          userData.id === userData.team.mentor ? (
-            <div>
-              <p>
-                Approved Milestone:
-                <span>{userData.team.approvedMilestone}</span>
-              </p>
-              <p>
-                Current Milestone: <span>{userData.team.presentMilestone}</span>
-              </p>
-            </div>
-          ) : (
-            <>
-              <div className=' mt-8 flex flex-col items-center gap-8'>
-                <Stepper
-                  milestoneData={milestoneData}
-                  steps={steps}
-                  currentStep={currentStep}
-                  setCurrentStep={setCurrentStep}
-                />
-                <div className='flex gap-12'>
-                  <button
-                    className=' mt-4 rounded px-4 py-2 font-bold text-black '
-                    onClick={() => setCurrentStep((prevStep) => prevStep - 1)}
-                    disabled={currentStep === 0}
-                  >
-                    Previous
-                  </button>
-                  <button
-                    className=' mt-4 rounded px-4 py-2 font-bold text-black'
-                    onClick={() => setCurrentStep((prevStep) => prevStep + 1)}
-                    disabled={
-                      currentStep === steps.length - 1 ||
-                      currentStep === milestoneData - 1
-                    }
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
-              <div className='py-8'>
-                <Milestone
-                  currentStep={currentStep}
-                  milestoneData={milestoneData}
+          <>
+            <div className='flex w-full flex-col items-start justify-start py-8'>
+              {userData.id === userData.team.mentor ? (
+                <MentorMilestone
                   userData={userData}
-                  files={files}
-                  setFiles={setFiles}
+                  // currentStep={currentStep}
                 />
-              </div>
-            </>
-          )
+              ) : (
+                <>
+                  <div className=' mt-8 flex w-full flex-col items-center justify-center gap-8'>
+                    <Stepper
+                      milestoneData={milestoneData}
+                      steps={steps}
+                      currentStep={currentStep}
+                      setCurrentStep={setCurrentStep}
+                    />
+                    <div className='flex gap-12'>
+                      <button
+                        className=' mt-4 rounded px-4 py-2 font-bold text-black '
+                        onClick={() =>
+                          setCurrentStep((prevStep) => prevStep - 1)
+                        }
+                        disabled={currentStep === 0}
+                      >
+                        Previous
+                      </button>
+                      <button
+                        className=' mt-4 rounded px-4 py-2 font-bold text-black'
+                        onClick={() =>
+                          setCurrentStep((prevStep) => prevStep + 1)
+                        }
+                        disabled={
+                          currentStep === steps.length - 1 ||
+                          currentStep === milestoneData - 1
+                        }
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                  <Milestone
+                    currentStep={currentStep}
+                    milestoneData={milestoneData}
+                    userData={userData}
+                    files={files}
+                    setFiles={setFiles}
+                  />
+                </>
+              )}
+            </div>
+          </>
         ) : (
           <p>Please complete your team before submitting milestones.</p>
         )}

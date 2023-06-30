@@ -315,7 +315,7 @@ export const teamRouter = createTRPCRouter({
                 milestone2: {
                   set: [],
                 },
-                presentMilestone: 1,
+                presentMilestone: 2,
               },
             });
             break;
@@ -328,7 +328,7 @@ export const teamRouter = createTRPCRouter({
                 milestone3: {
                   set: [],
                 },
-                presentMilestone: 2,
+                presentMilestone: 3,
               },
             });
             break;
@@ -341,7 +341,7 @@ export const teamRouter = createTRPCRouter({
                 milestone4: {
                   set: [],
                 },
-                presentMilestone: 3,
+                presentMilestone: 4,
               },
             });
             break;
@@ -354,7 +354,7 @@ export const teamRouter = createTRPCRouter({
                 milestone5: {
                   set: [],
                 },
-                presentMilestone: 4,
+                presentMilestone: 5,
               },
             });
             break;
@@ -367,7 +367,7 @@ export const teamRouter = createTRPCRouter({
                 milestone6: {
                   set: [],
                 },
-                presentMilestone: 5,
+                presentMilestone: 6,
               },
             });
             break;

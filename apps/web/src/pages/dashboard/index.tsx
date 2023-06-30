@@ -81,8 +81,8 @@ const Dashboard = ({
     isFetchingPreviousPage,
     isFetchingNextPage,
   } = searchInput === ''
-      ? Object.keys(router.query).length === 0
-        ? api.project.getBatch.useInfiniteQuery(
+    ? Object.keys(router.query).length === 0
+      ? api.project.getBatch.useInfiniteQuery(
           {
             limit: 6,
             keepPreviousData: true,
@@ -91,7 +91,7 @@ const Dashboard = ({
             getNextPageParam: (lastPage) => lastPage.nextCursor,
           },
         )
-        : api.project.getBatchByCategory.useInfiniteQuery(
+      : api.project.getBatchByCategory.useInfiniteQuery(
           {
             limit: 6,
             category: String(router.query.category),
@@ -101,7 +101,7 @@ const Dashboard = ({
             getNextPageParam: (lastPage) => lastPage.nextCursor,
           },
         )
-      : api.project.getBatchBySearch.useInfiniteQuery(
+    : api.project.getBatchBySearch.useInfiniteQuery(
         {
           search: searchInput,
           limit: 6,
@@ -145,7 +145,7 @@ const Dashboard = ({
 
   const handleScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight - 10) {
+    if (scrollTop + clientHeight >= scrollHeight - 20) {
       loadMoreData();
     }
   };
@@ -200,7 +200,7 @@ const Dashboard = ({
                   query: { category: projectCategory.name },
                 }}
                 onClick={() => {
-                  setSearchInput("");
+                  setSearchInput('');
                 }}
                 key={index}
                 className='Button gradient-btn blue-orange-gradient hover:orange-white-gradient  bg-gradient-to-bl px-8 py-4 text-xs drop-shadow-lg hover:font-semibold hover:text-white'
@@ -216,8 +216,11 @@ const Dashboard = ({
         <div className='mx-6 my-14 md:mx-20'>
           <h1 className='text-2xl font-semibold'>Projects</h1>
           <div className='my-2 grid w-full grid-cols-1 gap-3 py-10 md:grid-cols-3'>
-            {isLoading ?
-              <div className='md:col-span-3'><PreLoader /></div> :
+            {isLoading ? (
+              <div className='md:col-span-3'>
+                <PreLoader />
+              </div>
+            ) : (
               toShow?.map((project) => (
                 <ProjectCard
                   key={project.id}
@@ -225,7 +228,8 @@ const Dashboard = ({
                   title={project.title}
                   images={project.images}
                 />
-              ))}
+              ))
+            )}
             {isFetchingNextPage && (
               <div className='w-full md:col-span-3'>
                 <PreLoader />
