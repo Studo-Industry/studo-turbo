@@ -87,6 +87,17 @@ const Milestone = ({
   };
   return (
     <>
+      {!(
+        userData.team.approvedMilestone + 1 ===
+        userData.team.presentMilestone
+      ) &&
+        currentStep + 1 === milestoneData && (
+          <p className='my-10 w-full text-center font-bold'>
+            Get your content <span className='text-red-500'>approved</span> for
+            the previous milestone from mentor before submitting for the below
+            milestone.
+          </p>
+        )}
       {currentStep + 1 === 1 && (
         <div className='whitespace-pre-wrap'>
           <h3 className='text-lg font-bold'>Stage (1): (PPT Formats)</h3>
@@ -137,6 +148,12 @@ const Milestone = ({
                 />
                 <FileUpload files={files} />
                 <button
+                  disabled={
+                    !(
+                      userData.team.approvedMilestone + 1 ===
+                      userData.team.presentMilestone
+                    )
+                  }
                   onClick={() => {
                     if (files.length !== 0) {
                       void submitMilestone.mutateAsync({
@@ -147,7 +164,7 @@ const Milestone = ({
                       toast.error('Please upload required files');
                     }
                   }}
-                  className='gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
+                  className=' gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white disabled:bg-red-500'
                 >
                   Submit
                 </button>
@@ -221,6 +238,12 @@ const Milestone = ({
               />
               <FileUpload files={files} />
               <button
+                disabled={
+                  !(
+                    userData.team.approvedMilestone + 1 ===
+                    userData.team.presentMilestone
+                  )
+                }
                 onClick={() => {
                   if (files.length !== 0) {
                     void submitMilestone.mutateAsync({
@@ -231,7 +254,7 @@ const Milestone = ({
                     toast.error('Please upload required files');
                   }
                 }}
-                className='gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
+                className=' gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white disabled:bg-red-500'
               >
                 Submit
               </button>
@@ -277,6 +300,12 @@ const Milestone = ({
               />
               <FileUpload files={files} />
               <button
+                disabled={
+                  !(
+                    userData.team.approvedMilestone + 1 ===
+                    userData.team.presentMilestone
+                  )
+                }
                 onClick={() => {
                   if (files.length !== 0) {
                     void submitMilestone.mutateAsync({
@@ -287,7 +316,7 @@ const Milestone = ({
                     toast.error('Please upload required files');
                   }
                 }}
-                className='gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
+                className=' gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white disabled:bg-red-500'
               >
                 Submit
               </button>
@@ -334,6 +363,12 @@ const Milestone = ({
               />
               <FileUpload files={files} />
               <button
+                disabled={
+                  !(
+                    userData.team.approvedMilestone + 1 ===
+                    userData.team.presentMilestone
+                  )
+                }
                 onClick={() => {
                   if (files.length !== 0) {
                     void submitMilestone.mutateAsync({
@@ -344,7 +379,7 @@ const Milestone = ({
                     toast.error('Please upload required files');
                   }
                 }}
-                className='gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
+                className=' gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white disabled:bg-red-500'
               >
                 Submit
               </button>
@@ -390,6 +425,12 @@ const Milestone = ({
               />
               <FileUpload files={files} />
               <button
+                disabled={
+                  !(
+                    userData.team.approvedMilestone + 1 ===
+                    userData.team.presentMilestone
+                  )
+                }
                 onClick={() => {
                   if (files.length !== 0) {
                     void submitMilestone.mutateAsync({
@@ -400,7 +441,7 @@ const Milestone = ({
                     toast.error('Please upload required files');
                   }
                 }}
-                className='gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
+                className=' gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white disabled:bg-red-500'
               >
                 Submit
               </button>
@@ -452,6 +493,12 @@ const Milestone = ({
               />
               <FileUpload files={files} />
               <button
+                disabled={
+                  !(
+                    userData.team.approvedMilestone + 1 ===
+                    userData.team.presentMilestone
+                  )
+                }
                 onClick={() => {
                   if (files.length !== 0) {
                     void submitMilestone.mutateAsync({
@@ -462,7 +509,7 @@ const Milestone = ({
                     toast.error('Please upload required files');
                   }
                 }}
-                className='gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
+                className=' gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white disabled:bg-red-500'
               >
                 Submit
               </button>
