@@ -6,8 +6,15 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
+  Linking,
 } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
+
+interface FileObject {
+  uri: string;
+  name: string;
+  fileType?: string;
+}
 
 interface CardProps {
   index: number;
@@ -22,7 +29,7 @@ const Card: React.FC<CardProps> = ({
   isPreviousCardSubmitted,
   handleCardSubmit,
 }) => {
-  const [uploadedFiles, setUploadedFiles] = useState<any[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<FileObject[]>([]);
   const [completed, setCompleted] = useState(false);
 
   const handleUploadFile = async () => {
@@ -34,7 +41,7 @@ const Card: React.FC<CardProps> = ({
 
     if (result.type === 'success') {
       const { uri, name } = result;
-      const fileType = name.split('.').pop()?.toLowerCase();
+      const fileType = getFileExtension(name);
 
       const fileObject = {
         uri,
@@ -63,6 +70,24 @@ const Card: React.FC<CardProps> = ({
     }
   };
 
+  const getFileExtension = (filename: string) => {
+    const parts = filename.split('.');
+    return parts[parts.length - 1].toLowerCase();
+  };
+
+  const openFile = (uri: string, fileType?: string) => {
+    if (fileType === 'pdf' || fileType === 'ppt') {
+      Linking.openURL(uri);
+    } else {
+      // Handling image files
+      // You may need to install additional libraries or implement your own logic to open different file types
+      // For example, you can use `react-native-photo-view` library to display images in a modal
+      // or use a PDF library to render PDF files
+      // This implementation is just for demonstration purposes
+      Linking.openURL(uri);
+    }
+  };
+
   return (
     <View style={styles.card}>
       <View style={styles.titleContainer}>
@@ -85,7 +110,11 @@ const Card: React.FC<CardProps> = ({
           {uploadedFiles.length > 0 && (
             <View style={styles.fileContainer}>
               {uploadedFiles.map((file, index) => (
-                <View key={index} style={styles.fileItem}>
+                <TouchableOpacity
+                  key={index}
+                  style={styles.fileItem}
+                  onPress={() => openFile(file.uri, file.fileType)}
+                >
                   {file.fileType === 'image' ? (
                     <Image source={{ uri: file.uri }} style={styles.image} />
                   ) : (
@@ -97,7 +126,7 @@ const Card: React.FC<CardProps> = ({
                   >
                     <Text style={styles.buttonText}>Delete</Text>
                   </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
               ))}
             </View>
           )}
@@ -232,10 +261,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderRadius: 5,
-    marginLeft:10,
+    marginLeft: 10,
     position: 'absolute',
-    right:0,
-    paddingBottom:10,
+    right: 0,
+    paddingBottom: 10,
   },
   uploadButton: {
     backgroundColor: '#F39920',
