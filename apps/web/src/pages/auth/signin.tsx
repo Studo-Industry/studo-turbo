@@ -62,7 +62,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   // Note: Make sure not to redirect to the same page
   // To avoid an infinite loop!
   if (session) {
-    return { redirect: { destination: context.query.callbackUrl } };
+    return { redirect: { destination: context.query.callbackUrl || "/dashboard" } };
   }
 
   const providers = await getProviders();

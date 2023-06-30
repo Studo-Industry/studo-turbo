@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
@@ -76,22 +76,22 @@ const Dashboard = ({
     hasPreviousPage,
     isFetching,
     isLoading,
+    fetchPreviousPage,
     status: projectStatus,
     isFetchingPreviousPage,
     isFetchingNextPage,
   } = searchInput === ''
-    ? Object.keys(router.query).length === 0
-      ? api.project.getBatch.useInfiniteQuery(
+      ? Object.keys(router.query).length === 0
+        ? api.project.getBatch.useInfiniteQuery(
           {
             limit: 6,
             keepPreviousData: true,
           },
           {
             getNextPageParam: (lastPage) => lastPage.nextCursor,
-            keepPreviousData: true,
           },
         )
-      : api.project.getBatchByCategory.useInfiniteQuery(
+        : api.project.getBatchByCategory.useInfiniteQuery(
           {
             limit: 6,
             category: String(router.query.category),
@@ -101,7 +101,7 @@ const Dashboard = ({
             getNextPageParam: (lastPage) => lastPage.nextCursor,
           },
         )
-    : api.project.getBatchBySearch.useInfiniteQuery(
+      : api.project.getBatchBySearch.useInfiniteQuery(
         {
           search: searchInput,
           limit: 6,
@@ -111,7 +111,7 @@ const Dashboard = ({
           getNextPageParam: (lastPage) => lastPage.nextCursor,
         },
       );
-  const toShow = projects?.pages[page]?.items;
+  const toShow = projects?.pages.flatMap((page) => page.items);
 
   if (data?.user.role === 'ADMIN') {
     void router.push('/admin/dashboard');
@@ -137,6 +137,21 @@ const Dashboard = ({
       <h1 className='p-20 text-2xl'>Error loading data , Please try again!</h1>
     );
   }
+  const loadMoreData = () => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  };
+
+  const handleScroll = () => {
+    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+    if (scrollTop + clientHeight >= scrollHeight - 10) {
+      loadMoreData();
+    }
+  };
+
+  // Attach scroll event listener to the scrollable element
+  window.addEventListener('scroll', handleScroll);
   return (
     <div className='my-20'>
       <div className='mx-6 my-16 md:mx-20'>
@@ -184,6 +199,9 @@ const Dashboard = ({
                   pathname: '/dashboard',
                   query: { category: projectCategory.name },
                 }}
+                onClick={() => {
+                  setSearchInput("");
+                }}
                 key={index}
                 className='Button gradient-btn blue-orange-gradient hover:orange-white-gradient  bg-gradient-to-bl px-8 py-4 text-xs drop-shadow-lg hover:font-semibold hover:text-white'
               >
@@ -198,11 +216,8 @@ const Dashboard = ({
         <div className='mx-6 my-14 md:mx-20'>
           <h1 className='text-2xl font-semibold'>Projects</h1>
           <div className='my-2 grid w-full grid-cols-1 gap-3 py-10 md:grid-cols-3'>
-            {isFetching || isLoading ? (
-              <div className='w-full md:col-span-3'>
-                <PreLoader />
-              </div>
-            ) : (
+            {isLoading ?
+              <div className='md:col-span-3'><PreLoader /></div> :
               toShow?.map((project) => (
                 <ProjectCard
                   key={project.id}
@@ -210,30 +225,12 @@ const Dashboard = ({
                   title={project.title}
                   images={project.images}
                 />
-              ))
+              ))}
+            {isFetchingNextPage && (
+              <div className='w-full md:col-span-3'>
+                <PreLoader />
+              </div>
             )}
-          </div>
-          <div className='my-10 flex w-full justify-between p-10'>
-            <button
-              onClick={() => {
-                setPage((prev) => prev - 1);
-              }}
-              className='rounded-md bg-black p-4 text-white  disabled:cursor-not-allowed disabled:bg-red-500 disabled:text-gray-500'
-              disabled={!hasPreviousPage || isFetchingPreviousPage}
-            >
-              Previous Page
-            </button>
-            <button
-              className='rounded-md bg-black  p-4 text-white disabled:cursor-not-allowed disabled:bg-red-500 disabled:text-gray-500'
-              disabled={!hasNextPage || isFetchingNextPage}
-              onClick={() => {
-                fetchNextPage();
-                console.log(hasNextPage, hasPreviousPage);
-                setPage((prev) => prev + 1);
-              }}
-            >
-              Next Page
-            </button>
           </div>
         </div>
       </div>
