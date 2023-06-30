@@ -107,34 +107,55 @@ export const teamRouter = createTRPCRouter({
           if (team.members.length >= 5) {
             throw new Error('Team is full');
           } else {
-            const user = await ctx.prisma.user.update({
-              where: {
-                id: ctx.session.user.id,
-              },
-              data: {
-                teamId: team?.id,
-              },
-            });
-
-            if (input.type === 'mentor') {
-              if (team.mentor === null) {
-                if (team.leader !== ctx.session.user.id) {
-                  await ctx.prisma.team.update({
-                    where: {
-                      id: team?.id,
-                    },
-                    data: {
-                      mentor: user.id,
-                    },
-                  });
-                } else {
-                  throw new Error('Leader cannot be mentor.');
-                }
+            if (team.members.length === 4) {
+              const member = team.members.find(
+                (member) => team.mentor === member.id,
+              );
+              if (member) {
+                const user = await ctx.prisma.user.update({
+                  where: {
+                    id: ctx.session.user.id,
+                  },
+                  data: {
+                    teamId: team?.id,
+                  },
+                });
+                return user;
               } else {
-                throw new Error('Mentor already exists');
+                throw new Error(
+                  'There cant be more than 3 members in the group',
+                );
               }
+            } else {
+              const user = await ctx.prisma.user.update({
+                where: {
+                  id: ctx.session.user.id,
+                },
+                data: {
+                  teamId: team?.id,
+                },
+              });
+
+              if (input.type === 'mentor') {
+                if (team.mentor === null) {
+                  if (team.leader !== ctx.session.user.id) {
+                    await ctx.prisma.team.update({
+                      where: {
+                        id: team?.id,
+                      },
+                      data: {
+                        mentor: user.id,
+                      },
+                    });
+                  } else {
+                    throw new Error('Leader cannot be mentor.');
+                  }
+                } else {
+                  throw new Error('Mentor already exists');
+                }
+              }
+              return user;
             }
-            return user;
           }
         } else {
           throw new Error('Referral Code is wrong.');
