@@ -46,8 +46,8 @@ export const TRPCProvider: React.FC<{
       transformer: superjson,
       links: [
         httpBatchLink({
-          // url: 'http://192.168.0.106:3000/api/trpc',
-          url: 'http://10.10.10.176:3000/api/trpc',
+          url: 'http://192.168.0.106:3000/api/trpc',
+          // url: 'http://10.10.10.176:3000/api/trpc',
         }),
       ],
     }),

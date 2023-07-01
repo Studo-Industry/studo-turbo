@@ -7,9 +7,14 @@ import {
   Dimensions,
   Image,
   ScrollView,
+  Button,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import Card from './Components/Card';
+import { RootStackParamList } from '../App';
+import { api } from './utils/trpc';
+import { RouteProp } from '@react-navigation/native';
 
 const buttonsData = [
   { icon: 'groups', text: 'My Team' },
@@ -20,158 +25,100 @@ const buttonsData = [
   { icon: 'language', text: 'Refer Website' },
   { icon: 'info-outline', text: 'About Us' },
 ];
+
 const projects = [
   {
     icon: 'computer',
     text: 'Information Technology',
-    imageUri:
-      'https://www.cyberark.com/wp-content/uploads/2019/11/Developer.jpg',
-    projectName: 'IT Engineering Projects',
   },
   {
     icon: 'settings',
     text: 'Mechanical',
-    imageUri:
-      'https://st2.depositphotos.com/6809168/10567/v/450/depositphotos_105676068-stock-illustration-engineer-working-on-blueprint.jpg',
-    projectName: 'Mechanical Engineering Projects',
   },
   {
     icon: 'memory',
     text: 'Electronics',
-    imageUri:
-      'https://media.istockphoto.com/id/584570730/vector/electronics-repair-vector.jpg?s=170667a&w=0&k=20&c=f6zy0j0PS9wBlmcWKIsF4rn5Bl-RBzRI9vaLGHVCCNQ=',
-    projectName: 'Electronics Engineering Projects',
   },
   {
     icon: 'desktop-mac',
-    text: 'Computer Science',
-    imageUri:
-      'https://www.shutterstock.com/image-illustration/line-web-concept-computer-science-260nw-525822841.jpg',
-    projectName: 'CS Engineering Projects',
+    text: 'Computer science engineering',
   },
   {
     icon: 'person-search',
     text: 'Artificial Intelligence',
-    imageUri:
-      'https://www.cyberark.com/wp-content/uploads/2019/11/Developer.jpg',
-    projectName: 'IT Engineering Projects',
   },
   {
     icon: 'apartment',
     text: 'Civil',
-    imageUri:
-      'https://thumbnails.cbsig.net/_x/w400/CBS_Production_Entertainment_VMS/2019/10/15/1623811651675/bob_the_builder_033_16x9_132680_1920x1080.jpg',
-    projectName: 'Civil Engineering Projects',
   },
-];
-// const projects = [
-//   {
-//     icon: "groups",
-//     text: "Mechanical Engineering",
-//     projectName: "IT Engineering Projects",
-//   },
-//   {
-//     icon: "favorite",
-//     text: "Electrical Engineering",
-//     projectName: "CS Engineering Projects",
-//   },
-//   {
-//     icon: "emoji-events",
-//     text: "Civil Engineering",
-//     projectName: "Electronics Engineering Projects",
-//   },
-//   {
-//     icon: "person",
-//     text: "Computer Science",
-//     projectName: "Mechanical Engineering Projects",
-//   },
-//   {
-//     icon: "groups",
-//     text: "Chemical Engineering",
-//     projectName: "IT Engineering Projects",
-//   },
-//   {
-//     icon: "favorite",
-//     text: "Aerospace Engineering",
-//     projectName: "IT Engineering Projects",
-//   },
-// ];
-
-const projectsData = [
-  {
-    id: 1,
-    image: require("./img/project.png"),
-    name: "Project 1",
-    description: "Description of Project 1",
-  },
-  {
-    id: 2,
-    image: require("./img/project.png"),
-    name: "Project 2",
-    description: "Description of Project 2",
-  },
-  {
-    id: 3,
-    image: require("./img/project.png"),
-    name: "Project 3",
-    description: "Description of Project 3",
-  },
-  // Add more projects here
 ];
 
 const { width } = Dimensions.get('window');
 const maxButtons = 6;
 const buttonSize = (width - 48) / maxButtons;
+const projectCategories = [
+  // { name: 'All Projects' },
+  { name: 'Computer science engineering' },
+  { name: 'Information technology engineering' },
+  { name: 'Electrical engineering' },
+  { name: 'Electronics engineering' },
+  { name: 'Mechanical engineering' },
+  { name: 'Civil engineering' },
+  { name: 'Electrical vehicle (EV) engineering' },
+  { name: 'Electronic & communication engineering' },
+  { name: 'Biomedical engineering' },
+  { name: 'Agricultural engineering' },
+  { name: 'Mechatronics engineering' },
+  { name: 'Biochemical engineering' },
+  { name: 'Production engineering' },
+  { name: 'Textile engineering' },
+  { name: 'Automobile engineering' },
+  { name: 'Biotechnology engineering' },
+  { name: 'Cyber security engineering' },
+  { name: 'Instrumentation technology engineering' },
+];
 
-const Dashboard = () => {
-  const navigation = useNavigation();
-
-  const handleImageClick = (project) => {
-    navigation.navigate('Projects', { project });
-  };
-
-  const handleViewAllPro = (projectName) => {
-    navigation.navigate('Project', { projectName });
+const Dashboard: React.FC<DashboardProps> = ({ navigation }) => {
+  const handleCardPress = (categoryName: string) => {
+    navigation.navigate('Screen4', { categoryName });
   };
 
   const handleViewAllPress = () => {
     navigation.navigate('AllBranches');
   };
+  const { data, status } = api.project.getProjectByCategory.useQuery({
+    category: 'All Projects',
+  });
+
+  const handleButtonPress = (text) => {
+    switch (text) {
+      case 'My Team':
+        navigation.navigate('MyTeam');
+        break;
+      case 'Wishlist':
+        navigation.navigate('Wishlist');
+        break;
+      case 'Milestone':
+        navigation.navigate('Milestone');
+        break;
+      case 'Profile':
+        navigation.navigate('Profile');
+        break;
+      case 'My Projects':
+        navigation.navigate('MyProject');
+        break;
+      case 'Refer Website':
+        navigation.navigate('Website');
+        break;
+      case 'About Us':
+        navigation.navigate('About');
+        break;
+      default:
+        break;
+    }
+  };
 
   const renderButtons = () => {
-    const handleButtonPress = (text) => {
-      switch (text) {
-        case 'My Team':
-          navigation.navigate('MyTeam');
-          break;
-        case 'Wishlist':
-          navigation.navigate('Wishlist');
-          break;
-        case 'Milestone':
-          navigation.navigate('Milestone');
-          break;
-        // case 'Milestone':
-        //   navigation.navigate('Screen3');
-        //   break;
-        // case 'Profile':
-        //   navigation.navigate('Profile');
-        //   break;
-        case 'Profile':
-          navigation.navigate('Screen4');
-          break;
-        case 'My Projects':
-          navigation.navigate('MyProject');
-          break;
-        case 'Refer Website':
-          navigation.navigate('Website');
-          break;
-        case 'About Us':
-          navigation.navigate('About');
-          break;
-        default:
-          break;
-      }
-    };
     const visibleButtons = buttonsData.slice(0, 4);
     const remainingButtons = buttonsData.slice(4);
 
@@ -218,72 +165,7 @@ const Dashboard = () => {
       </ScrollView>
     );
   };
-
-  const renderCards = () => {
-    const handleImageClick = (project) => {
-      navigation.navigate('Projects', { project });
-    };
-
-    const rows = [];
-    const numColumns = 3;
-    const numRows = Math.ceil(projects.length / numColumns);
-
-    for (let row = 0; row < numRows; row++) {
-      const startIndex = row * numColumns;
-      const endIndex = startIndex + numColumns;
-      const rowData = projects.slice(startIndex, endIndex);
-
-      rows.push(
-        <View style={styles.cardRow} key={row}>
-          {rowData.map((project, index) => (
-            <TouchableOpacity
-              style={styles.card}
-              key={index}
-              onPress={() => handleImageClick(project)}
-            >
-              <View style={styles.circularBackground}>
-                <Image
-                  source={{ uri: project.imageUri }}
-                  style={styles.cardImage}
-                />
-              </View>
-              <MaterialIcons
-                name={project.icon}
-                size={32}
-                color='#808080'
-                style={styles.cardIcon}
-              />
-              <Text style={styles.cardText}>{project.text}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>,
-      );
-    }
-
-    return rows;
-  };
-
-  const renderProjects = (projects) => {
-    return (
-      <ScrollView horizontal>
-        {projects.map((project) => (
-          <TouchableOpacity
-            style={styles.projectCard}
-            key={project.projectName}
-            onPress={() => handleViewAllPro(project.projectName)}
-          >
-            <Image
-              source={project.image}
-              style={styles.projectImage}
-              resizeMode='cover'
-            />
-            <Text style={styles.projectText}>{project.projectName}</Text>
-            <Text style={styles.projectDescription}>{project.description}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    );
-  };
+  const visibleCategories = projectCategories.slice(0, 4);
 
   return (
     <ScrollView style={styles.container}>
@@ -302,21 +184,51 @@ const Dashboard = () => {
             <Text style={styles.viewAllText}>View All</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.cardContainer}>{renderCards()}</View>
       </View>
 
+      <View style={styles.cardContainer}>
+        {visibleCategories.map((category, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.card}
+            onPress={() => handleCardPress(category.name)}
+            disabled={index >= 4}
+          >
+            <Text style={styles.Text}>{category.name}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>All Projects</Text>
+          <Text style={styles.sectionTitle}>Browse By Projects</Text>
           <TouchableOpacity
             style={styles.viewAllLink}
-            onPress={() => handleViewAllPro(null)}
+            onPress={() => handleCardPress("All Projects")}
           >
             <Text style={styles.viewAllText}>View All</Text>
           </TouchableOpacity>
         </View>
-        {renderProjects(projectsData)}
       </View>
+      <View style={styles.container}>
+      <ScrollView
+      horizontal={true} // Set horizontal prop to true
+      showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollViewContent}
+      >
+        {data?.map((project, index) => (
+          <TouchableOpacity
+            key={project.id}
+            onPress={() => navigation.navigate('Screen3', { id: project.id })}
+          >
+            <Card
+              imageUri={`https://studoindustry.s3.ap-south-1.amazonaws.com/${project.images[0]}`}
+              // imageUri={`https://studoindustry.s3.ap-south-1.amazonaws.com/c529779b-6e63-4462-a815-5afa537871b7.jpeg`}
+              title={project.title}
+            />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
     </ScrollView>
   );
 };
@@ -329,6 +241,11 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 24,
+  },
+  scrollViewContent: {
+    alignItems: 'center',
+    paddingTop: 16,
+    flexDirection: 'row',
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -382,16 +299,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   cardContainer: {
-    flexDirection: 'column',
-    marginTop: 8,
-  },
-  cardRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
+    flexWrap: 'wrap',
+    marginBottom:25,
   },
   card: {
-    flex: 1,
+    width: width / 2 - 24,
     height: 125,
     borderRadius: 8,
     backgroundColor: '#FFFFFF',
@@ -402,46 +315,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 5,
-    marginRight: 8,
+    marginBottom: 8,
+    marginRight: 3,
+    marginLeft:5,
   },
   cardIcon: {
     marginBottom: 8,
   },
-  cardText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  projectCard: {
-    width: 200,
-    marginRight: 16,
-    borderRadius: 8,
-    borderColor: '#d9d9d9',
-    borderWidth: 1, // Add border width
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
-    marginBottom: 8,
-  },
-  projectImage: {
-    width: 200,
-    height: 125,
-    borderRadius: 8,
-  },
-  projectText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 8,
-  },
-  projectDescription: {
+  Text: {
     fontSize: 15,
-    color: 'gray',
-    marginBottom: 8,
   },
 });
 

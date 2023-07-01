@@ -17,7 +17,7 @@ type AllBranchesProps = {
 };
 
 const projectCategories = [
-  // { name: 'All Projects' },
+  { name: 'All Projects' },
   { name: 'Computer science engineering' },
   { name: 'Information technology engineering' },
   { name: 'Electrical engineering' },
@@ -46,17 +46,19 @@ const AllBranches: React.FC<AllBranchesProps> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <ScrollView>
+        <Text style={styles.Tittle}> All Branches</Text>
         {projectCategories.map((category, index) => (
           <TouchableOpacity
             key={index}
             style={styles.card}
             onPress={() => handleCardPress(category.name)}
           >
+            <Text style={styles.Text}>{index }</Text>
             <Text style={styles.Text}>{category.name}</Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
-      <Button title="Go back" onPress={() => navigation.goBack()} />
+      
     </View>
   );
 };
@@ -67,6 +69,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  Tittle: { 
+    fontSize: 23,
+    color:"#F39920",
+    fontWeight: 'bold',
+    
   },
   card: {
     width: '90%',

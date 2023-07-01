@@ -21,7 +21,7 @@ type Screen4Props = {
 const Screen4: React.FC<Screen4Props> = ({ navigation, route }) => {
   const categoryName = route.params?.categoryName || 'All Projects';
 
-  const { data, status } = api.project.getSample.useQuery({
+  const { data, status } = api.project.getProjectByCategory.useQuery({
     category: categoryName,
   });
 

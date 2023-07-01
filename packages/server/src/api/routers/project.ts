@@ -158,7 +158,7 @@ export const projectRouter = createTRPCRouter({
 
       return project;
     }),
-  getProjectByCategory: protectedProcedure
+  getProjectByCategory: publicProcedure
     .input(z.object({ category: z.string() }))
     .query(({ ctx, input }) => {
       if (input.category === 'All Projects') {

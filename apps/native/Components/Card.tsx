@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.50,
     shadowRadius: 4,
     elevation: 8,
-    width: 340,
+    width: 320,
     height: 290,
     marginBottom: 18,
     marginLeft: 8,  // Add marginLeft
