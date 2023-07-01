@@ -363,6 +363,72 @@ const Team = ({
             </div>
           </div>
         </div>
+        <div className='my-20 whitespace-pre-wrap text-gray-600 px-10'>
+        {userData.team.project.description && (
+            <>
+              <h2 className='pb-3 text-xl font-medium text-black'>
+                Description
+              </h2>
+              <p>{userData.team.project.description}</p>
+            </>
+          )}
+          {userData.team.project.videoLink && (
+            <>
+              <h2 className='pb-3 text-xl font-medium text-black'>
+                Description
+              </h2>
+              <p>{userData.team.project.videoLink}</p>
+            </>
+          )}
+          {userData.team.project.skills && (
+            <>
+              <h2 className='pb-3 pt-7 text-xl font-medium text-black'>
+                Skills
+              </h2>
+              <p>{userData.team.project.skills}</p>
+            </>
+          )}
+        {userData.team.payment_status && userData.team.project.features && (
+            <>
+              <h2 className='pb-3 pt-7 text-xl font-medium text-black'>
+                Features
+              </h2>
+              <p>{userData.team.project.features}</p>
+            </>
+          )}
+          {userData.team.payment_status && userData.team.project.implementation && (
+            <>
+              <h2 className='pb-3 pt-7 text-xl font-medium  text-black'>
+                Implementation
+              </h2>
+              <p>{userData.team.project.implementation}</p>
+            </>
+          )}
+          {userData.team.payment_status && userData.team.project.components && (
+            <>
+              <h2 className='pb-3 pt-7 text-xl font-medium  text-black'>
+                Components
+              </h2>
+              <p>{userData.team.project.components}</p>
+            </>
+          )}
+          {userData.team.payment_status && userData.team.project.specifications && (
+            <>
+              <h2 className='pb-3 pt-7 text-xl font-medium  text-black'>
+                Specifications
+              </h2>
+              <p>{userData.team.project.specifications}</p>
+            </>
+          )}
+          {userData.team.payment_status && userData.team.project.relatedInfo && (
+            <>
+              <h2 className='pb-3 pt-7 text-xl font-medium text-black'>
+                Other Related Information
+              </h2>
+              <p>{userData.team.project.relatedInfo}</p>
+            </>
+          )}
+        </div>
       </div>
       <h1 className='py-10 text-2xl font-bold'>Milestones</h1>
       <div className='relative  rounded-xl bg-white px-10 py-10 shadow-xl '>

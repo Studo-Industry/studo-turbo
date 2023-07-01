@@ -104,10 +104,10 @@ export const teamRouter = createTRPCRouter({
         });
 
         if (team) {
-          if (team.members.length >= 5) {
+          if (team.members.length >= 6) {
             throw new Error('Team is full');
           } else {
-            if (team.members.length === 4) {
+            if (team.members.length === 5) {
               const member = team.members.find(
                 (member) => team.mentor === member.id,
               );
@@ -123,7 +123,7 @@ export const teamRouter = createTRPCRouter({
                 return user;
               } else {
                 throw new Error(
-                  'There cant be more than 3 members in the group',
+                  'There cant be more than 4 members in the group',
                 );
               }
             } else {
