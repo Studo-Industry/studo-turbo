@@ -385,7 +385,7 @@ const Team = ({
                     />
                     <div className='flex gap-12'>
                       <button
-                        className=' mt-4 rounded px-4 py-2 font-bold text-black '
+                        className=' mt-4 rounded px-4 py-2 font-bold text-black disabled:cursor-not-allowed  disabled:text-red-500'
                         onClick={() =>
                           setCurrentStep((prevStep) => prevStep - 1)
                         }
@@ -394,7 +394,7 @@ const Team = ({
                         Previous
                       </button>
                       <button
-                        className=' mt-4 rounded px-4 py-2 font-bold text-black'
+                        className=' mt-4 rounded px-4 py-2 font-bold text-black disabled:cursor-not-allowed  disabled:text-red-500'
                         onClick={() =>
                           setCurrentStep((prevStep) => prevStep + 1)
                         }
