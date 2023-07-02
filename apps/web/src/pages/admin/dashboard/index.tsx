@@ -2,6 +2,7 @@ import { GetServerSidePropsContext } from "next";
 import { getSession, useSession } from "next-auth/react";
 
 import PreLoader from "~/components/PreLoader";
+import RecentTeamTable from "~/components/RecentTeam";
 import { api } from "~/utils/api";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -66,36 +67,7 @@ const AdminDashboard = () => {
           </div>
         </div>
         <div>
-          <h2 className="mb-6 font-bold">Recent Teams</h2>
-          <table className="table-fixed border-collapse rounded-lg border-2 shadow-custom">
-            <thead className="border-collapse border-2  p-4">
-              <th className="border-collapse border-2  p-4">Team Code</th>
-              <th className="border-collapse border-2  p-4">Leader</th>
-              <th className="border-collapse border-2  p-4">Collage</th>
-              <th className="border-collapse border-2  p-4">Project</th>
-            </thead>
-
-            {recentTeams?.map((team) => (
-              <tbody key={team.id} className="border-collapse border-2  p-4">
-                <td className="border-collapse border-2  p-4">
-                  {team.referral_code}
-                </td>
-                <td className="border-collapse border-2  p-4">{team.leader}</td>
-                <td className="border-collapse border-2  p-4">
-                  {team.college}
-                </td>
-                <td className="border-collapse border-2  p-4">
-                  {team.projectId}
-                </td>
-              </tbody>
-            ))}
-          </table>
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          { recentTeams?.map((team)=>
-            <TeamCard code={team.referral_code} leader={team.leader}/>
-          )
-          }
-          </div> */}
+          <RecentTeamTable recentTeams={recentTeams} />
         </div>
       </div>
     </div>

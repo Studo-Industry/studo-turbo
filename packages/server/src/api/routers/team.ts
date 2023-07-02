@@ -473,6 +473,10 @@ export const teamRouter = createTRPCRouter({
       orderBy: {
         appliedAt: 'desc',
       },
+      include:{
+        project:true,
+        members:true
+      }
     });
   }),
 
