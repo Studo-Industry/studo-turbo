@@ -432,7 +432,7 @@ const Team = ({
       </div>
       <h1 className='py-10 text-2xl font-bold'>Milestones</h1>
       <div className='relative  rounded-xl bg-white px-10 py-10 shadow-xl '>
-        {userData.team.members.length === 5 ? (
+        {userData.team.members.length === 4 || userData.team.members.length === 5 ? (
           <>
             <div className='flex w-full flex-col items-start justify-start py-8'>
               {userData.id === userData.team.mentor ? (

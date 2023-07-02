@@ -155,7 +155,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 2 && (
         <>
-          {userData.team.approvedMilestone === 1 &&
+          {userData.team.approvedMilestone <= 1 &&
             (userData.team.presentMilestone === 2 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
@@ -221,7 +221,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 3 && (
         <>
-          {userData.team.approvedMilestone === 2 &&
+          {userData.team.approvedMilestone <= 2 &&
             (userData.team.presentMilestone === 3 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
@@ -287,7 +287,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 4 && (
         <>
-          {userData.team.approvedMilestone === 3 &&
+          {userData.team.approvedMilestone <= 3 &&
             (userData.team.presentMilestone === 4 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
@@ -352,7 +352,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 5 && (
         <>
-          {userData.team.approvedMilestone === 4 &&
+          {userData.team.approvedMilestone <= 4 &&
             (userData.team.presentMilestone === 5 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
@@ -417,7 +417,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 6 && (
         <>
-          {userData.team.approvedMilestone === 5 &&
+          {userData.team.approvedMilestone <= 5 &&
             (userData.team.presentMilestone === 6 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
