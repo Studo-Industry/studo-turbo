@@ -80,9 +80,9 @@ export const TeamCard = ({ team, index }: { team: Team; index: number }) => {
       <p>{index + 1}</p>
       <p className="md:col-span-2">{team.college}</p>
       <p>{Math.round(((team.presentMilestone - 1) * 100) / 6)}%</p>
-      <div className=" hidden bg-black p-2  md:col-span-2 md:flex md:h-3 md:w-full md:items-center md:rounded-full">
+      <div className=" hidden bg-gray-300 p-2  md:col-span-2 md:flex md:h-3 md:w-full md:items-center md:rounded-full">
         <div
-          className={`h-2 rounded-full bg-white ${
+          className={`h-2 rounded-full bg-gradient-to-bl blue-orange-gradient ${
             width[team.presentMilestone - 2]
           }`}
         ></div>

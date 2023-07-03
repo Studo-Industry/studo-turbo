@@ -8,6 +8,10 @@ import { getQueryKey } from '@trpc/react-query';
 import { AiOutlineLeft, AiFillHeart } from 'react-icons/ai';
 import { BsLightningFill } from 'react-icons/bs';
 import { GrClose } from 'react-icons/gr';
+import { FaIndustry, FaHandHoldingMedical } from "react-icons/fa"
+import { TiStarburst } from "react-icons/ti"
+import { HiSpeakerphone } from 'react-icons/hi'
+
 
 import ImageCarousel from '~/components/ImageCarousel';
 import { env } from '~/env.mjs';
@@ -15,10 +19,36 @@ import img1 from '~/images/wallpaper.jpg';
 import { api } from '~/utils/api';
 import PreLoader from '~/components/PreLoader';
 import { TeamCard } from '~/components/Cards';
-import { number } from 'zod';
 
 
 const Project = () => {
+  const width = [
+    "w-[4%]",
+    "w-[8%]",
+    "w-[12%]",
+    "w-[16%]",
+    "w-[20%]",
+    "w-[24%]",
+    "w-[28%]",
+    "w-[32%]",
+    "w-[36%]",
+    "w-[40%]",
+    "w-[44%]",
+    "w-[48%]",
+    "w-[52%]",
+    "w-[56%]",
+    "w-[60%]",
+    "w-[64%]",
+    "w-[68%]",
+    "w-[72%]",
+    "w-[76%]",
+    "w-[80%]",
+    "w-[84%]",
+    "w-[88%]",
+    "w-[92%]",
+    "w-[94%]",
+    "w-full",
+  ];
   let toastId: string;
   const session = useSession();
   const [modal, setModal] = useState(false);
@@ -54,6 +84,7 @@ const Project = () => {
       toast.success('Deleted from Wishlist succesfully!', { id: toastId });
     },
   });
+  const { data: teamData, status: teamStatus } = api.team.getAll.useQuery();
   if (status === 'loading') {
     return <PreLoader />;
   }
@@ -104,10 +135,7 @@ const Project = () => {
                 )}
               </div>
             </div>
-            <div
-              className='flex-1 rounded-lg bg-white
-                 px-10 py-10 text-gray-600 shadow-xl'
-            >
+            <div className='flex-1 rounded-lg bg-white px-10 py-10 text-gray-600 shadow-xl'>
               <div className='mb-6 flex flex-wrap justify-between'>
                 <h1 className=' text-2xl font-bold'>{data?.title}</h1>
                 {data?.paidProject && (
@@ -131,7 +159,7 @@ const Project = () => {
                   ))}
                 </div>
               </div>
-              <div className='mb-6'>
+              <div className='mb-4'>
                 <p>Tags-</p>
                 <p className='flex gap-4 py-4 text-sm'>
                   {data?.tags.map((tag, index) => (
@@ -140,6 +168,12 @@ const Project = () => {
                     </span>
                   ))}
                 </p>
+              </div>
+              <div className='grid grid-cols-4 mb-10 gap-10  shadow-lg border-2 rounded-md px-6 py-1'>
+                <div className='flex flex-row items-center gap-2'><FaHandHoldingMedical className='text-black' size={25} /><span className='from-orange to-blue my-4 bg-gradient-to-r bg-clip-text text-transparent italic text-xs font-semibold'>Project Mentorship</span></div>
+                <div className='flex flex-row items-center gap-2'><HiSpeakerphone className='text-black' size={25} /><span className='from-orange to-blue my-4 bg-gradient-to-r bg-clip-text text-transparent italic text-xs font-semibold'>Social Media Exposure</span></div>
+                <div className='flex flex-row items-center gap-2'><TiStarburst className='text-black' size={25} /><span className='from-orange to-blue my-4 bg-gradient-to-r bg-clip-text text-transparent italic text-xs font-semibold'>Certificate Assurance</span></div>
+                <div className='flex flex-row items-center gap-2'><FaIndustry className='text-black' size={25} /><span className='from-orange to-blue my-4 bg-gradient-to-r bg-clip-text text-transparent italic text-xs font-semibold'>Industrial Project</span></div>
               </div>
               <div className='flex w-full flex-col gap-4 md:flex-row md:gap-10'>
                 <button
@@ -164,8 +198,8 @@ const Project = () => {
                     ) === undefined
                       ? void mutate.mutateAsync({ projectId: data?.id })
                       : void deleteWishlist.mutateAsync({
-                          projectId: data?.id,
-                        });
+                        projectId: data?.id,
+                      });
                   }}
                 >
                   <p className='mr-1 text-xl'>
@@ -179,9 +213,20 @@ const Project = () => {
                 </button>
               </div>
             </div>
+
           </div>
         </div>
         <div className=' mb-20 whitespace-pre-wrap rounded-lg p-10 text-gray-600 shadow-xl '>
+          <div className='grid grid-cols-6 my-10'>
+            <div className='text-xl font-medium text-black'>Teams Joined:</div>
+            <div className=" hidden bg-gray-300 p-2 md:col-span-4 md:flex md:h-3 md:w-full md:items-center md:rounded-full">
+              <div
+                className={`h-2 rounded-full bg-gradient-to-bl blue-orange-gradient ${width[teamData.length - 1]
+                  }`}
+              ></div>
+            </div>
+            <div className='text-center'>{teamData.length}/25</div>
+          </div>
           {data?.description && (
             <>
               <h2 className='pb-3 text-xl font-medium text-black'>
@@ -198,38 +243,7 @@ const Project = () => {
               <p>{data?.videoLink}</p>
             </>
           )}
-          {data?.features && (
-            <>
-              <h2 className='pb-3 pt-7 text-xl font-medium text-black'>
-                Features
-              </h2>
-              <p>{data?.features}</p>
-            </>
-          )}
-          {data?.implementation && (
-            <>
-              <h2 className='pb-3 pt-7 text-xl font-medium  text-black'>
-                Implementation
-              </h2>
-              <p>{data?.implementation}</p>
-            </>
-          )}
-          {data?.components && (
-            <>
-              <h2 className='pb-3 pt-7 text-xl font-medium  text-black'>
-                Components
-              </h2>
-              <p>{data?.components}</p>
-            </>
-          )}
-          {data?.specifications && (
-            <>
-              <h2 className='pb-3 pt-7 text-xl font-medium  text-black'>
-                Specifications
-              </h2>
-              <p>{data?.specifications}</p>
-            </>
-          )}
+
           {data?.skills && (
             <>
               <h2 className='pb-3 pt-7 text-xl font-medium text-black'>
@@ -238,14 +252,7 @@ const Project = () => {
               <p>{data?.skills}</p>
             </>
           )}
-          {data?.relatedInfo && (
-            <>
-              <h2 className='pb-3 pt-7 text-xl font-medium text-black'>
-                Other Related Information
-              </h2>
-              <p>{data?.relatedInfo}</p>
-            </>
-          )}
+
         </div>
         <div className='flex flex-col gap-10 rounded-lg p-8 shadow-lg'>
           <h2 className='text-2xl font-bold'>Ranking</h2>
@@ -351,8 +358,8 @@ const CreateTeam = ({
   });
   const { data: colleges, status: collegeStatus } =
     api.college.getAll.useQuery();
- const options=[1,2,3,4]
-  const [selectedOption,setSelectedOption]=useState(options[0])  
+  const options = [1, 2, 3, 4]
+  const [selectedOption, setSelectedOption] = useState(options[0])
   return (
     <div className=' rounded-md bg-white px-20'>
       <div className='flex justify-between'>
@@ -373,20 +380,20 @@ const CreateTeam = ({
             Year
           </label>
           <select
-                className="border-grey-600 mx-10 rounded-full border-2 bg-white p-3"
-                id="category"
-                name="category"
-                value={selectedOption}
-                onChange={(event) => {
-                  setSelectedOption(Number(event.target.value));
-                }}
-              >
-                {options.map((option) => (
-                  <option key={option} value={option} className='m-2 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300'>
-                    {option}
-                  </option>
-                ))}
-              </select>
+            className="border-grey-600 mx-10 rounded-full border-2 bg-white p-3"
+            id="category"
+            name="category"
+            value={selectedOption}
+            onChange={(event) => {
+              setSelectedOption(Number(event.target.value));
+            }}
+          >
+            {options.map((option) => (
+              <option key={option} value={option} className='m-2 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300'>
+                {option}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className='flex flex-1 flex-col gap-2'>
@@ -422,7 +429,7 @@ const CreateTeam = ({
         </div>
       </div>
       <p className='text-sm font-semibold text-gray-500'><span className='text-red-500'>Note-</span>If your college is not in the listPlease contact 1233456789 to add your college</p>
-      
+
       {/* <div className="w-full py-10 text-base text-gray-600">
         <p>Is your Mentor going to join the website ?</p>
 

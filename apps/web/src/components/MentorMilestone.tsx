@@ -98,6 +98,20 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
                 </h3>
               </div>
             ) : (
+              <>
+              {userData.team.presentMilestone > 1 && (
+            <div>
+              <p className='font-bold'>Uploaded Files:</p>
+              {userData.team.milestone1.map((file, index) => (
+                <div
+                  key={index}
+                  className='text-bold w-fit rounded-md p-8 shadow-xl'
+                >
+                  {file}
+                </div>
+              ))}
+            </div>
+          )}
               <div className=' m-10 flex w-full  items-center justify-center gap-10'>
                 <button
                   className='flex items-center justify-center gap-4 rounded-md bg-green-500 p-4 text-white'
@@ -122,6 +136,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
                   <RxCross1 size={40} /> Reject
                 </button>
               </div>
+              </>
             ))}
           {userData.team.approvedMilestone >= 1 && (
             <div>
@@ -140,7 +155,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 2 && (
         <>
-          {userData.team.approvedMilestone === 1 &&
+          {userData.team.approvedMilestone <= 1 &&
             (userData.team.presentMilestone === 2 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
@@ -148,6 +163,20 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
                 </h3>
               </div>
             ) : (
+              <>
+              {userData.team.presentMilestone > 1 && (
+            <div>
+              <p className='font-bold'>Uploaded Files:</p>
+              {userData.team.milestone1.map((file, index) => (
+                <div
+                  key={index}
+                  className='text-bold w-fit rounded-md p-8 shadow-xl'
+                >
+                  {file}
+                </div>
+              ))}
+            </div>
+          )}
               <div className=' m-10 flex w-full  items-center justify-center gap-10'>
                 <button
                   className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4
@@ -173,6 +202,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
                   <RxCross1 size={40} /> Reject
                 </button>
               </div>
+              </>
             ))}
           {userData.team.approvedMilestone >= 2 && (
             <div>
@@ -191,7 +221,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 3 && (
         <>
-          {userData.team.approvedMilestone === 2 &&
+          {userData.team.approvedMilestone <= 2 &&
             (userData.team.presentMilestone === 3 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
@@ -199,6 +229,20 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
                 </h3>
               </div>
             ) : (
+              <>
+              {userData.team.presentMilestone > 1 && (
+            <div>
+              <p className='font-bold'>Uploaded Files:</p>
+              {userData.team.milestone1.map((file, index) => (
+                <div
+                  key={index}
+                  className='text-bold w-fit rounded-md p-8 shadow-xl'
+                >
+                  {file}
+                </div>
+              ))}
+            </div>
+          )}
               <div className=' m-10 flex w-full  items-center justify-center gap-10'>
                 <button
                   className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4
@@ -224,6 +268,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
                   <RxCross1 size={40} /> Reject
                 </button>
               </div>
+              </>
             ))}
           {userData.team.approvedMilestone >= 3 && (
             <div>
@@ -242,7 +287,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 4 && (
         <>
-          {userData.team.approvedMilestone === 3 &&
+          {userData.team.approvedMilestone <= 3 &&
             (userData.team.presentMilestone === 4 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
@@ -250,6 +295,20 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
                 </h3>
               </div>
             ) : (
+              <>
+              {userData.team.presentMilestone > 1 && (
+            <div>
+              <p className='font-bold'>Uploaded Files:</p>
+              {userData.team.milestone1.map((file, index) => (
+                <div
+                  key={index}
+                  className='text-bold w-fit rounded-md p-8 shadow-xl'
+                >
+                  {file}
+                </div>
+              ))}
+            </div>
+          )}
               <div className=' m-10 flex w-full  items-center justify-center gap-10'>
                 <button
                   className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4 text-white'
@@ -274,6 +333,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
                   <RxCross1 size={40} /> Reject
                 </button>
               </div>
+              </>
             ))}
           {userData.team.approvedMilestone >= 4 && (
             <div>
@@ -292,7 +352,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 5 && (
         <>
-          {userData.team.approvedMilestone === 4 &&
+          {userData.team.approvedMilestone <= 4 &&
             (userData.team.presentMilestone === 5 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
@@ -300,6 +360,20 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
                 </h3>
               </div>
             ) : (
+              <>
+              {userData.team.presentMilestone > 1 && (
+            <div>
+              <p className='font-bold'>Uploaded Files:</p>
+              {userData.team.milestone1.map((file, index) => (
+                <div
+                  key={index}
+                  className='text-bold w-fit rounded-md p-8 shadow-xl'
+                >
+                  {file}
+                </div>
+              ))}
+            </div>
+          )}
               <div className=' m-10 flex w-full  items-center justify-center gap-10'>
                 <button
                   className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4 text-white'
@@ -324,6 +398,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
                   <RxCross1 size={40} /> Reject
                 </button>
               </div>
+              </>
             ))}
           {userData.team.approvedMilestone >= 5 && (
             <div>
@@ -342,7 +417,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 6 && (
         <>
-          {userData.team.approvedMilestone === 5 &&
+          {userData.team.approvedMilestone <= 5 &&
             (userData.team.presentMilestone === 6 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
@@ -350,6 +425,20 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
                 </h3>
               </div>
             ) : (
+              <>
+              {userData.team.presentMilestone > 1 && (
+            <div>
+              <p className='font-bold'>Uploaded Files:</p>
+              {userData.team.milestone1.map((file, index) => (
+                <div
+                  key={index}
+                  className='text-bold w-fit rounded-md p-8 shadow-xl'
+                >
+                  {file}
+                </div>
+              ))}
+            </div>
+          )}
               <div className=' m-10 flex w-full  items-center justify-center gap-10'>
                 <button
                   className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4 text-white'
@@ -374,6 +463,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
                   <RxCross1 size={40} /> Reject
                 </button>
               </div>
+              </>
             ))}
           {userData.team.approvedMilestone >= 6 && (
             <div>

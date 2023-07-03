@@ -20,6 +20,7 @@ const Profile = ({data}:InferGetServerSidePropsType <typeof getServerSideProps>)
   const { data: userData, status: userStatus } = api.user.getOne.useQuery({
     id: data?.user?.id,
   });
+  const contact = String(userData?.contact)
   if (status === 'loading' || userStatus === 'loading') return <PreLoader />;
   if (userStatus === 'error')
     return <h2 className='text-xl'>Error loading data</h2>;
@@ -44,6 +45,11 @@ const Profile = ({data}:InferGetServerSidePropsType <typeof getServerSideProps>)
         </div>
         <div className='hidden h-auto w-1 bg-black md:block'></div>
         <div className='m-10 flex flex-col gap-10 md:m-0'>
+          <p className='text-xl'>Full Name: {userData.firstName} {userData.middleName} {userData.lastName}</p>
+          <p className='text-xl'>College: {userData.college}</p>
+          <p className='text-xl'>Branch: {userData.branch}</p>
+          <p className='text-xl'>Year: {userData.year}</p>
+          <p className='text-xl'>Contact: {contact}</p>
           {userData?.team && userData?.team?.projectId ? (
             <>
               <h1 className=' text-xl' id='AppliedProject'>
