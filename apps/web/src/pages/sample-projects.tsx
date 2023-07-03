@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 import { api } from '~/utils/api';
@@ -30,11 +30,16 @@ const projectCategories = [
 ];
 
 const SampleProjects = () => {
+  const session = useSession();
   const router = useRouter();
   const { data: projectData, status: projectStatus } =
     api.project.getSample.useQuery({
       category: String(router.query.category),
     });
+  
+  if (session.status==="authenticated"){
+    void router.push("/dashboard")
+  }
 
   if (projectStatus === 'error')
     return <h2 className='text-2xl'>Error loading data..</h2>;

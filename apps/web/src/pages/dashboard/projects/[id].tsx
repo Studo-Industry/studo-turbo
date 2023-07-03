@@ -19,7 +19,6 @@ import img1 from '~/images/wallpaper.jpg';
 import { api } from '~/utils/api';
 import PreLoader from '~/components/PreLoader';
 import { TeamCard } from '~/components/Cards';
-import { number } from 'zod';
 
 
 const Project = () => {
