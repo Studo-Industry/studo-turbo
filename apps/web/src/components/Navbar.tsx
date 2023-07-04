@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -18,12 +18,33 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 }
 const Navbar: NextPage = () => {
-  const router = useRouter();
   const [position1, setPosition1] = useState(false);
   const [position2, setPosition2] = useState(false);
   const [position3, setPosition3] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const { data, status } = useSession();
+
+  useEffect(() => {
+    // const closeDropdownsClick = (event) => {
+    //   console.log(event);
+
+    //   setPosition1(false);
+    //   setPosition2(false);
+    //   setPosition3(false);
+    // };
+    const closeDropdowns = (event) => {
+      setPosition1(false);
+      setPosition2(false);
+      setPosition3(false);
+    };
+    window.addEventListener('scroll', closeDropdowns, { passive: true });
+    // document.body.addEventListener('mousedown', closeDropdownsClick);
+
+    return () => {
+      window.removeEventListener('scroll', closeDropdowns);
+      // document.body.removeEventListener('mousedown', closeDropdownsClick);
+    };
+  }, [position1, position2, position3]);
 
   const projectCategories = [
     { name: 'All Projects' },
