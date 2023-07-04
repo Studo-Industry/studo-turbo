@@ -7,6 +7,7 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { api } from '~/utils/api';
 import PreLoader from '~/components/PreLoader';
 import { SampleProjectCard } from '~/components/Cards';
+import Error from '~/components/Error';
 
 const projectCategories = [
   { name: 'Computer science engineering' },
@@ -36,13 +37,13 @@ const SampleProjects = () => {
     api.project.getSample.useQuery({
       category: String(router.query.category),
     });
-  
-  if (session.status==="authenticated"){
-    void router.push("/dashboard")
+
+  if (session.status === 'authenticated') {
+    void router.push('/dashboard');
   }
 
   if (projectStatus === 'error')
-    return <h2 className='text-2xl'>Error loading data..</h2>;
+    return <Error error='Error Loading data, Please try again in some time.' />;
   return (
     <>
       <div className='my-10'>

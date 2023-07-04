@@ -4,7 +4,9 @@ import { GetServerSidePropsContext } from 'next';
 import { api } from '~/utils/api';
 import PreLoader from '~/components/PreLoader';
 import { ProjectCard } from '~/components/Cards';
-export async function getServerSideProps(context:GetServerSidePropsContext) {
+import Error from '~/components/Error';
+
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
   return {
     props: {
@@ -28,7 +30,7 @@ const Wishlist = () => {
           </div>
         )}
         {userStatus === 'error' && (
-          <h2 className='text-xl'>Error Loading Data please try again..</h2>
+          <Error error='Error Loading data, Please try again in some time.' />
         )}
         {userStatus === 'success' ? (
           user?.wishlist.length !== 0 ? (

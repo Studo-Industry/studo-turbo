@@ -12,6 +12,7 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 import { api } from '~/utils/api';
 import PreLoader from '~/components/PreLoader';
 import { ProjectCard } from '~/components/Cards';
+import Error from '~/components/Error';
 
 const links = [
   { name: 'View Wishlist', link: '/dashboard/profile/wishlist' },
@@ -133,9 +134,7 @@ const Dashboard = ({
     return <PreLoader />;
   }
   if (projectStatus === 'error') {
-    return (
-      <h1 className='p-20 text-2xl'>Error loading data , Please try again!</h1>
-    );
+    return <Error error='Error Loading data, Please try again in some time.' />;
   }
   const loadMoreData = () => {
     if (hasNextPage && !isFetchingNextPage) {

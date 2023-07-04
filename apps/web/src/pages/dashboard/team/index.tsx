@@ -18,6 +18,7 @@ import PreLoader from '~/components/PreLoader';
 import Stepper from '~/components/Stepper';
 import Milestone from '~/components/Milestones';
 import MentorMilestone from '~/components/MentorMilestone';
+import Error from '~/components/Error';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
@@ -111,8 +112,15 @@ const Team = ({
     return <PreLoader />;
   // if (milestoneData === undefined) return <h2>Error loading data...</h2>;
   if (userStatus === 'error' || mileStoneStatus === 'error')
-    return <h2>Error Loading data..</h2>;
-  if (!userData?.team) return <h2> Team doesnt exist</h2>;
+    return <Error error='Error Loading data, Please try again in some time.' />;
+
+  if (!userData?.team)
+    return (
+      <div className='flex h-[60vh] w-[100vh] items-center justify-center'>
+        <h2> Team doesnt exist</h2>
+      </div>
+    );
+
   const leader = userData.team.members.find(
     (member) => member.id === userData.team?.leader,
   );
@@ -363,8 +371,8 @@ const Team = ({
             </div>
           </div>
         </div>
-        <div className='my-20 whitespace-pre-wrap text-gray-600 px-10'>
-        {userData.team.project.description && (
+        <div className='my-20 whitespace-pre-wrap px-10 text-gray-600'>
+          {userData.team.project.description && (
             <>
               <h2 className='pb-3 text-xl font-medium text-black'>
                 Description
@@ -388,7 +396,7 @@ const Team = ({
               <p>{userData.team.project.skills}</p>
             </>
           )}
-        {userData.team.payment_status && userData.team.project.features && (
+          {userData.team.payment_status && userData.team.project.features && (
             <>
               <h2 className='pb-3 pt-7 text-xl font-medium text-black'>
                 Features
@@ -396,14 +404,15 @@ const Team = ({
               <p>{userData.team.project.features}</p>
             </>
           )}
-          {userData.team.payment_status && userData.team.project.implementation && (
-            <>
-              <h2 className='pb-3 pt-7 text-xl font-medium  text-black'>
-                Implementation
-              </h2>
-              <p>{userData.team.project.implementation}</p>
-            </>
-          )}
+          {userData.team.payment_status &&
+            userData.team.project.implementation && (
+              <>
+                <h2 className='pb-3 pt-7 text-xl font-medium  text-black'>
+                  Implementation
+                </h2>
+                <p>{userData.team.project.implementation}</p>
+              </>
+            )}
           {userData.team.payment_status && userData.team.project.components && (
             <>
               <h2 className='pb-3 pt-7 text-xl font-medium  text-black'>
@@ -412,27 +421,30 @@ const Team = ({
               <p>{userData.team.project.components}</p>
             </>
           )}
-          {userData.team.payment_status && userData.team.project.specifications && (
-            <>
-              <h2 className='pb-3 pt-7 text-xl font-medium  text-black'>
-                Specifications
-              </h2>
-              <p>{userData.team.project.specifications}</p>
-            </>
-          )}
-          {userData.team.payment_status && userData.team.project.relatedInfo && (
-            <>
-              <h2 className='pb-3 pt-7 text-xl font-medium text-black'>
-                Other Related Information
-              </h2>
-              <p>{userData.team.project.relatedInfo}</p>
-            </>
-          )}
+          {userData.team.payment_status &&
+            userData.team.project.specifications && (
+              <>
+                <h2 className='pb-3 pt-7 text-xl font-medium  text-black'>
+                  Specifications
+                </h2>
+                <p>{userData.team.project.specifications}</p>
+              </>
+            )}
+          {userData.team.payment_status &&
+            userData.team.project.relatedInfo && (
+              <>
+                <h2 className='pb-3 pt-7 text-xl font-medium text-black'>
+                  Other Related Information
+                </h2>
+                <p>{userData.team.project.relatedInfo}</p>
+              </>
+            )}
         </div>
       </div>
       <h1 className='py-10 text-2xl font-bold'>Milestones</h1>
       <div className='relative  rounded-xl bg-white px-10 py-10 shadow-xl '>
-        {userData.team.members.length === 4 || userData.team.members.length === 5 ? (
+        {userData.team.members.length === 4 ||
+        userData.team.members.length === 5 ? (
           <>
             <div className='flex w-full flex-col items-start justify-start py-8'>
               {userData.id === userData.team.mentor ? (
