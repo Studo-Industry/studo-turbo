@@ -51,6 +51,7 @@ model Session {
 enum UserRole {
   ADMIN
   USER
+  MENTOR
 }
 
 model User {
@@ -70,8 +71,8 @@ model User {
   sessions      Session[]
   role          UserRole  @default(USER)
   wishlist      Project[]
-  team          Team?     @relation(fields: [teamId], references: [id])
-  teamId        String?
+  team          Team[]
+
 }
 
 model VerificationToken {
