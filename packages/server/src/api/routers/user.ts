@@ -138,7 +138,6 @@ export const userRouter = createTRPCRouter({
         key,
       };
     }),
-
   userInfo: protectedProcedure
     .input(
       z.object({

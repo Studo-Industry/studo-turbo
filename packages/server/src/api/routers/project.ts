@@ -13,14 +13,6 @@ const s3 = new S3({
 });
 
 export const projectRouter = createTRPCRouter({
-  //   hello: publicProcedure
-  //     .input(z.object({ text: z.string() }))
-  //     .query(({ input }) => {
-  //       return {
-  //         greeting: `Hello ${input.text}`,
-  //       };
-  //     }),
-
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.project.findMany();
   }),
@@ -212,6 +204,8 @@ export const projectRouter = createTRPCRouter({
         },
       });
     }),
+
+  //admin procedures
   imageUpload: protectedProcedure
     .input(z.object({ extension: z.string() }))
     .mutation(({ input }) => {
@@ -232,7 +226,6 @@ export const projectRouter = createTRPCRouter({
       };
     }),
 
-  //admin procedures
   createProject: protectedProcedure
     .input(
       z.object({
