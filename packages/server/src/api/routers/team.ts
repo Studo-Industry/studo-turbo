@@ -24,32 +24,24 @@ export const teamRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const teamCheck = await ctx.prisma.project.findUnique({
-        where: { id: input.projectId },
-        include: { Team: true },
-      });
-      if (teamCheck) {
-        console.log(teamCheck.Team.length);
-        if (teamCheck.Team.length >= 25) {
-          throw new Error('Project Slots already full!');
-        }
-        const team = teamCheck.Team.find(
-          (team) => team.college === input.college,
-        );
-        if (team !== undefined)
-          throw new Error('Your College Team already exists for this project.');
+      if (ctx.session.user.role === 'MENTOR') {
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'Mentor is not allowed to create team.',
+        });
       }
       const user = await ctx.prisma.user.findUnique({
-        where: {
-          id: ctx.session.user.id,
-        },
+        where: { id: ctx.session.user.id },
         include: {
           team: true,
         },
       });
-      if (user?.teamId !== null) {
-        throw new Error('Team already exists');
-      }
+      if (user?.team[0] === null)
+        throw new TRPCError({
+          code: 'FORBIDDEN',
+          message: 'User can only have 1 team',
+        });
+
       const time = new Date();
       const refferal =
         'studo' +
@@ -74,21 +66,14 @@ export const teamRouter = createTRPCRouter({
           id: ctx.session.user.id,
         },
         data: {
-          teamId: team.id,
+          team: {
+            connect: {
+              id: team.id,
+            },
+          },
         },
       });
       return team;
-    }),
-  getTeamByReferral: protectedProcedure
-    .input(z.object({ referral: z.string() }))
-    .query(({ ctx, input }) => {
-      const team = ctx.prisma.team.findUnique({
-        where: { referral_code: input.referral },
-      });
-      if (team) {
-        return team;
-      }
-      throw new TRPCError({ code: 'NOT_FOUND' });
     }),
   join: protectedProcedure
     .input(z.object({ referral: z.string(), type: z.string() }))
@@ -102,69 +87,77 @@ export const teamRouter = createTRPCRouter({
             members: true,
           },
         });
-
-        if (team) {
-          if (team.members.length >= 6) {
-            throw new Error('Team is full');
-          } else {
-            if (team.members.length === 5) {
-              const member = team.members.find(
-                (member) => team.mentor === member.id,
-              );
-              if (member) {
-                const user = await ctx.prisma.user.update({
-                  where: {
-                    id: ctx.session.user.id,
-                  },
-                  data: {
-                    teamId: team?.id,
-                  },
-                });
-                return user;
-              } else {
-                throw new Error(
-                  'There cant be more than 4 members in the group',
-                );
-              }
-            } else {
-              const user = await ctx.prisma.user.update({
-                where: {
-                  id: ctx.session.user.id,
-                },
-                data: {
-                  teamId: team?.id,
-                },
-              });
-
-              if (input.type === 'mentor') {
-                if (team.mentor === null) {
-                  if (team.leader !== ctx.session.user.id) {
-                    await ctx.prisma.team.update({
-                      where: {
-                        id: team?.id,
-                      },
-                      data: {
-                        mentor: user.id,
-                      },
-                    });
-                  } else {
-                    throw new Error('Leader cannot be mentor.');
-                  }
-                } else {
-                  throw new Error('Mentor already exists');
-                }
-              }
-              return user;
-            }
-          }
-        } else {
-          throw new Error('Referral Code is wrong.');
+        if (!team) {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Team not found',
+          });
         }
+        if (team.members.length === 6) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Team is already full',
+          });
+        }
+        if (team.members.length === 5 && team.mentor === null) {
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Team can only have 5 members and 1 mentor',
+          });
+        }
+        if (ctx.session.user.role === 'MENTOR') {
+          const team = ctx.prisma.team.update({
+            where: {
+              referral_code: input.referral,
+            },
+            include: {
+              members: true,
+            },
+            data: {
+              mentor: ctx.session.user.id,
+              members: {
+                connect: { id: ctx.session.user.id },
+              },
+            },
+          });
+          return team;
+        }
+        const user = await ctx.prisma.user.findUnique({
+          where: {
+            id: ctx.session.user.id,
+          },
+          include: {
+            team: true,
+          },
+        });
+        if (!user || user.team[0] === null)
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Team already exists.',
+          });
+        const updatedUser = ctx.prisma.team.update({
+          where: {
+            referral_code: input.referral,
+          },
+          include: {
+            members: true,
+          },
+          data: {
+            members: {
+              connect: { id: ctx.session.user.id },
+            },
+          },
+        });
+        return updatedUser;
       } catch (error) {
         console.log(error);
-        throw new Error('' + String(error));
+        throw new TRPCError({
+          code: 'CONFLICT',
+          message: 'Something went wrong',
+        });
       }
     }),
+  // TODO: bad syntax fix later
   getTeam: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -178,15 +171,117 @@ export const teamRouter = createTRPCRouter({
             project: true,
           },
         });
-        console.log(team, input.id);
         return team;
       } catch (error) {
         console.log(error);
-        throw new Error('error creating team');
+        throw new TRPCError({ code: 'BAD_REQUEST', message: 'Team not found' });
       }
     }),
-  getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.team.findMany();
+  getTeamByReferral: protectedProcedure
+    .input(z.object({ referral: z.string() }))
+    .query(({ ctx, input }) => {
+      const team = ctx.prisma.team.findUnique({
+        where: { referral_code: input.referral },
+      });
+      if (team) {
+        return team;
+      }
+      throw new TRPCError({ code: 'NOT_FOUND' });
+    }),
+  leaveTeam: protectedProcedure
+    .input(z.object({ teamId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const team = await ctx.prisma.team.findUnique({
+          where: {
+            id: input.teamId,
+          },
+        });
+        if (!team)
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Team doesnt exist.',
+          });
+
+        if (ctx.session.user.role === 'MENTOR') {
+          const team = await ctx.prisma.team.update({
+            where: {
+              id: input.teamId,
+            },
+            include: {
+              members: true,
+            },
+            data: {
+              mentor: null,
+              members: {
+                disconnect: {
+                  id: ctx.session.user.id,
+                },
+              },
+            },
+          });
+          return team;
+        }
+        const updatedTeam = await ctx.prisma.team.update({
+          where: {
+            id: input.teamId,
+          },
+          include: {
+            members: true,
+          },
+          data: {
+            members: {
+              disconnect: {
+                id: ctx.session.user.id,
+              },
+            },
+          },
+        });
+        return updatedTeam;
+      } catch (error) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Unable to leave team!',
+        });
+      }
+    }),
+  deleteTeam: protectedProcedure
+    .input(z.object({ teamId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const team = await ctx.prisma.team.delete({
+          where: {
+            id: input.teamId,
+          },
+        });
+        return team;
+      } catch (error) {
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Something went wrong.',
+        });
+      }
+    }),
+  //TODO: Fix left
+  getMilestone: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      const user = await ctx.prisma.user.findUnique({
+        where: { id: ctx.session.user.id },
+        include: {
+          team: true,
+        },
+      });
+      if (user && user.team[0]?.presentMilestone) {
+        return user.team[0]?.presentMilestone;
+      }
+      return 0;
+    } catch (error) {
+      console.log(error);
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: 'Something went wrong.',
+      });
+    }
   }),
   mileStoneSubmit: protectedProcedure
     .input(
@@ -197,8 +292,16 @@ export const teamRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       try {
+        if (ctx.session.user.role === 'MENTOR')
+          throw new TRPCError({
+            code: 'FORBIDDEN',
+            message: 'Mentor cannot submit milestones.',
+          });
         const user = await ctx.prisma.user.findUnique({
           where: { id: ctx.session.user.id },
+          include: {
+            team: true,
+          },
         });
         let team;
         if (user) {
@@ -206,7 +309,7 @@ export const teamRouter = createTRPCRouter({
             case 1:
               team = await ctx.prisma.team.update({
                 where: {
-                  id: user.teamId!,
+                  id: user.team[0].id,
                 },
                 data: {
                   milestone1: {
@@ -219,7 +322,7 @@ export const teamRouter = createTRPCRouter({
             case 2:
               team = await ctx.prisma.team.update({
                 where: {
-                  id: user.teamId!,
+                  id: user.team[0].id,
                 },
                 data: {
                   milestone2: {
@@ -232,7 +335,7 @@ export const teamRouter = createTRPCRouter({
             case 3:
               team = await ctx.prisma.team.update({
                 where: {
-                  id: user.teamId!,
+                  id: user.team[0].id,
                 },
                 data: {
                   milestone3: {
@@ -245,7 +348,7 @@ export const teamRouter = createTRPCRouter({
             case 4:
               team = await ctx.prisma.team.update({
                 where: {
-                  id: user.teamId!,
+                  id: user.team[0].id,
                 },
                 data: {
                   milestone4: {
@@ -258,7 +361,7 @@ export const teamRouter = createTRPCRouter({
             case 5:
               team = await ctx.prisma.team.update({
                 where: {
-                  id: user.teamId!,
+                  id: user.team[0].id,
                 },
                 data: {
                   milestone5: {
@@ -271,7 +374,7 @@ export const teamRouter = createTRPCRouter({
             case 6:
               team = await ctx.prisma.team.update({
                 where: {
-                  id: user.teamId!,
+                  id: user.team[0].id,
                 },
                 data: {
                   milestone6: {
@@ -282,34 +385,31 @@ export const teamRouter = createTRPCRouter({
               });
               break;
             default:
-              return new Error('Some error occured, try again');
+              throw new TRPCError({
+                code: 'BAD_REQUEST',
+                message: 'Something went wrong.',
+              });
           }
           return team;
         }
       } catch (error) {
         console.log(error);
-        throw new Error('User doesnt exist');
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Something went wrong.',
+        });
       }
     }),
-  getMilestone: protectedProcedure.query(async ({ ctx }) => {
-    try {
-      const user = await ctx.prisma.user.findUnique({
-        where: { id: ctx.session.user.id },
-        include: {
-          team: true,
-        },
-      });
-      if (user && user.team?.presentMilestone) {
-        return user.team?.presentMilestone;
-      }
-      return 0;
-    } catch (error) {
-      console.log(error);
-      throw new Error('User doesnt exist');
-    }
-  }),
+
+  //mentor procedures
+
   milestoneRejection: protectedProcedure
-    .input(z.object({ teamId: z.string(), milestone: z.number() }))
+    .input(
+      z.object({
+        teamId: z.string(),
+        milestone: z.number(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       let team;
       try {
@@ -424,81 +524,22 @@ export const teamRouter = createTRPCRouter({
         return new Error('Something went wrong,try again');
       }
     }),
-  leaveTeam: protectedProcedure
-    .input(z.object({ teamId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      try {
-        const team = await ctx.prisma.team.findUnique({
-          where: {
-            id: input.teamId,
-          },
-        });
-        if (team?.mentor === ctx.session.user.id) {
-          await ctx.prisma.user.update({
-            where: {
-              id: ctx.session.user.id,
-            },
-            data: {
-              teamId: null,
-            },
-          });
-          const updateTeam = await ctx.prisma.team.update({
-            where: {
-              id: team.id,
-            },
-            data: {
-              mentor: null,
-            },
-          });
-          return updateTeam;
-        } else {
-          const user = await ctx.prisma.user.update({
-            where: {
-              id: ctx.session.user.id,
-            },
-            data: {
-              teamId: null,
-            },
-          });
-          return user;
-        }
-      } catch (error) {
-        throw new Error('Unable to leave team!');
-      }
-    }),
 
+  //admin procedures
   getRecentTeams: protectedProcedure.query(async ({ ctx }) => {
     return await ctx.prisma.team.findMany({
       take: 5,
       orderBy: {
         appliedAt: 'desc',
       },
-      include:{
-        project:true,
-        members:true
-      }
+      include: {
+        project: true,
+        members: true,
+      },
     });
   }),
-
-  // creating procedure for delete team
-  deleteTeam: protectedProcedure
-    .input(z.object({ teamId: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      try {
-        const team = await ctx.prisma.team.delete({
-          where: {
-            id: input.teamId,
-          },
-        });
-        return team;
-      } catch (error) {
-        throw new Error('Unable to delete Team.');
-      }
-    }),
-
-  // Removing member
   removeTeam: protectedProcedure
-    .input(z.object({ userId: z.string() }))
+    .input(z.object({ userId: z.string(), teamId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       try {
         const user = await ctx.prisma.user.update({
@@ -506,7 +547,11 @@ export const teamRouter = createTRPCRouter({
             id: input.userId,
           },
           data: {
-            teamId: null,
+            team: {
+              disconnect: {
+                id: input.teamId,
+              },
+            },
           },
         });
         return user;
@@ -514,4 +559,13 @@ export const teamRouter = createTRPCRouter({
         throw new Error('Something went wrong!');
       }
     }),
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    if (ctx.session.user.role !== 'ADMIN') {
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'This is restricted only for admins',
+      });
+    }
+    return ctx.prisma.team.findMany();
+  }),
 });
