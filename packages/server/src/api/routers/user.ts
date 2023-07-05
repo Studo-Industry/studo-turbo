@@ -2,6 +2,7 @@ import { S3 } from 'aws-sdk';
 import { randomUUID } from 'crypto';
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '../trpc';
+import { TRPCError } from '@trpc/server';
 
 const s3 = new S3({
   apiVersion: '2006-03-01',
@@ -46,7 +47,10 @@ export const userRouter = createTRPCRouter({
       });
 
       if (!user) {
-        throw new Error('User not found');
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User not found',
+        });
       }
 
       const existingProject = user.wishlist.find(
@@ -54,7 +58,10 @@ export const userRouter = createTRPCRouter({
       );
 
       if (existingProject) {
-        throw new Error('Project already in wishlist');
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Project already in wishlist',
+        });
       }
 
       const project = await ctx.prisma.project.findUnique({
@@ -62,7 +69,10 @@ export const userRouter = createTRPCRouter({
       });
 
       if (!project) {
-        throw new Error('Project not found');
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Project already in wishlist',
+        });
       }
 
       const updatedUser = await ctx.prisma.user.update({
@@ -84,7 +94,10 @@ export const userRouter = createTRPCRouter({
       });
 
       if (!user) {
-        throw new Error('User not found');
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User not found',
+        });
       }
 
       const existingProject = user.wishlist.find(
@@ -92,7 +105,10 @@ export const userRouter = createTRPCRouter({
       );
 
       if (!existingProject) {
-        throw new Error('Project not found in wishlist');
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Project not in wishlist',
+        });
       }
 
       const updatedUser = await ctx.prisma.user.update({
@@ -122,8 +138,6 @@ export const userRouter = createTRPCRouter({
         key,
       };
     }),
-
-  //
 
   userInfo: protectedProcedure
     .input(

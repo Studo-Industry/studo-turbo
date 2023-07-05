@@ -1,4 +1,3 @@
-import { TRPCClientError } from '@trpc/client';
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
