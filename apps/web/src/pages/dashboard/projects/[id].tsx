@@ -103,13 +103,13 @@ const Project = () => {
       )}
       <div className='m-10 md:m-20'>
         <div className=''>
-          <Link
-            href='/dashboard'
+          <button
+            onClick={() => router.back()}
             className='ml-16 flex flex-row items-center gap-2 font-medium'
           >
             <AiOutlineLeft />
             <span> Go Back</span>
-          </Link>
+          </button>
 
           <div className='flex flex-col gap-8 pt-9  md:flex-row'>
             <div

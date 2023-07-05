@@ -1,23 +1,24 @@
-import React, { useState } from "react";
-import { toast } from "react-hot-toast";
-import { useRouter } from "next/router";
-import { BsLightningFill } from "react-icons/bs";
+import React, { useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { useRouter } from 'next/router';
+import { BsLightningFill } from 'react-icons/bs';
+import { AiOutlineLeft } from 'react-icons/ai';
 
-import { api } from "~/utils/api";
+import { api } from '~/utils/api';
 
 const Join = () => {
   let toastid: string;
-  const [referral, setReferral] = useState("");
-  const [role, setRole] = useState("member");
+  const [referral, setReferral] = useState('');
+  const [role, setRole] = useState('member');
   const router = useRouter();
   const mutate = api.team.join.useMutation({
     onMutate: () => {
-      toast.loading("Joining team..", { id: toastid });
+      toast.loading('Joining team..', { id: toastid });
     },
     onSuccess: () => {
       toast.dismiss(toastid);
-      toast.success("Joined team successfully", { id: toastid });
-      void router.push("/dashboard/team");
+      toast.success('Joined team successfully', { id: toastid });
+      void router.push('/dashboard/team');
     },
     onError: (error) => {
       toast.dismiss(toastid);
@@ -26,45 +27,51 @@ const Join = () => {
     },
   });
   return (
-    <div className="my-10 md:m-20">
-      <div className=" rounded-md  px-10">
-        <h1 className="font-inter text-xl font-bold text-gray-600">
+    <div className='my-10 md:m-20'>
+      <div className=' rounded-md  px-10'>
+        <button
+          onClick={() => router.back()}
+          className='my-10 flex items-center gap-2'
+        >
+          <AiOutlineLeft /> Go Back
+        </button>
+        <h1 className='font-inter text-xl font-bold text-gray-600'>
           Join Team
         </h1>
-        <div className="my-20 flex flex-col justify-center gap-10">
-          <label className="mr-3 text-sm font-semibold" htmlFor="">
+        <div className='my-20 flex flex-col justify-center gap-10'>
+          <label className='mr-3 text-sm font-semibold' htmlFor=''>
             Referral Code
           </label>
           <input
-            className="border-grey-600 rounded-full border-2  p-3 "
-            type="text"
-            placeholder="Referral Code"
+            className='border-grey-600 rounded-full border-2  p-3 '
+            type='text'
+            placeholder='Referral Code'
             value={referral}
             onChange={(event) => {
               setReferral(event.target.value);
             }}
           />
-          <label className="mr-3 text-sm font-semibold">
+          <label className='mr-3 text-sm font-semibold'>
             Choose Your Role:
           </label>
           <select
-            id="cars"
-            name="cars"
+            id='cars'
+            name='cars'
             value={role}
             onChange={(event) => setRole(event.target.value)}
-            className="border-grey-600 rounded-full border-2 bg-white p-3 px-5 "
+            className='border-grey-600 rounded-full border-2 bg-white p-3 px-5 '
           >
-            <option value="member">Member</option>
-            <option value="mentor">Mentor</option>
+            <option value='member'>Member</option>
+            <option value='mentor'>Mentor</option>
           </select>
           <button
             onClick={() => {
               void mutate.mutateAsync({ referral, type: role });
-              document.body.style.overflow = "unset";
+              document.body.style.overflow = 'unset';
             }}
-            className="Button gradient-btn blue-orange-gradient hover:orange-white-gradient  flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white"
+            className='Button gradient-btn blue-orange-gradient hover:orange-white-gradient  flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
           >
-            <p className="mr-1 text-xl">
+            <p className='mr-1 text-xl'>
               <BsLightningFill />
             </p>
             Join Team

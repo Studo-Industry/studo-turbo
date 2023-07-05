@@ -43,7 +43,9 @@ const Wishlist = () => {
               />
             ))
           ) : (
-            <p>No wishlisted Projects yet</p>
+            <div className='flex h-[40vh] w-full items-center justify-center md:col-span-3'>
+              No wishlisted Projects yet
+            </div>
           )
         ) : (
           <></>

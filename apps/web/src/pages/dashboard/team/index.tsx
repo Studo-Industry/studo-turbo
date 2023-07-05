@@ -3,7 +3,7 @@ import { toast } from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { getSession, useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import { getQueryKey } from '@trpc/react-query';
 import { useQueryClient } from '@tanstack/react-query';
 import { AiFillCopy } from 'react-icons/ai';
@@ -114,12 +114,7 @@ const Team = ({
   if (userStatus === 'error' || mileStoneStatus === 'error')
     return <Error error='Error Loading data, Please try again in some time.' />;
 
-  if (!userData?.team)
-    return (
-      <div className='flex h-[60vh] w-[100vh] items-center justify-center'>
-        <h2> Team doesnt exist</h2>
-      </div>
-    );
+  if (!userData?.team) return <Error error='Team doesnt exist' />;
 
   const leader = userData.team.members.find(
     (member) => member.id === userData.team?.leader,

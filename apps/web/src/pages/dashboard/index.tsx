@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
@@ -144,7 +144,7 @@ const Dashboard = ({
 
   const handleScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight - 20) {
+    if (scrollTop + clientHeight >= scrollHeight - 200) {
       loadMoreData();
     }
   };
