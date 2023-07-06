@@ -9,7 +9,6 @@ import { api } from '~/utils/api';
 const Join = () => {
   let toastid: string;
   const [referral, setReferral] = useState('');
-  const [role, setRole] = useState('member');
   const router = useRouter();
   const mutate = api.team.join.useMutation({
     onMutate: () => {
@@ -38,7 +37,7 @@ const Join = () => {
         <h1 className='font-inter text-xl font-bold text-gray-600'>
           Join Team
         </h1>
-        <div className='my-20 flex flex-col justify-center gap-10'>
+        <div className='my-10 flex flex-col justify-center gap-10'>
           <label className='mr-3 text-sm font-semibold' htmlFor=''>
             Referral Code
           </label>
@@ -51,23 +50,9 @@ const Join = () => {
               setReferral(event.target.value);
             }}
           />
-          <label className='mr-3 text-sm font-semibold'>
-            Choose Your Role:
-          </label>
-          <select
-            id='cars'
-            name='cars'
-            value={role}
-            onChange={(event) => setRole(event.target.value)}
-            className='border-grey-600 rounded-full border-2 bg-white p-3 px-5 '
-          >
-            <option value='member'>Member</option>
-            <option value='mentor'>Mentor</option>
-          </select>
           <button
             onClick={() => {
-              void mutate.mutateAsync({ referral, type: role });
-              document.body.style.overflow = 'unset';
+              void mutate.mutateAsync({ referral });
             }}
             className='Button gradient-btn blue-orange-gradient hover:orange-white-gradient  flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
           >

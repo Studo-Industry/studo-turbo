@@ -36,6 +36,7 @@ const UserInfo = () => {
   const [contact, setContact] = useState<number>();
   const [showColleges, setShowColleges] = useState(false);
   const [showBranchs, setShowBranch] = useState(false);
+  const [mentor, setMentor] = useState(false);
 
   const { data: colleges, status: collegeStatus } =
     api.college.getAll.useQuery();
@@ -46,31 +47,53 @@ const UserInfo = () => {
       middleName !== '' &&
       lastName !== '' &&
       college !== '' &&
-      branch !== '' &&
-      selectYear !== null &&
       contact !== null
     ) {
-      await info
-        .mutateAsync({
-          firstName,
-          middleName,
-          lastName,
-          college,
-          branch,
-          year: selectYear,
-          contact,
-        })
-        .then(() => {
-          setFirstName('');
-          setMiddleName('');
-          setLastName('');
-          setCollege('');
-          setBranch('');
-          setYear(null);
-          setContact(null);
-          toast.success('Information Recevied');
-          router.push('/dashboard');
-        });
+      if (mentor && branch === '' && selectYear === null) {
+        await info
+          .mutateAsync({
+            firstName,
+            middleName,
+            lastName,
+            college,
+            contact,
+            mentor,
+          })
+          .then(() => {
+            setFirstName('');
+            setMiddleName('');
+            setLastName('');
+            setCollege('');
+            setBranch('');
+            setYear(null);
+            setContact(null);
+            toast.success('Information Recevied');
+            router.push('/dashboard');
+          });
+      } else {
+        await info
+          .mutateAsync({
+            firstName,
+            middleName,
+            lastName,
+            college,
+            contact,
+            mentor,
+            branch,
+            year: selectYear,
+          })
+          .then(() => {
+            setFirstName('');
+            setMiddleName('');
+            setLastName('');
+            setCollege('');
+            setBranch('');
+            setYear(null);
+            setContact(null);
+            toast.success('Information Recevied');
+            router.push('/dashboard');
+          });
+      }
     } else {
       toast.error('Please fill in the details properly.');
     }
@@ -83,7 +106,7 @@ const UserInfo = () => {
       </h1>
       <form
         onSubmit={(event) => void submitForm(event)}
-        className='grid grid-cols-3 gap-5'
+        className='grid grid-cols-1 gap-5 md:grid-cols-3'
       >
         <input
           type='text'
@@ -113,6 +136,16 @@ const UserInfo = () => {
             setLastName(event.target.value);
           }}
         />
+        <input
+          type='tel'
+          className='col-span-3 rounded-md border-2 border-gray-300 p-2'
+          placeholder='Contact'
+          name='contact'
+          id='contact'
+          onChange={(event) => {
+            setContact(Number(event.target.value));
+          }}
+        />
         <div className='col-span-3 flex flex-1 flex-col gap-2'>
           <input
             className='rounded-md border-2 border-gray-300 p-2'
@@ -140,7 +173,10 @@ const UserInfo = () => {
                     <p
                       className='m-2 w-96 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300 '
                       key={data.code}
-                      onClick={() => setCollege(data.name)}
+                      onClick={() => {
+                        setCollege(data.name);
+                        setShowColleges(false);
+                      }}
                       placeholder='College'
                     >
                       {data.name}
@@ -149,69 +185,77 @@ const UserInfo = () => {
             </div>
           )}
         </div>
-        <div className='col-span-3 flex flex-1 flex-col gap-2'>
+        <div className='col-span-3 flex flex-col items-start gap-2'>
+          <label htmlFor='mentor'>Are you joining as a mentor?</label>
           <input
-            className='rounded-md border-2 border-gray-300 p-2'
-            type='text'
-            placeholder='Branch'
-            value={branch}
-            onClick={() =>
-              setShowBranch((previousValue) => {
-                return !previousValue;
-              })
-            }
-            onChange={(event) => {
-              setBranch(event.target.value);
-            }}
+            type='checkbox'
+            name='mentor'
+            id='mentor'
+            className='h-10 w-10'
+            checked={mentor}
+            onChange={() => setMentor((prevValue) => !prevValue)}
           />
-          {showBranchs && (
-            <div className='scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-400 ml-5 h-64 overflow-y-scroll'>
-              {branchs.map((branch) => (
-                <p
-                  className='m-2 w-96 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300 '
-                  key={branch}
-                  onClick={() => setBranch(branch)}
-                  placeholder='College'
-                >
-                  {branch}
-                </p>
-              ))}
-            </div>
-          )}
         </div>
-        <select
-          className='col-span-3 rounded-md border-2 border-gray-300  p-2'
-          id='year'
-          name='year'
-          value={selectYear}
-          placeholder='Year'
-          onChange={(event) => {
-            setYear(Number(event.target.value));
-          }}
-        >
-          <option value='' disabled selected>
-            Select your year
-          </option>
-          {year.map((year) => (
-            <option
-              key={year}
-              value={year}
-              className='m-2 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300'
+        {!mentor && (
+          <div className='col-span-3 grid grid-cols-1 gap-5 md:grid-cols-3'>
+            <div className='col-span-3 flex flex-1 flex-col gap-2'>
+              <input
+                className='rounded-md border-2 border-gray-300 p-2'
+                type='text'
+                placeholder='Branch'
+                value={branch}
+                onClick={() =>
+                  setShowBranch((previousValue) => {
+                    return !previousValue;
+                  })
+                }
+                onChange={(event) => {
+                  setBranch(event.target.value);
+                }}
+              />
+              {showBranchs && (
+                <div className='scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-400 ml-5 h-64 overflow-y-scroll'>
+                  {branchs.map((branch) => (
+                    <p
+                      className='m-2 w-96 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300 '
+                      key={branch}
+                      onClick={() => {
+                        setBranch(branch);
+                        setShowBranch(false);
+                      }}
+                      placeholder='College'
+                    >
+                      {branch}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+            <select
+              className='col-span-3 rounded-md border-2 border-gray-300  p-2'
+              id='year'
+              name='year'
+              value={selectYear}
+              placeholder='Year'
+              onChange={(event) => {
+                setYear(Number(event.target.value));
+              }}
             >
-              {year}
-            </option>
-          ))}
-        </select>
-        <input
-          type='tel'
-          className='col-span-3 rounded-md border-2 border-gray-300 p-2'
-          placeholder='Contact'
-          name='contact'
-          id='contact'
-          onChange={(event) => {
-            setContact(Number(event.target.value));
-          }}
-        />
+              <option value='' disabled selected>
+                Select your year
+              </option>
+              {year.map((year) => (
+                <option
+                  key={year}
+                  value={year}
+                  className='m-2 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300'
+                >
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
         <button className='hover:blue-orange-gradient col-span-3 rounded-md border-2 border-black bg-transparent p-2 font-semibold text-black shadow-xl transition-all hover:border-none hover:bg-gradient-to-bl hover:text-white'>
           Submit
         </button>

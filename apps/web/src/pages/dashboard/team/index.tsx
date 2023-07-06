@@ -1,8 +1,4 @@
-import { useState } from 'react';
-import { toast } from 'react-hot-toast';
-import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { getSession } from 'next-auth/react';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 
@@ -45,22 +41,37 @@ const Teams = ({
 
   return (
     <div className='px-8 py-20 md:px-20'>
+      <h2 className='mb-10 text-2xl font-bold'>My Teams</h2>
       <div className='grid grid-cols-1 md:grid-cols-3'>
         {userData.team.map((team) => (
           <Link
             href={`/dashboard/team/${team.id}`}
             key={team.id}
-            className='rounded-md p-6 shadow-md'
+            className='flex flex-col gap-4 rounded-md p-6 shadow-md'
           >
             {team.project.images.length === 0 ? (
-              <img src={img1.src} alt='project img' />
+              <img src={img1.src} alt='project img' className='rounded-md' />
             ) : (
               <img
                 src={String(env.NEXT_PUBLIC_AWS_S3) + team.project.images[0]}
                 alt='heeh'
+                className='rounded-md'
               />
             )}
-            <p>Project - {team.project.title}</p>
+            <div>
+              <span
+                className={` rounded-md p-2 text-white ${
+                  team.payment_status ? 'bg-green-500' : 'bg-red-500'
+                }`}
+              >
+                {team.payment_status ? 'Paid' : 'Unpaid'}
+              </span>
+            </div>
+            <div>
+              <p className='font-bold'>{team.project.title}</p>
+              <p>Number of members - {team.members.length}</p>
+              <p>Team created at - {team.appliedAt.toLocaleString()}</p>
+            </div>
           </Link>
         ))}
       </div>

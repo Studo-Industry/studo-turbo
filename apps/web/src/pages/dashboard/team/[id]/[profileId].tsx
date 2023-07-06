@@ -1,11 +1,13 @@
 import { getSession } from 'next-auth/react';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 import { api } from '~/utils/api';
 import PreLoader from '~/components/PreLoader';
 import { ProjectCard } from '~/components/Cards';
 import Error from '~/components/Error';
+import { AiOutlineLeft } from 'react-icons/ai';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
@@ -22,15 +24,20 @@ const Profile = ({
   const { data: userData, status: userStatus } = api.user.getOne.useQuery({
     id: data?.user?.id,
   });
+  const router = useRouter();
   const contact = String(userData?.contact);
   if (userStatus === 'loading') return <PreLoader />;
   if (userStatus === 'error')
     return <Error error='Error Loading data, Please try again in some time.' />;
   return (
-    <>
-      <h1 className=' ml-20 mt-16 text-2xl'>My Profile</h1>
-      <div className='my-24 flex flex-col gap-24 md:flex-row'>
-        <div className='my-5 flex flex-col items-center justify-center gap-5 md:ml-44'>
+    <div className='mx-24 my-24 '>
+      <button className='mb-4 flex items-center' onClick={() => router.back()}>
+        <AiOutlineLeft />
+        Go Back
+      </button>
+      <h1 className=' mt-16 text-2xl'>My Profile</h1>
+      <div className='flex flex-col gap-24 md:flex-row'>
+        <div className='my-5 flex flex-col items-center justify-center gap-5 '>
           {data?.user?.image && (
             <Image
               height={200}
@@ -71,7 +78,7 @@ const Profile = ({
           )} */}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

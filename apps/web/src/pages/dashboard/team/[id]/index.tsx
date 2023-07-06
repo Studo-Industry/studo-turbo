@@ -84,7 +84,7 @@ const Team = ({
       toast.error(`Error: ${error.message}`, { id: toastid });
     },
   });
-  const removeTeam = api.team.removeTeam.useMutation({
+  const removeTeam = api.team.removeFromTeam.useMutation({
     onMutate: () => {
       toast.loading('Removing from team...', { id: toastid });
     },
@@ -185,7 +185,7 @@ const Team = ({
             {leader && (
               <Link
                 className='m-2 flex items-center gap-4 rounded-md  p-2  hover:cursor-pointer hover:bg-gray-300'
-                href={`/dashboard/team/${leader.id}`}
+                href={`/dashboard/team/${teamData.id}/${leader.id}`}
               >
                 {leader?.image && (
                   <Image
@@ -208,7 +208,7 @@ const Team = ({
             {mentor ? (
               <Link
                 className='m-2 flex items-center gap-4 rounded-md  p-2  hover:cursor-pointer hover:bg-gray-300'
-                href={`/dashboard/team/${mentor.id}`}
+                href={`/dashboard/team/${teamData.id}/${mentor.id}`}
               >
                 {mentor?.image && (
                   <Image
@@ -245,7 +245,7 @@ const Team = ({
                   >
                     <Link
                       className='m-2 flex items-center gap-4'
-                      href={`/dashboard/team/${member.id}`}
+                      href={`/dashboard/team/${teamData.id}/${member.id}`}
                       key={member.id}
                     >
                       {member.image && (

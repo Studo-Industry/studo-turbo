@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { BsLightningFill } from 'react-icons/bs';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import { getSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 
@@ -31,7 +32,6 @@ const JoinTeam = ({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
   let toastid: string;
   const router = useRouter();
-  const [role, setRole] = useState('member');
   const mutate = api.team.join.useMutation({
     onMutate: () => {
       toast.loading('Joining team..', { id: toastid });
@@ -43,8 +43,9 @@ const JoinTeam = ({
     },
     onError: (error) => {
       toast.dismiss(toastid);
-      toast.error(`Error occured ${error.message}`, { id: toastid });
-      // console.log(error);
+      toast.error(`Error: ${error.message}`, {
+        id: toastid,
+      });
     },
   });
 
@@ -56,26 +57,39 @@ const JoinTeam = ({
   if (status === 'error') return <p>Error loading data...</p>;
   return (
     <div className='flex min-w-full flex-col items-center justify-center gap-10 p-10 '>
-      <h3 className='text-xl font-bold'>
-        Do you want to join {teamData.college} team?
-      </h3>
-      <div className=' flex w-4/5 flex-col gap-10 rounded-xl p-10 shadow-xl'>
-        <label className='mr-3 text-sm font-semibold'>Choose Your Role:</label>
-        <select
-          id='cars'
-          name='cars'
-          value={role}
-          onChange={(event) => setRole(event.target.value)}
-          className='border-grey-600 rounded-full border-2 bg-white p-3 px-5 '
-        >
-          <option value='member'>Member</option>
-          <option value='mentor'>Mentor</option>
-        </select>
+      <div className=' flex w-4/5 flex-col items-center gap-20 rounded-xl px-10 py-20 shadow-xl'>
+        <h3 className='text-xl font-bold'>
+          Do you want to join {teamData.college} team?
+        </h3>
+        <div className='flex w-full flex-col gap-2'>
+          <p className='font-bold'>Team Details</p>
+          <p>
+            Project -{' '}
+            <span className='font-bold'> {teamData.project.title}</span>
+          </p>
+          <p>Members</p>
+          <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
+            {teamData.members.map((member) => (
+              <div
+                key={member.id}
+                className='flex items-center gap-4 rounded-md p-4 shadow-lg'
+              >
+                <Image
+                  src={member.image}
+                  alt={member.name}
+                  width={40}
+                  height={40}
+                  className='rounded-full'
+                />
+                <p>{member.name}</p>
+              </div>
+            ))}
+          </div>
+        </div>
         <button
           onClick={() => {
             void mutate.mutateAsync({
               referral: teamData.referral_code,
-              type: role,
             });
             document.body.style.overflow = 'unset';
           }}

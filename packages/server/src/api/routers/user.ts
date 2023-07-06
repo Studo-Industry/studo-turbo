@@ -145,9 +145,10 @@ export const userRouter = createTRPCRouter({
         middleName: z.string(),
         lastName: z.string(),
         college: z.string(),
-        branch: z.string(),
-        year: z.number().min(1).max(4),
+        branch: z.string().optional(),
+        year: z.number().min(1).max(4).optional(),
         contact: z.number().min(8),
+        mentor: z.boolean(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -163,6 +164,7 @@ export const userRouter = createTRPCRouter({
           branch: input.branch,
           year: input.year,
           contact: Number(input.contact),
+          role: input.mentor ? 'MENTOR' : 'USER',
         },
       });
       return info;

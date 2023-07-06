@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { useQueryClient } from '@tanstack/react-query';
+import { inferRouterOutputs } from '@trpc/server';
 import { getQueryKey } from '@trpc/react-query';
 import { AiOutlineLeft, AiFillHeart } from 'react-icons/ai';
 import { BsLightningFill } from 'react-icons/bs';
@@ -19,6 +20,10 @@ import { api } from '~/utils/api';
 import PreLoader from '~/components/PreLoader';
 import { TeamCard } from '~/components/Cards';
 import Error from '~/components/Error';
+import { AppRouter } from 'server';
+
+type RouterOutput = inferRouterOutputs<AppRouter>;
+type userDataType = RouterOutput['user']['getOne'];
 
 const Project = () => {
   const width = [
@@ -98,7 +103,7 @@ const Project = () => {
     <div>
       {modal && (
         <div className='absolute left-0 top-0 z-40 flex h-screen w-screen items-center justify-center  bg-black/50'>
-          <Apply setModal={setModal} projectId={data.id} />
+          <Apply setModal={setModal} projectId={data.id} userData={user} />
         </div>
       )}
       <div className='m-10 md:m-20'>
@@ -168,25 +173,25 @@ const Project = () => {
               </div>
               <div className='mb-10 grid grid-cols-4 gap-10  rounded-md border-2 px-6 py-1 shadow-lg'>
                 <div className='flex flex-row items-center gap-2'>
-                  <FaHandHoldingMedical className='text-black' size={25} />
+                  <FaHandHoldingMedical className='text-black/50' size={40} />
                   <span className='from-orange to-blue my-4 bg-gradient-to-r bg-clip-text text-xs font-semibold italic text-transparent'>
                     Project Mentorship
                   </span>
                 </div>
                 <div className='flex flex-row items-center gap-2'>
-                  <HiSpeakerphone className='text-black' size={25} />
+                  <HiSpeakerphone className='text-black/50' size={40} />
                   <span className='from-orange to-blue my-4 bg-gradient-to-r bg-clip-text text-xs font-semibold italic text-transparent'>
                     Social Media Exposure
                   </span>
                 </div>
                 <div className='flex flex-row items-center gap-2'>
-                  <TiStarburst className='text-black' size={25} />
+                  <TiStarburst className='text-black/50' size={40} />
                   <span className='from-orange to-blue my-4 bg-gradient-to-r bg-clip-text text-xs font-semibold italic text-transparent'>
                     Certificate Assurance
                   </span>
                 </div>
                 <div className='flex flex-row items-center gap-2'>
-                  <FaIndustry className='text-black' size={25} />
+                  <FaIndustry className='text-black/50' size={40} />
                   <span className='from-orange to-blue my-4 bg-gradient-to-r bg-clip-text text-xs font-semibold italic text-transparent'>
                     Industrial Project
                   </span>
@@ -196,7 +201,7 @@ const Project = () => {
                 <button
                   className='gradient-btn blue-orange-gradient hover:orange-white-gradient flex w-full justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
                   onClick={() => {
-                    document.body.scrollTop = 0; // For Safari
+                    document.body.scrollTop = 0;
                     document.documentElement.scrollTop = 0;
                     setModal(true);
                     document.body.style.overflow = 'hidden';
@@ -272,16 +277,22 @@ const Project = () => {
         </div>
         <div className='flex flex-col gap-10 rounded-lg p-8 shadow-lg'>
           <h2 className='text-2xl font-bold'>Ranking</h2>
-          <div className='grid grid-cols-3 md:grid-cols-6'>
-            <p>Rank</p>
-            <p className='md:col-span-2'>College</p>
-            <p className='col-span-1 md:col-span-3'>Progress</p>
-          </div>
-          <div className='flex flex-col gap-4'>
-            {data.Team.map((team, index) => (
-              <TeamCard key={team.id} team={team} index={index} />
-            ))}
-          </div>
+          {data.Team.length === 0 ? (
+            <p>No teams have joined this project yet </p>
+          ) : (
+            <div className='grid grid-cols-3 md:grid-cols-6'>
+              <div>
+                <p>Rank</p>
+                <p className='md:col-span-2'>College</p>
+                <p className='col-span-1 md:col-span-3'>Progress</p>
+              </div>
+              <div className='flex flex-col gap-4'>
+                {data.Team.map((team, index) => (
+                  <TeamCard key={team.id} team={team} index={index} />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -293,16 +304,22 @@ export default Project;
 const Apply = ({
   setModal,
   projectId,
+  userData,
 }: {
   setModal: (value: boolean) => void;
   projectId: string;
+  userData: userDataType;
 }) => {
   const [createTeam, setCreateTeam] = useState(false);
   return (
     <div className='flex flex-col gap-10 rounded-md bg-white px-10 py-10'>
       {createTeam ? (
         <>
-          <CreateTeam setModal={setCreateTeam} projectId={projectId} />
+          <CreateTeam
+            setModal={setCreateTeam}
+            projectId={projectId}
+            userData={userData}
+          />
         </>
       ) : (
         <>
@@ -348,13 +365,15 @@ const Apply = ({
 const CreateTeam = ({
   setModal,
   projectId,
+  userData,
 }: {
   setModal: (value: boolean) => void;
   projectId: string;
+  userData: userDataType;
 }) => {
   let toastId: string;
+
   const [college, setCollege] = useState('');
-  const [year, setYear] = useState(1);
   const [agreed, setAgreed] = useState(false);
   const router = useRouter();
   const mutate = api.team.create.useMutation({
@@ -376,6 +395,14 @@ const CreateTeam = ({
     api.college.getAll.useQuery();
   const options = [1, 2, 3, 4];
   const [selectedOption, setSelectedOption] = useState(options[0]);
+
+  useEffect(() => {
+    if (userData.college && userData.year) {
+      setCollege(userData.college);
+      setSelectedOption(userData.year);
+    }
+  }, []);
+
   return (
     <div className=' rounded-md bg-white px-20'>
       <div className='flex justify-between'>
@@ -451,7 +478,7 @@ const CreateTeam = ({
       </div>
       <p className='text-sm font-semibold text-gray-500'>
         <span className='text-red-500'>Note-</span>If your college is not in the
-        listPlease contact 1233456789 to add your college
+        list, Please contact 1233456789 to add your college.
       </p>
 
       {/* <div className="w-full py-10 text-base text-gray-600">
@@ -486,7 +513,11 @@ const CreateTeam = ({
             if (college.length === 0) {
               toast.error('Please fill in college');
             } else {
-              void mutate.mutateAsync({ college, year, projectId });
+              void mutate.mutateAsync({
+                college,
+                year: selectedOption,
+                projectId,
+              });
             }
           } else {
             toast.error('Please check the terms and conditions box.');
