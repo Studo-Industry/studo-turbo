@@ -126,7 +126,7 @@ const Dashboard = ({
   // userData.contact === null){
   //   void router.push('/user-info');
   // }
-  if (userData?.teamId) {
+  if (userData?.team[0]) {
     void router.push('/dashboard/team/');
     return <></>;
   }

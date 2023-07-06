@@ -83,7 +83,7 @@ const Project = () => {
       toast.success('Deleted from Wishlist succesfully!', { id: toastId });
     },
   });
-  const { data: teamData, status: teamStatus } = api.team.getAll.useQuery();
+
   if (status === 'loading') {
     return <PreLoader />;
   }
@@ -238,11 +238,11 @@ const Project = () => {
             <div className=' hidden bg-gray-300 p-2 md:col-span-4 md:flex md:h-3 md:w-full md:items-center md:rounded-full'>
               <div
                 className={`blue-orange-gradient h-2 rounded-full bg-gradient-to-bl ${
-                  width[teamData.length - 1]
+                  width[data.Team?.length - 1]
                 }`}
               ></div>
             </div>
-            <div className='text-center'>{teamData.length}/25</div>
+            <div className='text-center'>{data.Team?.length}/25</div>
           </div>
           {data?.description && (
             <>

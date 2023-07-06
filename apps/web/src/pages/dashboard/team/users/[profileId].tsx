@@ -1,4 +1,4 @@
-import { getSession, useSession } from 'next-auth/react';
+import { getSession } from 'next-auth/react';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import Image from 'next/image';
 
@@ -55,7 +55,7 @@ const Profile = ({
           <p className='text-xl'>Branch: {userData.branch}</p>
           <p className='text-xl'>Year: {userData.year}</p>
           <p className='text-xl'>Contact: {contact}</p>
-          {userData?.team && userData?.team?.projectId ? (
+          {/* {userData?.team && userData?.team?.projectId ? (
             <>
               <h1 className=' text-xl' id='AppliedProject'>
                 Projects Applied:
@@ -68,7 +68,7 @@ const Profile = ({
             </>
           ) : (
             <div> No Projects applied yet</div>
-          )}
+          )} */}
         </div>
       </div>
     </>

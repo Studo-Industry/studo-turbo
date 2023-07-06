@@ -163,7 +163,7 @@ export const teamRouter = createTRPCRouter({
       try {
         const team = await ctx.prisma.team.findFirst({
           where: {
-            leader: input.id,
+            id: input.id,
           },
           include: {
             members: true,
