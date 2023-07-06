@@ -163,7 +163,7 @@ const Project = () => {
               </div>
               <div className='mb-4'>
                 <p>Tags-</p>
-                <p className='flex gap-4 py-4 text-sm'>
+                <p className='flex flex-wrap gap-4 py-4 text-sm'>
                   {data?.tags.map((tag, index) => (
                     <span className=' text-black/75' key={index}>
                       #{tag}
@@ -171,7 +171,7 @@ const Project = () => {
                   ))}
                 </p>
               </div>
-              <div className='mb-10 grid grid-cols-4 gap-10  rounded-md border-2 px-6 py-1 shadow-lg'>
+              <div className='mb-10 grid grid-cols-1 rounded-md border-2 px-6 py-1 shadow-lg md:grid-cols-4 md:gap-10'>
                 <div className='flex flex-row items-center gap-2'>
                   <FaHandHoldingMedical className='text-black/50' size={40} />
                   <span className='from-orange to-blue my-4 bg-gradient-to-r bg-clip-text text-xs font-semibold italic text-transparent'>
@@ -238,16 +238,20 @@ const Project = () => {
           </div>
         </div>
         <div className=' mb-20 whitespace-pre-wrap rounded-lg p-10 text-gray-600 shadow-xl '>
-          <div className='my-10 grid grid-cols-6'>
-            <div className='text-xl font-medium text-black'>Teams Joined:</div>
-            <div className=' hidden bg-gray-300 p-2 md:col-span-4 md:flex md:h-3 md:w-full md:items-center md:rounded-full'>
+          <div className='my-10 flex flex-col gap-10 md:mr-40'>
+            <div className=' flex flex-col md:flex-row md:items-center md:justify-between'>
+              <div className='text-xl font-medium text-black'>
+                Teams Joined:
+              </div>
+              <div>{data.Team?.length}/25</div>
+            </div>
+            <div className='hidden bg-gray-300  p-2 md:flex md:h-3 md:w-full md:items-center md:rounded-full'>
               <div
                 className={`blue-orange-gradient h-2 rounded-full bg-gradient-to-bl ${
                   width[data.Team?.length - 1]
                 }`}
               ></div>
             </div>
-            <div className='text-center'>{data.Team?.length}/25</div>
           </div>
           {data?.description && (
             <>
@@ -281,12 +285,11 @@ const Project = () => {
             <p>No teams have joined this project yet </p>
           ) : (
             <div className='grid grid-cols-3 md:grid-cols-6'>
-              <div>
-                <p>Rank</p>
-                <p className='md:col-span-2'>College</p>
-                <p className='col-span-1 md:col-span-3'>Progress</p>
-              </div>
-              <div className='flex flex-col gap-4'>
+              <p>Rank</p>
+              <p className='md:col-span-2'>College</p>
+              <p className='col-span-1 md:col-span-3'>Progress</p>
+
+              <div className='col-span-3 flex flex-col gap-4 md:col-span-6'>
                 {data.Team.map((team, index) => (
                   <TeamCard key={team.id} team={team} index={index} />
                 ))}

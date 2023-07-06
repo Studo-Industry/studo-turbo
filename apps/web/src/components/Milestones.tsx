@@ -9,19 +9,19 @@ import { AppRouter } from 'server';
 import { api } from '~/utils/api';
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
-type userDataType = RouterOutput['user']['getOne'];
+type TeamDataType = RouterOutput['team']['getTeam'];
 
 const Milestone = ({
   currentStep,
   milestoneData,
-  userData,
+  teamData,
 
   setFiles,
   files,
 }: {
   currentStep: number;
   milestoneData: number;
-  userData: userDataType;
+  teamData: TeamDataType;
 
   setFiles: Dispatch<SetStateAction<string[]>>;
   files: string[];
@@ -87,10 +87,7 @@ const Milestone = ({
   };
   return (
     <>
-      {!(
-        userData.team.approvedMilestone + 1 ===
-        userData.team.presentMilestone
-      ) &&
+      {!(teamData.approvedMilestone + 1 === teamData.presentMilestone) &&
         currentStep + 1 === milestoneData && (
           <p className='my-10 w-full text-center font-bold'>
             Get your content <span className='text-red-500'>approved</span> for
@@ -125,7 +122,7 @@ const Milestone = ({
               <>
                 <div className='mt-4 flex flex-col gap-4'>
                   <h4 className='text-bold'>Uploaded Files</h4>
-                  {userData?.team?.milestone1.map((file, index) => (
+                  {teamData.milestone1.map((file, index) => (
                     <div
                       key={index}
                       className='text-bold w-fit rounded-md p-8 shadow-xl'
@@ -150,8 +147,8 @@ const Milestone = ({
                 <button
                   disabled={
                     !(
-                      userData.team.approvedMilestone + 1 ===
-                      userData.team.presentMilestone
+                      teamData.approvedMilestone + 1 ===
+                      teamData.presentMilestone
                     )
                   }
                   onClick={() => {
@@ -215,7 +212,7 @@ const Milestone = ({
             <>
               <div className='mt-4 flex flex-col gap-4'>
                 <h4 className='text-bold'>Uploaded Files</h4>
-                {userData?.team?.milestone2.map((file, index) => (
+                {teamData.milestone2.map((file, index) => (
                   <div
                     key={index}
                     className='text-bold w-fit rounded-md p-8 shadow-xl'
@@ -240,8 +237,8 @@ const Milestone = ({
               <button
                 disabled={
                   !(
-                    userData.team.approvedMilestone + 1 ===
-                    userData.team.presentMilestone
+                    teamData.approvedMilestone + 1 ===
+                    teamData.presentMilestone
                   )
                 }
                 onClick={() => {
@@ -277,7 +274,7 @@ const Milestone = ({
             <>
               <div className='mt-4 flex flex-col gap-4'>
                 <h4 className='text-bold'>Uploaded Files</h4>
-                {userData?.team?.milestone3.map((file, index) => (
+                {teamData.milestone3.map((file, index) => (
                   <div
                     key={index}
                     className='text-bold w-fit rounded-md p-8 shadow-xl'
@@ -302,8 +299,8 @@ const Milestone = ({
               <button
                 disabled={
                   !(
-                    userData.team.approvedMilestone + 1 ===
-                    userData.team.presentMilestone
+                    teamData.approvedMilestone + 1 ===
+                    teamData.presentMilestone
                   )
                 }
                 onClick={() => {
@@ -340,7 +337,7 @@ const Milestone = ({
             <>
               <div className='mt-4 flex flex-col gap-4'>
                 <h4 className='text-bold'>Uploaded Files</h4>
-                {userData?.team?.milestone4.map((file, index) => (
+                {teamData.milestone4.map((file, index) => (
                   <div
                     key={index}
                     className='text-bold w-fit rounded-md p-8 shadow-xl'
@@ -365,8 +362,8 @@ const Milestone = ({
               <button
                 disabled={
                   !(
-                    userData.team.approvedMilestone + 1 ===
-                    userData.team.presentMilestone
+                    teamData.approvedMilestone + 1 ===
+                    teamData.presentMilestone
                   )
                 }
                 onClick={() => {
@@ -402,7 +399,7 @@ const Milestone = ({
             <>
               <div className='mt-4 flex flex-col gap-4'>
                 <h4 className='text-bold'>Uploaded Files</h4>
-                {userData?.team?.milestone5.map((file, index) => (
+                {teamData.milestone5.map((file, index) => (
                   <div
                     key={index}
                     className='text-bold w-fit rounded-md p-8 shadow-xl'
@@ -427,8 +424,8 @@ const Milestone = ({
               <button
                 disabled={
                   !(
-                    userData.team.approvedMilestone + 1 ===
-                    userData.team.presentMilestone
+                    teamData.approvedMilestone + 1 ===
+                    teamData.presentMilestone
                   )
                 }
                 onClick={() => {
@@ -470,7 +467,7 @@ const Milestone = ({
             <>
               <div className='mt-4 flex flex-col gap-4'>
                 <h4 className='text-bold'>Uploaded Files</h4>
-                {userData?.team?.milestone6.map((file, index) => (
+                {teamData.milestone6.map((file, index) => (
                   <div
                     key={index}
                     className='text-bold w-fit rounded-md p-8 shadow-xl'
@@ -495,8 +492,8 @@ const Milestone = ({
               <button
                 disabled={
                   !(
-                    userData.team.approvedMilestone + 1 ===
-                    userData.team.presentMilestone
+                    teamData.approvedMilestone + 1 ===
+                    teamData.presentMilestone
                   )
                 }
                 onClick={() => {

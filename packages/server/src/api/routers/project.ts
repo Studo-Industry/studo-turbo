@@ -32,6 +32,11 @@ export const projectRouter = createTRPCRouter({
         take: limit + 1,
         skip: skip,
         cursor: cursor ? { id: cursor } : undefined,
+        select: {
+          title: true,
+          images: true,
+          id: true,
+        },
         orderBy: {
           id: 'asc',
         },
@@ -61,6 +66,11 @@ export const projectRouter = createTRPCRouter({
         take: limit + 1,
         skip: skip,
         cursor: cursor ? { id: cursor } : undefined,
+        select: {
+          title: true,
+          images: true,
+          id: true,
+        },
         orderBy: {
           id: 'asc',
         },
@@ -97,6 +107,11 @@ export const projectRouter = createTRPCRouter({
         take: limit + 1,
         skip: skip,
         cursor: cursor ? { id: cursor } : undefined,
+        select: {
+          title: true,
+          images: true,
+          id: true,
+        },
         orderBy: {
           id: 'asc',
         },
@@ -197,6 +212,11 @@ export const projectRouter = createTRPCRouter({
     .query(({ ctx, input }) => {
       return ctx.prisma.project.findMany({
         take: 3,
+        select: {
+          title: true,
+          images: true,
+          id: true,
+        },
         where: {
           categories: {
             has: input.category,

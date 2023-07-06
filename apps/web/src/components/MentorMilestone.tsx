@@ -10,9 +10,9 @@ import { api } from '~/utils/api';
 import Stepper from './Stepper';
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
-type userDataType = RouterOutput['user']['getOne'];
+type TeamDataType = RouterOutput['team']['getTeam'];
 
-const MentorMilestone = ({ userData }: { userData: userDataType }) => {
+const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
   let toastid: string;
   const [currentStep, setCurrentStep] = useState<number>(0);
   const steps = [1, 2, 3, 4, 5, 6];
@@ -55,7 +55,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
   });
 
   useEffect(() => {
-    setCurrentStep(userData.team.approvedMilestone);
+    setCurrentStep(teamData.approvedMilestone);
   }, []);
 
   return (
@@ -65,7 +65,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
           steps={steps}
           currentStep={currentStep}
           setCurrentStep={setCurrentStep}
-          milestoneData={userData.team.approvedMilestone}
+          milestoneData={teamData.approvedMilestone}
         />
         <div className='flex gap-12'>
           <button
@@ -80,7 +80,7 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
             onClick={() => setCurrentStep((prevStep) => prevStep + 1)}
             disabled={
               currentStep === steps.length - 1 ||
-              currentStep === userData.team.presentMilestone - 1
+              currentStep === teamData.presentMilestone - 1
             }
           >
             Next
@@ -90,8 +90,8 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
 
       {currentStep + 1 === 1 && (
         <>
-          {userData.team.approvedMilestone === 0 &&
-            (userData.team.presentMilestone === 1 ? (
+          {teamData.approvedMilestone === 0 &&
+            (teamData.presentMilestone === 1 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
                   Students are yet to submit anything
@@ -99,49 +99,49 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
               </div>
             ) : (
               <>
-              {userData.team.presentMilestone > 1 && (
-            <div>
-              <p className='font-bold'>Uploaded Files:</p>
-              {userData.team.milestone1.map((file, index) => (
-                <div
-                  key={index}
-                  className='text-bold w-fit rounded-md p-8 shadow-xl'
-                >
-                  {file}
+                {teamData.presentMilestone > 1 && (
+                  <div>
+                    <p className='font-bold'>Uploaded Files:</p>
+                    {teamData.milestone1.map((file, index) => (
+                      <div
+                        key={index}
+                        className='text-bold w-fit rounded-md p-8 shadow-xl'
+                      >
+                        {file}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className=' m-10 flex w-full  items-center justify-center gap-10'>
+                  <button
+                    className='flex items-center justify-center gap-4 rounded-md bg-green-500 p-4 text-white'
+                    onClick={() => {
+                      approveMilestone.mutateAsync({
+                        presentMilestone: teamData.approvedMilestone + 1,
+                        teamId: teamData.id,
+                      });
+                    }}
+                  >
+                    <MdOutlineDone size={40} /> Approve
+                  </button>
+                  <button
+                    className='te xt-white flex items-center justify-center gap-4 rounded-md bg-red-500 p-4'
+                    onClick={() => {
+                      rejectMilestone.mutateAsync({
+                        milestone: teamData.presentMilestone - 1,
+                        teamId: teamData.id,
+                      });
+                    }}
+                  >
+                    <RxCross1 size={40} /> Reject
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
-              <div className=' m-10 flex w-full  items-center justify-center gap-10'>
-                <button
-                  className='flex items-center justify-center gap-4 rounded-md bg-green-500 p-4 text-white'
-                  onClick={() => {
-                    approveMilestone.mutateAsync({
-                      presentMilestone: userData.team.approvedMilestone + 1,
-                      teamId: userData.teamId,
-                    });
-                  }}
-                >
-                  <MdOutlineDone size={40} /> Approve
-                </button>
-                <button
-                  className='te xt-white flex items-center justify-center gap-4 rounded-md bg-red-500 p-4'
-                  onClick={() => {
-                    rejectMilestone.mutateAsync({
-                      milestone: userData.team.presentMilestone - 1,
-                      teamId: userData.teamId,
-                    });
-                  }}
-                >
-                  <RxCross1 size={40} /> Reject
-                </button>
-              </div>
               </>
             ))}
-          {userData.team.approvedMilestone >= 1 && (
+          {teamData.approvedMilestone >= 1 && (
             <div>
               <p className='font-bold'>Uploaded Files:</p>
-              {userData.team.milestone1.map((file, index) => (
+              {teamData.milestone1.map((file, index) => (
                 <div
                   key={index}
                   className='text-bold w-fit rounded-md p-8 shadow-xl'
@@ -155,8 +155,8 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 2 && (
         <>
-          {userData.team.approvedMilestone <= 1 &&
-            (userData.team.presentMilestone === 2 ? (
+          {teamData.approvedMilestone <= 1 &&
+            (teamData.presentMilestone === 2 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
                   Students are yet to submit anything
@@ -164,50 +164,50 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
               </div>
             ) : (
               <>
-              {userData.team.presentMilestone > 1 && (
-            <div>
-              <p className='font-bold'>Uploaded Files:</p>
-              {userData.team.milestone1.map((file, index) => (
-                <div
-                  key={index}
-                  className='text-bold w-fit rounded-md p-8 shadow-xl'
-                >
-                  {file}
-                </div>
-              ))}
-            </div>
-          )}
-              <div className=' m-10 flex w-full  items-center justify-center gap-10'>
-                <button
-                  className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4
+                {teamData.presentMilestone > 1 && (
+                  <div>
+                    <p className='font-bold'>Uploaded Files:</p>
+                    {teamData.milestone1.map((file, index) => (
+                      <div
+                        key={index}
+                        className='text-bold w-fit rounded-md p-8 shadow-xl'
+                      >
+                        {file}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className=' m-10 flex w-full  items-center justify-center gap-10'>
+                  <button
+                    className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4
                   text-white'
-                  onClick={() => {
-                    approveMilestone.mutateAsync({
-                      presentMilestone: userData.team.approvedMilestone + 1,
-                      teamId: userData.teamId,
-                    });
-                  }}
-                >
-                  <MdOutlineDone size={40} /> Approve
-                </button>
-                <button
-                  className='flex items-center justify-center gap-4 rounded-md bg-red-500  p-4 text-white'
-                  onClick={() => {
-                    rejectMilestone.mutateAsync({
-                      milestone: userData.team.presentMilestone - 1,
-                      teamId: userData.teamId,
-                    });
-                  }}
-                >
-                  <RxCross1 size={40} /> Reject
-                </button>
-              </div>
+                    onClick={() => {
+                      approveMilestone.mutateAsync({
+                        presentMilestone: teamData.approvedMilestone + 1,
+                        teamId: teamData.id,
+                      });
+                    }}
+                  >
+                    <MdOutlineDone size={40} /> Approve
+                  </button>
+                  <button
+                    className='flex items-center justify-center gap-4 rounded-md bg-red-500  p-4 text-white'
+                    onClick={() => {
+                      rejectMilestone.mutateAsync({
+                        milestone: teamData.presentMilestone - 1,
+                        teamId: teamData.id,
+                      });
+                    }}
+                  >
+                    <RxCross1 size={40} /> Reject
+                  </button>
+                </div>
               </>
             ))}
-          {userData.team.approvedMilestone >= 2 && (
+          {teamData.approvedMilestone >= 2 && (
             <div>
               <p className='font-bold'>Uploaded Files:</p>
-              {userData.team.milestone1.map((file, index) => (
+              {teamData.milestone1.map((file, index) => (
                 <div
                   key={index}
                   className='text-bold w-fit rounded-md p-8 shadow-xl'
@@ -221,8 +221,8 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 3 && (
         <>
-          {userData.team.approvedMilestone <= 2 &&
-            (userData.team.presentMilestone === 3 ? (
+          {teamData.approvedMilestone <= 2 &&
+            (teamData.presentMilestone === 3 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
                   Students are yet to submit anything
@@ -230,50 +230,50 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
               </div>
             ) : (
               <>
-              {userData.team.presentMilestone > 1 && (
-            <div>
-              <p className='font-bold'>Uploaded Files:</p>
-              {userData.team.milestone1.map((file, index) => (
-                <div
-                  key={index}
-                  className='text-bold w-fit rounded-md p-8 shadow-xl'
-                >
-                  {file}
-                </div>
-              ))}
-            </div>
-          )}
-              <div className=' m-10 flex w-full  items-center justify-center gap-10'>
-                <button
-                  className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4
+                {teamData.presentMilestone > 1 && (
+                  <div>
+                    <p className='font-bold'>Uploaded Files:</p>
+                    {teamData.milestone1.map((file, index) => (
+                      <div
+                        key={index}
+                        className='text-bold w-fit rounded-md p-8 shadow-xl'
+                      >
+                        {file}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className=' m-10 flex w-full  items-center justify-center gap-10'>
+                  <button
+                    className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4
                   text-white'
-                  onClick={() => {
-                    approveMilestone.mutateAsync({
-                      presentMilestone: userData.team.approvedMilestone + 1,
-                      teamId: userData.teamId,
-                    });
-                  }}
-                >
-                  <MdOutlineDone size={40} /> Approve
-                </button>
-                <button
-                  className='flex items-center justify-center gap-4 rounded-md bg-red-500  p-4 text-white'
-                  onClick={() => {
-                    rejectMilestone.mutateAsync({
-                      milestone: userData.team.presentMilestone - 1,
-                      teamId: userData.teamId,
-                    });
-                  }}
-                >
-                  <RxCross1 size={40} /> Reject
-                </button>
-              </div>
+                    onClick={() => {
+                      approveMilestone.mutateAsync({
+                        presentMilestone: teamData.approvedMilestone + 1,
+                        teamId: teamData.id,
+                      });
+                    }}
+                  >
+                    <MdOutlineDone size={40} /> Approve
+                  </button>
+                  <button
+                    className='flex items-center justify-center gap-4 rounded-md bg-red-500  p-4 text-white'
+                    onClick={() => {
+                      rejectMilestone.mutateAsync({
+                        milestone: teamData.presentMilestone - 1,
+                        teamId: teamData.id,
+                      });
+                    }}
+                  >
+                    <RxCross1 size={40} /> Reject
+                  </button>
+                </div>
               </>
             ))}
-          {userData.team.approvedMilestone >= 3 && (
+          {teamData.approvedMilestone >= 3 && (
             <div>
               <p className='font-bold'>Uploaded Files:</p>
-              {userData.team.milestone1.map((file, index) => (
+              {teamData.milestone1.map((file, index) => (
                 <div
                   key={index}
                   className='text-bold w-fit rounded-md p-8 shadow-xl'
@@ -287,8 +287,8 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 4 && (
         <>
-          {userData.team.approvedMilestone <= 3 &&
-            (userData.team.presentMilestone === 4 ? (
+          {teamData.approvedMilestone <= 3 &&
+            (teamData.presentMilestone === 4 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
                   Students are yet to submit anything
@@ -296,49 +296,49 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
               </div>
             ) : (
               <>
-              {userData.team.presentMilestone > 1 && (
-            <div>
-              <p className='font-bold'>Uploaded Files:</p>
-              {userData.team.milestone1.map((file, index) => (
-                <div
-                  key={index}
-                  className='text-bold w-fit rounded-md p-8 shadow-xl'
-                >
-                  {file}
+                {teamData.presentMilestone > 1 && (
+                  <div>
+                    <p className='font-bold'>Uploaded Files:</p>
+                    {teamData.milestone1.map((file, index) => (
+                      <div
+                        key={index}
+                        className='text-bold w-fit rounded-md p-8 shadow-xl'
+                      >
+                        {file}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className=' m-10 flex w-full  items-center justify-center gap-10'>
+                  <button
+                    className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4 text-white'
+                    onClick={() => {
+                      approveMilestone.mutateAsync({
+                        presentMilestone: teamData.approvedMilestone + 1,
+                        teamId: teamData.id,
+                      });
+                    }}
+                  >
+                    <MdOutlineDone size={40} /> Approve
+                  </button>
+                  <button
+                    className='flex items-center justify-center gap-4 rounded-md  bg-red-500 p-4 text-white'
+                    onClick={() => {
+                      rejectMilestone.mutateAsync({
+                        milestone: teamData.presentMilestone - 1,
+                        teamId: teamData.id,
+                      });
+                    }}
+                  >
+                    <RxCross1 size={40} /> Reject
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
-              <div className=' m-10 flex w-full  items-center justify-center gap-10'>
-                <button
-                  className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4 text-white'
-                  onClick={() => {
-                    approveMilestone.mutateAsync({
-                      presentMilestone: userData.team.approvedMilestone + 1,
-                      teamId: userData.teamId,
-                    });
-                  }}
-                >
-                  <MdOutlineDone size={40} /> Approve
-                </button>
-                <button
-                  className='flex items-center justify-center gap-4 rounded-md  bg-red-500 p-4 text-white'
-                  onClick={() => {
-                    rejectMilestone.mutateAsync({
-                      milestone: userData.team.presentMilestone - 1,
-                      teamId: userData.teamId,
-                    });
-                  }}
-                >
-                  <RxCross1 size={40} /> Reject
-                </button>
-              </div>
               </>
             ))}
-          {userData.team.approvedMilestone >= 4 && (
+          {teamData.approvedMilestone >= 4 && (
             <div>
               <p className='font-bold'>Uploaded Files:</p>
-              {userData.team.milestone1.map((file, index) => (
+              {teamData.milestone1.map((file, index) => (
                 <div
                   key={index}
                   className='text-bold w-fit rounded-md p-8 shadow-xl'
@@ -352,8 +352,8 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 5 && (
         <>
-          {userData.team.approvedMilestone <= 4 &&
-            (userData.team.presentMilestone === 5 ? (
+          {teamData.approvedMilestone <= 4 &&
+            (teamData.presentMilestone === 5 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
                   Students are yet to submit anything
@@ -361,49 +361,49 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
               </div>
             ) : (
               <>
-              {userData.team.presentMilestone > 1 && (
-            <div>
-              <p className='font-bold'>Uploaded Files:</p>
-              {userData.team.milestone1.map((file, index) => (
-                <div
-                  key={index}
-                  className='text-bold w-fit rounded-md p-8 shadow-xl'
-                >
-                  {file}
+                {teamData.presentMilestone > 1 && (
+                  <div>
+                    <p className='font-bold'>Uploaded Files:</p>
+                    {teamData.milestone1.map((file, index) => (
+                      <div
+                        key={index}
+                        className='text-bold w-fit rounded-md p-8 shadow-xl'
+                      >
+                        {file}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className=' m-10 flex w-full  items-center justify-center gap-10'>
+                  <button
+                    className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4 text-white'
+                    onClick={() => {
+                      approveMilestone.mutateAsync({
+                        presentMilestone: teamData.approvedMilestone + 1,
+                        teamId: teamData.id,
+                      });
+                    }}
+                  >
+                    <MdOutlineDone size={40} /> Approve
+                  </button>
+                  <button
+                    className='flex items-center justify-center gap-4 rounded-md  bg-red-500 p-4 text-white'
+                    onClick={() => {
+                      rejectMilestone.mutateAsync({
+                        milestone: teamData.presentMilestone - 1,
+                        teamId: teamData.id,
+                      });
+                    }}
+                  >
+                    <RxCross1 size={40} /> Reject
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
-              <div className=' m-10 flex w-full  items-center justify-center gap-10'>
-                <button
-                  className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4 text-white'
-                  onClick={() => {
-                    approveMilestone.mutateAsync({
-                      presentMilestone: userData.team.approvedMilestone + 1,
-                      teamId: userData.teamId,
-                    });
-                  }}
-                >
-                  <MdOutlineDone size={40} /> Approve
-                </button>
-                <button
-                  className='flex items-center justify-center gap-4 rounded-md  bg-red-500 p-4 text-white'
-                  onClick={() => {
-                    rejectMilestone.mutateAsync({
-                      milestone: userData.team.presentMilestone - 1,
-                      teamId: userData.teamId,
-                    });
-                  }}
-                >
-                  <RxCross1 size={40} /> Reject
-                </button>
-              </div>
               </>
             ))}
-          {userData.team.approvedMilestone >= 5 && (
+          {teamData.approvedMilestone >= 5 && (
             <div>
               <p className='font-bold'>Uploaded Files:</p>
-              {userData.team.milestone1.map((file, index) => (
+              {teamData.milestone1.map((file, index) => (
                 <div
                   key={index}
                   className='text-bold w-fit rounded-md p-8 shadow-xl'
@@ -417,8 +417,8 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
       )}
       {currentStep + 1 === 6 && (
         <>
-          {userData.team.approvedMilestone <= 5 &&
-            (userData.team.presentMilestone === 6 ? (
+          {teamData.approvedMilestone <= 5 &&
+            (teamData.presentMilestone === 6 ? (
               <div className='my-10 flex w-full justify-center whitespace-pre-wrap'>
                 <h3 className='text-lg font-bold'>
                   Students are yet to submit anything
@@ -426,49 +426,49 @@ const MentorMilestone = ({ userData }: { userData: userDataType }) => {
               </div>
             ) : (
               <>
-              {userData.team.presentMilestone > 1 && (
-            <div>
-              <p className='font-bold'>Uploaded Files:</p>
-              {userData.team.milestone1.map((file, index) => (
-                <div
-                  key={index}
-                  className='text-bold w-fit rounded-md p-8 shadow-xl'
-                >
-                  {file}
+                {teamData.presentMilestone > 1 && (
+                  <div>
+                    <p className='font-bold'>Uploaded Files:</p>
+                    {teamData.milestone1.map((file, index) => (
+                      <div
+                        key={index}
+                        className='text-bold w-fit rounded-md p-8 shadow-xl'
+                      >
+                        {file}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <div className=' m-10 flex w-full  items-center justify-center gap-10'>
+                  <button
+                    className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4 text-white'
+                    onClick={() => {
+                      approveMilestone.mutateAsync({
+                        presentMilestone: teamData.approvedMilestone + 1,
+                        teamId: teamData.id,
+                      });
+                    }}
+                  >
+                    <MdOutlineDone size={40} /> Approve
+                  </button>
+                  <button
+                    className='flex items-center justify-center gap-4 rounded-md  bg-red-500 p-4 text-white'
+                    onClick={() => {
+                      rejectMilestone.mutateAsync({
+                        milestone: teamData.presentMilestone - 1,
+                        teamId: teamData.id,
+                      });
+                    }}
+                  >
+                    <RxCross1 size={40} /> Reject
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
-              <div className=' m-10 flex w-full  items-center justify-center gap-10'>
-                <button
-                  className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4 text-white'
-                  onClick={() => {
-                    approveMilestone.mutateAsync({
-                      presentMilestone: userData.team.approvedMilestone + 1,
-                      teamId: userData.teamId,
-                    });
-                  }}
-                >
-                  <MdOutlineDone size={40} /> Approve
-                </button>
-                <button
-                  className='flex items-center justify-center gap-4 rounded-md  bg-red-500 p-4 text-white'
-                  onClick={() => {
-                    rejectMilestone.mutateAsync({
-                      milestone: userData.team.presentMilestone - 1,
-                      teamId: userData.teamId,
-                    });
-                  }}
-                >
-                  <RxCross1 size={40} /> Reject
-                </button>
-              </div>
               </>
             ))}
-          {userData.team.approvedMilestone >= 6 && (
+          {teamData.approvedMilestone >= 6 && (
             <div>
               <p className='font-bold'>Uploaded Files:</p>
-              {userData.team.milestone1.map((file, index) => (
+              {teamData.milestone1.map((file, index) => (
                 <div
                   key={index}
                   className='text-bold w-fit rounded-md p-8 shadow-xl'

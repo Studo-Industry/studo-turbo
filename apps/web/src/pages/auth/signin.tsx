@@ -6,10 +6,12 @@ import { getProviders, signIn } from 'next-auth/react';
 import { getServerSession } from 'next-auth/next';
 import { FaDiscord, FaGithub, FaGoogle } from 'react-icons/fa';
 import { IoLogInOutline } from 'react-icons/io5';
-
-import { authOptions } from 'server';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { toast } from 'react-hot-toast';
+
+import { authOptions } from 'server';
+import LOGO from '~/images/studoindustry logo.png';
 
 const style = (id: string) => {
   if (id === 'google') {
@@ -42,20 +44,24 @@ export default function SignIn({
   const { error } = useRouter().query;
 
   return (
-    <div className='my-20 flex min-h-full min-w-full  flex-col items-center justify-center gap-10 p-10 '>
-      {error && <SignInError error={error} />}
-      <p className='text-xl font-bold'>Sign In With</p>
-      {Object.values(providers).map((provider) => (
-        <button
-          key={provider.name}
-          className='flex w-3/12 items-center justify-center  gap-8 rounded-md border-4 p-4 text-lg font-semibold'
-          onClick={() => signIn(provider.id)}
-          style={style(provider.id)}
-        >
-          {logo(provider.id)}
-          {provider.name}
-        </button>
-      ))}
+    <div className='z-100 absolute left-0 top-0 flex h-[100vh] w-full flex-col items-center justify-center bg-white md:px-96'>
+      <div className='my-20 flex min-h-full min-w-full flex-col items-center justify-center gap-10 p-10 '>
+        <Image src={LOGO} width={130} height={40} alt='LOGO' />
+
+        {error && <SignInError error={error} />}
+        <p className='text-xl font-bold'>Sign In With</p>
+        {Object.values(providers).map((provider) => (
+          <button
+            key={provider.name}
+            className='flex w-10/12 items-center justify-center gap-8  rounded-md border-4 p-4 text-lg font-semibold md:w-4/12'
+            onClick={() => signIn(provider.id)}
+            style={style(provider.id)}
+          >
+            {logo(provider.id)}
+            {provider.name}
+          </button>
+        ))}
+      </div>
     </div>
   );
 }

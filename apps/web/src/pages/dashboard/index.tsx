@@ -69,7 +69,7 @@ const Dashboard = ({
   const { data: userData, status: userStatus } = api.user.getOne.useQuery({
     id: data?.user?.id,
   });
-  if (!userData?.firstName) {
+  if (userData?.firstName === '' || null) {
     router.push('/auth/user-info');
   }
   const {

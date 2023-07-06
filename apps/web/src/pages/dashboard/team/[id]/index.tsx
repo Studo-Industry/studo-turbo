@@ -111,25 +111,14 @@ const Team = ({
     });
   const [currentStep, setCurrentStep] = useState(0);
 
-  const { data: userData, status: userStatus } = api.user.getOne.useQuery({
-    id: data?.user?.id,
-  });
   const { data: teamData, status: teamStatus } = api.team.getTeam.useQuery({
     id: String(router.query.id),
   });
 
-  if (
-    userStatus === 'loading' ||
-    mileStoneStatus === 'loading' ||
-    teamStatus === 'loading'
-  )
+  if (mileStoneStatus === 'loading' || teamStatus === 'loading')
     return <PreLoader />;
-  // if (milestoneData === undefined) return <h2>Error loading data...</h2>;
-  if (
-    userStatus === 'error' ||
-    mileStoneStatus === 'error' ||
-    teamStatus === 'error'
-  )
+
+  if (mileStoneStatus === 'error' || teamStatus === 'error')
     return <Error error='Error Loading data, Please try again in some time.' />;
 
   if (!teamData) return <Error error='Team doesnt exist' />;
@@ -151,7 +140,7 @@ const Team = ({
       </button>
       <div className='flex flex-row items-center justify-between'>
         <h1 className='pb-10 text-2xl font-bold'>My Team</h1>
-        {teamData.leader === userData.id ? (
+        {teamData.leader === data.user.id ? (
           <>
             <Link
               href='/dashboard/'
@@ -458,12 +447,13 @@ const Team = ({
       </div>
       <h1 className='py-10 text-2xl font-bold'>Milestones</h1>
       <div className='relative  rounded-xl bg-white px-10 py-10 shadow-xl '>
-        {teamData.members.length === 4 || teamData.members.length === 5 ? (
+        {(teamData.members.length === 5 && teamData.mentor !== null) ||
+        teamData.members.length === 6 ? (
           <>
             <div className='flex w-full flex-col items-start justify-start py-8'>
-              {teamData.id === teamData.mentor ? (
+              {data.user.id === teamData.mentor ? (
                 <MentorMilestone
-                  userData={userData}
+                  teamData={teamData}
                   // currentStep={currentStep}
                 />
               ) : (
@@ -502,7 +492,7 @@ const Team = ({
                   <Milestone
                     currentStep={currentStep}
                     milestoneData={milestoneData}
-                    userData={userData}
+                    teamData={teamData}
                     files={files}
                     setFiles={setFiles}
                   />
