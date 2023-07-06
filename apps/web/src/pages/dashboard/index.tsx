@@ -63,13 +63,15 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 const Dashboard = ({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+  const router = useRouter();
   const [page, setPage] = useState(0);
   const [searchInput, setSearchInput] = useState('');
   const { data: userData, status: userStatus } = api.user.getOne.useQuery({
     id: data?.user?.id,
   });
-
-  const router = useRouter();
+  if (!userData?.firstName) {
+    router.push('/auth/user-info');
+  }
   const {
     data: projects,
     fetchNextPage,

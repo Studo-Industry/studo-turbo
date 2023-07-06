@@ -1,6 +1,9 @@
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import React, { FormEvent, useState } from 'react';
 import { toast } from 'react-hot-toast';
+
+import LOGO from '~/images/studoindustry logo.png';
 import { api } from '~/utils/api';
 
 const UserInfo = () => {
@@ -100,13 +103,14 @@ const UserInfo = () => {
   };
 
   return (
-    <div className='mx-96 my-20'>
-      <h1 className='from-orange to-blue my-4 bg-gradient-to-r bg-clip-text text-xl font-extrabold text-transparent'>
+    <div className='z-100 absolute left-0 top-0 flex h-[100vh] w-full flex-col items-center justify-center bg-white md:px-96'>
+      <Image src={LOGO} width={130} height={40} alt='LOGO' />
+      <h1 className='from-orange to-blue my-6 bg-gradient-to-r bg-clip-text text-xl font-extrabold text-transparent'>
         We need some Information...
       </h1>
       <form
         onSubmit={(event) => void submitForm(event)}
-        className='grid grid-cols-1 gap-5 md:grid-cols-3'
+        className='grid grid-cols-1 gap-4 md:grid-cols-3'
       >
         <input
           type='text'
@@ -138,7 +142,7 @@ const UserInfo = () => {
         />
         <input
           type='tel'
-          className='col-span-3 rounded-md border-2 border-gray-300 p-2'
+          className='rounded-md border-2 border-gray-300 p-2 md:col-span-3'
           placeholder='Contact'
           name='contact'
           id='contact'
@@ -146,7 +150,7 @@ const UserInfo = () => {
             setContact(Number(event.target.value));
           }}
         />
-        <div className='col-span-3 flex flex-1 flex-col gap-2'>
+        <div className='flex flex-col gap-2 md:col-span-3 md:flex-1'>
           <input
             className='rounded-md border-2 border-gray-300 p-2'
             type='text'
@@ -185,7 +189,7 @@ const UserInfo = () => {
             </div>
           )}
         </div>
-        <div className='col-span-3 flex flex-col items-start gap-2'>
+        <div className='flex flex-col items-start gap-2 md:col-span-3'>
           <label htmlFor='mentor'>Are you joining as a mentor?</label>
           <input
             type='checkbox'
@@ -197,8 +201,8 @@ const UserInfo = () => {
           />
         </div>
         {!mentor && (
-          <div className='col-span-3 grid grid-cols-1 gap-5 md:grid-cols-3'>
-            <div className='col-span-3 flex flex-1 flex-col gap-2'>
+          <div className='grid grid-cols-1 gap-4 md:col-span-3 md:grid-cols-3'>
+            <div className='flex flex-1 flex-col gap-2 md:col-span-3'>
               <input
                 className='rounded-md border-2 border-gray-300 p-2'
                 type='text'
@@ -232,7 +236,7 @@ const UserInfo = () => {
               )}
             </div>
             <select
-              className='col-span-3 rounded-md border-2 border-gray-300  p-2'
+              className='rounded-md border-2 border-gray-300 p-2  md:col-span-3'
               id='year'
               name='year'
               value={selectYear}
@@ -256,7 +260,7 @@ const UserInfo = () => {
             </select>
           </div>
         )}
-        <button className='hover:blue-orange-gradient col-span-3 rounded-md border-2 border-black bg-transparent p-2 font-semibold text-black shadow-xl transition-all hover:border-none hover:bg-gradient-to-bl hover:text-white'>
+        <button className='hover:blue-orange-gradient rounded-md border-2 border-black bg-transparent p-2 font-semibold text-black shadow-xl transition-all hover:border-none hover:bg-gradient-to-bl hover:text-white md:col-span-3'>
           Submit
         </button>
       </form>

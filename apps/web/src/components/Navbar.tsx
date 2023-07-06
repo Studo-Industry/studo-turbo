@@ -308,7 +308,7 @@ const Navbar: NextPage = () => {
         } right-4 top-24 z-10 rounded-md bg-white p-10 shadow-2xl`}
       >
         <Link
-          className='m-2 flex gap-4 rounded-md border-b-2 p-2  hover:cursor-pointer hover:bg-gray-300'
+          className='m-2 flex items-center  gap-4 rounded-md border-b-2 p-2  hover:cursor-pointer hover:bg-gray-300'
           href='/dashboard/profile'
           onClick={() => {
             setPosition3((previousvalue) => {
