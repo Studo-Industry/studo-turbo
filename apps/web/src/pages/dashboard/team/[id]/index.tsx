@@ -304,7 +304,7 @@ const Team = ({
                 size={20}
                 onClick={() => {
                   void navigator.clipboard.writeText(
-                    'http://localhost:3000/' +
+                    'https://studo.vercel.app/' +
                       'dashboard/team/join/' +
                       teamData?.referral_code,
                   );
