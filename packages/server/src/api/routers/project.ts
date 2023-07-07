@@ -6,7 +6,7 @@ import { TRPCError } from '@trpc/server';
 
 const s3 = new S3({
   apiVersion: '2006-03-01',
-  accessKeyId: process.env.AWS_ACCESS_KEY,
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET,
   region: process.env.AWS_REGION,
   signatureVersion: 'v4',
