@@ -76,46 +76,43 @@ const Dashboard = ({
     data: projects,
     fetchNextPage,
     hasNextPage,
-    hasPreviousPage,
     isFetching,
     isLoading,
-    fetchPreviousPage,
     status: projectStatus,
-    isFetchingPreviousPage,
     isFetchingNextPage,
   } = searchInput === ''
     ? Object.keys(router.query).length === 0
       ? api.project.getBatch.useInfiniteQuery(
           {
             limit: 6,
-            keepPreviousData: true,
           },
           {
             getNextPageParam: (lastPage) => lastPage.nextCursor,
+            keepPreviousData: true,
           },
         )
       : api.project.getBatchByCategory.useInfiniteQuery(
           {
             limit: 6,
             category: String(router.query.category),
-            keepPreviousData: true,
           },
           {
             getNextPageParam: (lastPage) => lastPage.nextCursor,
+            keepPreviousData: true,
           },
         )
     : api.project.getBatchBySearch.useInfiniteQuery(
         {
           search: searchInput,
           limit: 6,
-          keepPreviousData: true,
         },
         {
           getNextPageParam: (lastPage) => lastPage.nextCursor,
+          keepPreviousData: true,
         },
       );
-  const toShow = projects?.pages.flatMap((page) => page.items);
-
+  const toShow = projects?.pages[page]?.items;
+  console.log(projects);
   if (data?.user.role === 'ADMIN') {
     void router.push('/admin/dashboard');
   }
@@ -138,21 +135,7 @@ const Dashboard = ({
   if (projectStatus === 'error') {
     return <Error error='Error Loading data, Please try again in some time.' />;
   }
-  const loadMoreData = () => {
-    if (hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  };
 
-  const handleScroll = () => {
-    const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-    if (scrollTop + clientHeight >= scrollHeight - 200) {
-      loadMoreData();
-    }
-  };
-
-  // Attach scroll event listener to the scrollable element
-  window.addEventListener('scroll', handleScroll);
   return (
     <div className='my-20'>
       <div className='mx-6 my-16 md:mx-20'>
@@ -217,11 +200,11 @@ const Dashboard = ({
         <div className='mx-6 my-14 md:mx-20'>
           <h1 className='text-2xl font-semibold'>Projects</h1>
           <div className='my-2 grid w-full grid-cols-1 gap-3 py-10 md:grid-cols-3'>
-            {isLoading ? (
+            {isLoading || isFetchingNextPage || isFetching ? (
               <div className='md:col-span-3'>
                 <PreLoader />
               </div>
-            ) : (
+            ) : toShow.length !== 0 ? (
               toShow?.map((project) => (
                 <ProjectCard
                   key={project.id}
@@ -230,12 +213,33 @@ const Dashboard = ({
                   images={project.images}
                 />
               ))
-            )}
-            {isFetchingNextPage && (
-              <div className='w-full md:col-span-3'>
-                <PreLoader />
+            ) : (
+              <div className='py-20 text-center md:col-span-3'>
+                Nothing to see here!
               </div>
             )}
+          </div>
+          <div className='flex w-full items-center justify-between'>
+            <button
+              className='rounded-md bg-black p-4 font-bold text-white disabled:cursor-not-allowed disabled:bg-red-500/50'
+              onClick={() => {
+                setPage((prev) => prev - 1);
+              }}
+              disabled={page === 0}
+            >
+              Previous Page
+            </button>
+            {page + 1}
+            <button
+              className='rounded-md bg-black p-4 font-bold text-white disabled:cursor-not-allowed disabled:bg-red-500/50'
+              onClick={() => {
+                fetchNextPage();
+                setPage((prev) => prev + 1);
+              }}
+              disabled={!hasNextPage || isFetchingNextPage}
+            >
+              {isFetchingNextPage ? 'Loading more...' : 'Next Page'}
+            </button>
           </div>
         </div>
       </div>

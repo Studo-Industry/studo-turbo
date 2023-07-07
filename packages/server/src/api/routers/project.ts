@@ -62,24 +62,41 @@ export const projectRouter = createTRPCRouter({
     )
     .query(async ({ ctx, input }) => {
       const { limit, skip, cursor } = input;
-      const items = await ctx.prisma.project.findMany({
-        take: limit + 1,
-        skip: skip,
-        cursor: cursor ? { id: cursor } : undefined,
-        select: {
-          title: true,
-          images: true,
-          id: true,
-        },
-        orderBy: {
-          id: 'asc',
-        },
-        where: {
-          categories: {
-            has: input.category,
+      let items;
+      if (input.category === 'All Projects') {
+        items = await ctx.prisma.project.findMany({
+          take: limit + 1,
+          skip: skip,
+          cursor: cursor ? { id: cursor } : undefined,
+          select: {
+            title: true,
+            images: true,
+            id: true,
           },
-        },
-      });
+          orderBy: {
+            id: 'asc',
+          },
+        });
+      } else {
+        items = await ctx.prisma.project.findMany({
+          take: limit + 1,
+          skip: skip,
+          cursor: cursor ? { id: cursor } : undefined,
+          select: {
+            title: true,
+            images: true,
+            id: true,
+          },
+          orderBy: {
+            id: 'asc',
+          },
+          where: {
+            categories: {
+              has: input.category,
+            },
+          },
+        });
+      }
       let nextCursor: typeof cursor | undefined = undefined;
       if (items.length > limit) {
         const nextItem = items.pop(); // return the last item from the array
@@ -209,20 +226,31 @@ export const projectRouter = createTRPCRouter({
     }),
   getSample: publicProcedure
     .input(z.object({ category: z.string() }))
-    .query(({ ctx, input }) => {
-      return ctx.prisma.project.findMany({
-        take: 3,
-        select: {
-          title: true,
-          images: true,
-          id: true,
-        },
-        where: {
-          categories: {
-            has: input.category,
+    .query(async ({ ctx, input }) => {
+      if (input.category === 'undefined') {
+        return await ctx.prisma.project.findMany({
+          take: 3,
+          select: {
+            title: true,
+            images: true,
+            id: true,
           },
-        },
-      });
+        });
+      } else {
+        return await ctx.prisma.project.findMany({
+          take: 3,
+          select: {
+            title: true,
+            images: true,
+            id: true,
+          },
+          where: {
+            categories: {
+              has: input.category,
+            },
+          },
+        });
+      }
     }),
 
   //admin procedures
