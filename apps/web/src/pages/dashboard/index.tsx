@@ -21,7 +21,7 @@ const links = [
   { name: 'My Profile', link: '/dashboard/profile' },
   { name: 'Yet To Fill', link: '/dashboard' },
 ];
-
+// changing regions bruh
 const projectCategories = [
   { name: 'All Projects' },
   { name: 'Computer science engineering' },
