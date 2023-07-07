@@ -141,7 +141,7 @@ export const teamRouter = createTRPCRouter({
           message: `This team is for year ${team.year}.`,
         });
       }
-      if (user?.team[0] !== null) {
+      if (user.team.length!==0) {
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: 'You are already part of a team.',

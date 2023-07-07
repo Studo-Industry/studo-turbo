@@ -4,7 +4,7 @@
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
-    "db:generate": "npx prisma generate",
+    "db:generate": "npx prisma generate --data-proxy",
     "db:push": "npx prisma db push --skip-generate",
     "dev": "tsc --watch",
     "build": "tsc",
