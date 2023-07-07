@@ -58,6 +58,12 @@ export const teamRouter = createTRPCRouter({
           payment_status: false,
           presentMilestone: 1,
           approvedMilestone: 0,
+          milestone1LinkCheck:false,
+          milestone2LinkCheck:false,
+          milestone3LinkCheck:false,
+          milestone4LinkCheck:false,
+          milestone5LinkCheck:false,
+          milestone6LinkCheck:false,
         },
       });
       await ctx.prisma.user.update({

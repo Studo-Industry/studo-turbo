@@ -68,7 +68,6 @@ model User {
   role          UserRole  @default(USER)
   wishlist      Project[]
   team          Team[]
-
 }
 
 model VerificationToken {
@@ -100,27 +99,33 @@ model Project {
 }
 
 model Team {
-  id                String   @id @default(cuid())
-  referral_code     String   @unique
-  college           String
-  year              Int
-  leader            String   @unique
-  mentor            String?
-  members           User[]
+  id                  String   @id @default(cuid())
+  referral_code       String   @unique
+  college             String
+  year                Int
+  leader              String   @unique
+  mentor              String?
+  members             User[]
   // memberIds     String    @relation()
-  project           Project  @relation(fields: [projectId], references: [id])
-  projectId         String
-  status            Int      @default(0)
-  appliedAt         DateTime @default(now())
-  milestone1        String[]
-  milestone2        String[]
-  milestone3        String[]
-  milestone4        String[]
-  milestone5        String[]
-  milestone6        String[]
-  presentMilestone  Int
-  approvedMilestone Int
-  payment_status    Boolean  @default(false)
+  project             Project  @relation(fields: [projectId], references: [id])
+  projectId           String
+  status              Int      @default(0)
+  appliedAt           DateTime @default(now())
+  milestone1          String[]
+  milestone1LinkCheck Boolean
+  milestone2          String[]
+  milestone2LinkCheck Boolean
+  milestone3          String[]
+  milestone3LinkCheck Boolean
+  milestone4          String[]
+  milestone4LinkCheck Boolean
+  milestone5          String[]
+  milestone5LinkCheck Boolean
+  milestone6          String[]
+  milestone6LinkCheck Boolean
+  presentMilestone    Int
+  approvedMilestone   Int
+  payment_status      Boolean  @default(false)
 }
 
 model College {
