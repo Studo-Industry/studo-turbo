@@ -660,6 +660,11 @@ const Milestone = ({
           )}
         </div>
       )}
+      {currentStep + 1 > 6 && (
+        <div className='flex flex-row justify-center items-center w-full py-20'>
+          <h2 className='text-green-500 font-bold'>All Milestones Have Been Submitted!</h2>
+        </div>
+      )}
     </>
   );
 };
