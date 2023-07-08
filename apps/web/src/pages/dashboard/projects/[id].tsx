@@ -197,7 +197,8 @@ const Project = () => {
                   </span>
                 </div>
               </div>
-              <div className='flex w-full flex-col gap-4 md:flex-row md:gap-10'>
+              {!data.Team && (
+                <div className='flex w-full flex-col gap-4 md:flex-row md:gap-10'>
                 <button
                   className='gradient-btn blue-orange-gradient hover:orange-white-gradient flex w-full justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
                   onClick={() => {
@@ -234,6 +235,7 @@ const Project = () => {
                     : 'Remove'}
                 </button>
               </div>
+              )}
             </div>
           </div>
         </div>
