@@ -24,7 +24,7 @@ const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
       toast.loading('Submitting Milestone...', { id: toastid });
     },
     onSuccess: () => {
-      const getTeamKey = getQueryKey(api.user.getOne);
+      const getTeamKey = getQueryKey(api.team.getTeam);
       void queryClient.invalidateQueries({
         queryKey: [...getTeamKey],
       });
@@ -41,7 +41,7 @@ const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
       toast.loading('Submitting Milestone...', { id: toastid });
     },
     onSuccess: () => {
-      const getTeamKey = getQueryKey(api.user.getOne);
+      const getTeamKey = getQueryKey(api.team.getTeam);
       void queryClient.invalidateQueries({
         queryKey: [...getTeamKey],
       });
@@ -102,6 +102,9 @@ const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
                 {teamData.presentMilestone > 1 && (
                   <div>
                     <p className='font-bold'>Uploaded Files:</p>
+                    {teamData.milestone1LinkCheck && 
+                    <p className='text-red-500 py-4'>Students uploaded an URL</p>
+                    }
                     {teamData.milestone1.map((file, index) => (
                       <div
                         key={index}
@@ -141,6 +144,9 @@ const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
           {teamData.approvedMilestone >= 1 && (
             <div>
               <p className='font-bold'>Uploaded Files:</p>
+              {teamData.milestone1LinkCheck && 
+                    <p className='text-red-500 py-4'>Students uploaded an URL</p>
+                    }
               {teamData.milestone1.map((file, index) => (
                 <div
                   key={index}
@@ -167,6 +173,9 @@ const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
                 {teamData.presentMilestone > 1 && (
                   <div>
                     <p className='font-bold'>Uploaded Files:</p>
+                    {teamData.milestone2LinkCheck && 
+                    <p className='text-red-500 py-4'>Students uploaded an URL</p>
+                    }
                     {teamData.milestone1.map((file, index) => (
                       <div
                         key={index}
@@ -207,6 +216,9 @@ const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
           {teamData.approvedMilestone >= 2 && (
             <div>
               <p className='font-bold'>Uploaded Files:</p>
+              {teamData.milestone2LinkCheck && 
+                    <p className='text-red-500 py-4'>Students uploaded an URL</p>
+                    }
               {teamData.milestone1.map((file, index) => (
                 <div
                   key={index}
@@ -233,6 +245,9 @@ const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
                 {teamData.presentMilestone > 1 && (
                   <div>
                     <p className='font-bold'>Uploaded Files:</p>
+                    {teamData.milestone3LinkCheck && 
+                    <p className='text-red-500 py-4'>Students uploaded an URL</p>
+                    }
                     {teamData.milestone1.map((file, index) => (
                       <div
                         key={index}
@@ -273,6 +288,9 @@ const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
           {teamData.approvedMilestone >= 3 && (
             <div>
               <p className='font-bold'>Uploaded Files:</p>
+              {teamData.milestone3LinkCheck && 
+                    <p className='text-red-500 py-4'>Students uploaded an URL</p>
+                    }
               {teamData.milestone1.map((file, index) => (
                 <div
                   key={index}
@@ -299,6 +317,9 @@ const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
                 {teamData.presentMilestone > 1 && (
                   <div>
                     <p className='font-bold'>Uploaded Files:</p>
+                    {teamData.milestone4LinkCheck && 
+                    <p className='text-red-500 py-4'>Students uploaded an URL</p>
+                    }
                     {teamData.milestone1.map((file, index) => (
                       <div
                         key={index}
@@ -338,6 +359,9 @@ const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
           {teamData.approvedMilestone >= 4 && (
             <div>
               <p className='font-bold'>Uploaded Files:</p>
+              {teamData.milestone4LinkCheck && 
+                    <p className='text-red-500 py-4'>Students uploaded an URL</p>
+                    }
               {teamData.milestone1.map((file, index) => (
                 <div
                   key={index}
@@ -364,6 +388,9 @@ const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
                 {teamData.presentMilestone > 1 && (
                   <div>
                     <p className='font-bold'>Uploaded Files:</p>
+                    {teamData.milestone5LinkCheck && 
+                    <p className='text-red-500 py-4'>Students uploaded an URL</p>
+                    }
                     {teamData.milestone1.map((file, index) => (
                       <div
                         key={index}
@@ -403,6 +430,9 @@ const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
           {teamData.approvedMilestone >= 5 && (
             <div>
               <p className='font-bold'>Uploaded Files:</p>
+              {teamData.milestone5LinkCheck && 
+                    <p className='text-red-500 py-4'>Students uploaded an URL</p>
+                    }
               {teamData.milestone1.map((file, index) => (
                 <div
                   key={index}
@@ -429,6 +459,9 @@ const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
                 {teamData.presentMilestone > 1 && (
                   <div>
                     <p className='font-bold'>Uploaded Files:</p>
+                    {teamData.milestone6LinkCheck && 
+                    <p className='text-red-500 py-4'>Students uploaded an URL</p>
+                    }
                     {teamData.milestone1.map((file, index) => (
                       <div
                         key={index}
@@ -468,6 +501,9 @@ const MentorMilestone = ({ teamData }: { teamData: TeamDataType }) => {
           {teamData.approvedMilestone >= 6 && (
             <div>
               <p className='font-bold'>Uploaded Files:</p>
+              {teamData.milestone6LinkCheck && 
+                    <p className='text-red-500 py-4'>Students uploaded an URL</p>
+                    }
               {teamData.milestone1.map((file, index) => (
                 <div
                   key={index}

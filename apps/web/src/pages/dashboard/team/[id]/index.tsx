@@ -304,7 +304,7 @@ const Team = ({
                 size={20}
                 onClick={() => {
                   void navigator.clipboard.writeText(
-                    'https://studo.vercel.app/' +
+                    'https://studo-web.vercel.app/' +
                       'dashboard/team/join/' +
                       teamData?.referral_code,
                   );
@@ -319,7 +319,9 @@ const Team = ({
         </div>
       </div>
       <h1 className='py-10 text-2xl font-bold'>My Project</h1>
-      <div className='rounded-xl bg-white px-4 py-10 shadow-xl md:px-10 '>
+      <Link
+      href={`/dashboard/projects/${teamData.projectId}`}
+       className='rounded-xl bg-white px-4 py-10 md:px-10 '>
         <div className='flex flex-col gap-8 pt-9  md:mx-20 md:flex-row'>
           <div
             className='flex flex-1 items-center justify-start rounded-lg bg-white p-4
@@ -327,15 +329,10 @@ const Team = ({
           >
             <div className='max-w-lg rounded-lg bg-slate-400'>
               {teamData?.project?.images.length !== 0 ? (
-                <ImageCarousel>
-                  {teamData?.project?.images.map((s, i) => (
-                    <img
-                      src={`${env.NEXT_PUBLIC_AWS_S3}${s}`}
-                      key={i}
-                      className='max-h-96 min-w-full'
-                    />
-                  ))}
-                </ImageCarousel>
+                <img
+                src={`${env.NEXT_PUBLIC_AWS_S3}${teamData.project.images[0]}`}
+                alt='project img'
+                 />
               ) : (
                 <img src={img1.src} alt='replacement image' />
               )}
@@ -444,7 +441,7 @@ const Team = ({
             </>
           )}
         </div>
-      </div>
+      </Link>
       <h1 className='py-10 text-2xl font-bold'>Milestones</h1>
       <div className='relative  rounded-xl bg-white px-10 py-10 shadow-xl '>
         {(teamData.members.length === 5 && teamData.mentor !== null) ||
