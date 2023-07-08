@@ -306,6 +306,7 @@ export const teamRouter = createTRPCRouter({
       z.object({
         milestone: z.number().max(6).min(1),
         files: z.string().array(),
+        typeofmilestone: z.boolean()
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -333,6 +334,7 @@ export const teamRouter = createTRPCRouter({
                   milestone1: {
                     push: input.files,
                   },
+                  milestone1LinkCheck:input.typeofmilestone,
                   presentMilestone: 2,
                 },
               });
@@ -346,6 +348,7 @@ export const teamRouter = createTRPCRouter({
                   milestone2: {
                     push: input.files,
                   },
+                  milestone2LinkCheck:input.typeofmilestone,
                   presentMilestone: 3,
                 },
               });
@@ -359,6 +362,7 @@ export const teamRouter = createTRPCRouter({
                   milestone3: {
                     push: input.files,
                   },
+                  milestone3LinkCheck:input.typeofmilestone,
                   presentMilestone: 4,
                 },
               });
@@ -372,6 +376,7 @@ export const teamRouter = createTRPCRouter({
                   milestone4: {
                     push: input.files,
                   },
+                  milestone4LinkCheck:input.typeofmilestone,
                   presentMilestone: 5,
                 },
               });
@@ -385,6 +390,7 @@ export const teamRouter = createTRPCRouter({
                   milestone5: {
                     push: input.files,
                   },
+                  milestone5LinkCheck:input.typeofmilestone,
                   presentMilestone: 6,
                 },
               });
@@ -398,6 +404,7 @@ export const teamRouter = createTRPCRouter({
                   milestone6: {
                     push: input.files,
                   },
+                  milestone6LinkCheck:input.typeofmilestone,
                   presentMilestone: 7,
                 },
               });

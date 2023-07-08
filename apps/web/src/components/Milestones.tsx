@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
 import { inferRouterOutputs } from '@trpc/server';
@@ -15,18 +15,18 @@ const Milestone = ({
   currentStep,
   milestoneData,
   teamData,
-
   setFiles,
   files,
 }: {
   currentStep: number;
   milestoneData: number;
   teamData: TeamDataType;
-
   setFiles: Dispatch<SetStateAction<string[]>>;
   files: string[];
 }) => {
   let toastid: string;
+  const [link, setLink] = useState<string>("")
+  const [linkCheck, setLinkCheck] = useState<boolean>(false)
   const queryClient = useQueryClient();
   const mutate = api.user.pdfUpload.useMutation();
   const submitMilestone = api.team.mileStoneSubmit.useMutation({
@@ -36,6 +36,8 @@ const Milestone = ({
     onSuccess: () => {
       const mileStoneSubmitKey = getQueryKey(api.team.mileStoneSubmit);
       const mileStoneDataKey = getQueryKey(api.team.getMilestone);
+      setLink("");
+      setLinkCheck(false);
       console.log(mileStoneDataKey, mileStoneSubmitKey);
       void queryClient.invalidateQueries({
         queryKey: [...mileStoneSubmitKey],
@@ -133,17 +135,27 @@ const Milestone = ({
                 </div>
               </>
             ) : (
-              <div className='py-8'>
-                <AddFile
-                  onFileSelect={(file: File) =>
-                    void uploadToS3({
-                      file: file,
-                      setFiles: setFiles,
-                      toastid: toastid,
-                    })
-                  }
-                />
-                <FileUpload files={files} />
+              <div className='py-8 flex flex-col gap-6'>
+                <div className='flex flex-col'>
+                  <label htmlFor="">Check the below box to upload URL instead of files:</label>
+                  <input type="checkbox" name="" id="" checked={linkCheck} onChange={(event) => setLinkCheck(value => !value)} className='h-10 w-10' />
+                </div>
+                {linkCheck ?
+                  <div className='flex flex-row items-center gap-6'>
+                    <label htmlFor="">File URL:</label>
+                    <input type="url" value={link} onChange={(event) => setLink(event.target.value)} className='border-2 flex-1 invalid:border-red-500 focus:outline-none valid:border-green-500 p-2 rounded-md' /></div> :
+                  <>
+                    <AddFile
+                      onFileSelect={(file: File) =>
+                        void uploadToS3({
+                          file: file,
+                          setFiles: setFiles,
+                          toastid: toastid,
+                        })
+                      }
+                    />
+                    <FileUpload files={files} /></>
+                }
                 <button
                   disabled={
                     !(
@@ -152,10 +164,14 @@ const Milestone = ({
                     )
                   }
                   onClick={() => {
+                    if (linkCheck && link !== "") {
+                      setFiles([link])
+                    }
                     if (files.length !== 0) {
                       void submitMilestone.mutateAsync({
                         files: files,
                         milestone: currentStep + 1,
+                        typeofmilestone: linkCheck
                       });
                     } else {
                       toast.error('Please upload required files');
@@ -223,17 +239,27 @@ const Milestone = ({
               </div>
             </>
           ) : (
-            <div className='py-8'>
-              <AddFile
-                onFileSelect={(file: File) =>
-                  void uploadToS3({
-                    file: file,
-                    setFiles: setFiles,
-                    toastid: toastid,
-                  })
-                }
-              />
-              <FileUpload files={files} />
+            <div className='py-8 flex flex-col gap-6'>
+              <div className='flex flex-col'>
+                <label htmlFor="">Check the below box to upload URL instead of files:</label>
+                <input type="checkbox" name="" id="" checked={linkCheck} onChange={(event) => setLinkCheck(value => !value)} className='h-10 w-10' />
+              </div>
+              {linkCheck ?
+                <div className='flex flex-row items-center gap-6'>
+                  <label htmlFor="">File URL:</label>
+                  <input type="url" value={link} onChange={(event) => setLink(event.target.value)} className='border-2 flex-1 invalid:border-red-500 focus:outline-none valid:border-green-500 p-2 rounded-md border-gray-500' /></div> :
+                <>
+                  <AddFile
+                    onFileSelect={(file: File) =>
+                      void uploadToS3({
+                        file: file,
+                        setFiles: setFiles,
+                        toastid: toastid,
+                      })
+                    }
+                  />
+                  <FileUpload files={files} /></>
+              }
               <button
                 disabled={
                   !(
@@ -242,13 +268,29 @@ const Milestone = ({
                   )
                 }
                 onClick={() => {
-                  if (files.length !== 0) {
-                    void submitMilestone.mutateAsync({
-                      files: files,
-                      milestone: currentStep + 1,
-                    });
-                  } else {
-                    toast.error('Please upload required files');
+                  if (linkCheck ) {
+                      if(link !== ""){
+                        void submitMilestone.mutateAsync({
+                          files: [link],
+                          milestone: currentStep + 1,
+                          typeofmilestone: linkCheck
+                        });
+                      }
+                      else{
+                        toast.error('Please upload required URL');
+
+                      }
+                  }
+                  else{
+                    if (files.length !== 0) {
+                      void submitMilestone.mutateAsync({
+                        files: files,
+                        milestone: currentStep + 1,
+                        typeofmilestone: linkCheck
+                      });
+                    } else {
+                      toast.error('Please upload required files');
+                    }
                   }
                 }}
                 className=' gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white disabled:bg-red-500'
@@ -285,17 +327,27 @@ const Milestone = ({
               </div>
             </>
           ) : (
-            <div className='py-8'>
-              <AddFile
-                onFileSelect={(file: File) =>
-                  void uploadToS3({
-                    file: file,
-                    setFiles: setFiles,
-                    toastid: toastid,
-                  })
-                }
-              />
-              <FileUpload files={files} />
+            <div className='py-8 flex flex-col gap-6'>
+              <div className='flex flex-col'>
+                <label htmlFor="">Check the below box to upload URL instead of files:</label>
+                <input type="checkbox" name="" id="" checked={linkCheck} onChange={(event) => setLinkCheck(value => !value)} className='h-10 w-10' />
+              </div>
+              {linkCheck ?
+                <div className='flex flex-row items-center gap-6'>
+                  <label htmlFor="">File URL:</label>
+                  <input type="url" value={link} onChange={(event) => setLink(event.target.value)} className='border-2 flex-1 invalid:border-red-500 focus:outline-none valid:border-green-500 p-2 rounded-md' /></div> :
+                <>
+                  <AddFile
+                    onFileSelect={(file: File) =>
+                      void uploadToS3({
+                        file: file,
+                        setFiles: setFiles,
+                        toastid: toastid,
+                      })
+                    }
+                  />
+                  <FileUpload files={files} /></>
+              }
               <button
                 disabled={
                   !(
@@ -304,13 +356,29 @@ const Milestone = ({
                   )
                 }
                 onClick={() => {
-                  if (files.length !== 0) {
-                    void submitMilestone.mutateAsync({
-                      files: files,
-                      milestone: currentStep + 1,
-                    });
-                  } else {
-                    toast.error('Please upload required files');
+                  if (linkCheck ) {
+                      if(link !== ""){
+                        void submitMilestone.mutateAsync({
+                          files: [link],
+                          milestone: currentStep + 1,
+                          typeofmilestone: linkCheck
+                        });
+                      }
+                      else{
+                        toast.error('Please upload required URL');
+
+                      }
+                  }
+                  else{
+                    if (files.length !== 0) {
+                      void submitMilestone.mutateAsync({
+                        files: files,
+                        milestone: currentStep + 1,
+                        typeofmilestone: linkCheck
+                      });
+                    } else {
+                      toast.error('Please upload required files');
+                    }
                   }
                 }}
                 className=' gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white disabled:bg-red-500'
@@ -348,17 +416,27 @@ const Milestone = ({
               </div>
             </>
           ) : (
-            <div className='py-8'>
-              <AddFile
-                onFileSelect={(file: File) =>
-                  void uploadToS3({
-                    file: file,
-                    setFiles: setFiles,
-                    toastid: toastid,
-                  })
-                }
-              />
-              <FileUpload files={files} />
+            <div className='py-8 flex flex-col gap-6'>
+              <div className='flex flex-col'>
+                <label htmlFor="">Check the below box to upload URL instead of files:</label>
+                <input type="checkbox" name="" id="" checked={linkCheck} onChange={(event) => setLinkCheck(value => !value)} className='h-10 w-10' />
+              </div>
+              {linkCheck ?
+                <div className='flex flex-row items-center gap-6'>
+                  <label htmlFor="">File URL:</label>
+                  <input type="url" value={link} onChange={(event) => setLink(event.target.value)} className='border-2 flex-1 invalid:border-red-500 focus:outline-none valid:border-green-500 p-2 rounded-md' /></div> :
+                <>
+                  <AddFile
+                    onFileSelect={(file: File) =>
+                      void uploadToS3({
+                        file: file,
+                        setFiles: setFiles,
+                        toastid: toastid,
+                      })
+                    }
+                  />
+                  <FileUpload files={files} /></>
+              }
               <button
                 disabled={
                   !(
@@ -367,13 +445,29 @@ const Milestone = ({
                   )
                 }
                 onClick={() => {
-                  if (files.length !== 0) {
-                    void submitMilestone.mutateAsync({
-                      files: files,
-                      milestone: currentStep + 1,
-                    });
-                  } else {
-                    toast.error('Please upload required files');
+                  if (linkCheck ) {
+                      if(link !== ""){
+                        void submitMilestone.mutateAsync({
+                          files: [link],
+                          milestone: currentStep + 1,
+                          typeofmilestone: linkCheck
+                        });
+                      }
+                      else{
+                        toast.error('Please upload required URL');
+
+                      }
+                  }
+                  else{
+                    if (files.length !== 0) {
+                      void submitMilestone.mutateAsync({
+                        files: files,
+                        milestone: currentStep + 1,
+                        typeofmilestone: linkCheck
+                      });
+                    } else {
+                      toast.error('Please upload required files');
+                    }
                   }
                 }}
                 className=' gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white disabled:bg-red-500'
@@ -410,17 +504,27 @@ const Milestone = ({
               </div>
             </>
           ) : (
-            <div className='py-8'>
-              <AddFile
-                onFileSelect={(file: File) =>
-                  void uploadToS3({
-                    file: file,
-                    setFiles: setFiles,
-                    toastid: toastid,
-                  })
-                }
-              />
-              <FileUpload files={files} />
+            <div className='py-8 flex flex-col gap-6'>
+              <div className='flex flex-col'>
+                <label htmlFor="">Check the below box to upload URL instead of files:</label>
+                <input type="checkbox" name="" id="" checked={linkCheck} onChange={(event) => setLinkCheck(value => !value)} className='h-10 w-10' />
+              </div>
+              {linkCheck ?
+                <div className='flex flex-row items-center gap-6'>
+                  <label htmlFor="">File URL:</label>
+                  <input type="url" value={link} onChange={(event) => setLink(event.target.value)} className='border-2 flex-1 invalid:border-red-500 focus:outline-none valid:border-green-500 p-2 rounded-md' /></div> :
+                <>
+                  <AddFile
+                    onFileSelect={(file: File) =>
+                      void uploadToS3({
+                        file: file,
+                        setFiles: setFiles,
+                        toastid: toastid,
+                      })
+                    }
+                  />
+                  <FileUpload files={files} /></>
+              }
               <button
                 disabled={
                   !(
@@ -429,13 +533,29 @@ const Milestone = ({
                   )
                 }
                 onClick={() => {
-                  if (files.length !== 0) {
-                    void submitMilestone.mutateAsync({
-                      files: files,
-                      milestone: currentStep + 1,
-                    });
-                  } else {
-                    toast.error('Please upload required files');
+                  if (linkCheck ) {
+                      if(link !== ""){
+                        void submitMilestone.mutateAsync({
+                          files: [link],
+                          milestone: currentStep + 1,
+                          typeofmilestone: linkCheck
+                        });
+                      }
+                      else{
+                        toast.error('Please upload required URL');
+
+                      }
+                  }
+                  else{
+                    if (files.length !== 0) {
+                      void submitMilestone.mutateAsync({
+                        files: files,
+                        milestone: currentStep + 1,
+                        typeofmilestone: linkCheck
+                      });
+                    } else {
+                      toast.error('Please upload required files');
+                    }
                   }
                 }}
                 className=' gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white disabled:bg-red-500'
@@ -478,17 +598,27 @@ const Milestone = ({
               </div>
             </>
           ) : (
-            <div className='py-8'>
-              <AddFile
-                onFileSelect={(file: File) =>
-                  void uploadToS3({
-                    file: file,
-                    setFiles: setFiles,
-                    toastid: toastid,
-                  })
-                }
-              />
-              <FileUpload files={files} />
+            <div className='py-8 flex flex-col gap-6'>
+              <div className='flex flex-col'>
+                <label htmlFor="">Check the below box to upload URL instead of files:</label>
+                <input type="checkbox" name="" id="" checked={linkCheck} onChange={(event) => setLinkCheck(value => !value)} className='h-10 w-10' />
+              </div>
+              {linkCheck ?
+                <div className='flex flex-row items-center gap-6'>
+                  <label htmlFor="">File URL:</label>
+                  <input type="url" value={link} onChange={(event) => setLink(event.target.value)} className='border-2 flex-1 invalid:border-red-500 focus:outline-none valid:border-green-500 p-2 rounded-md' /></div> :
+                <>
+                  <AddFile
+                    onFileSelect={(file: File) =>
+                      void uploadToS3({
+                        file: file,
+                        setFiles: setFiles,
+                        toastid: toastid,
+                      })
+                    }
+                  />
+                  <FileUpload files={files} /></>
+              }
               <button
                 disabled={
                   !(
@@ -497,13 +627,29 @@ const Milestone = ({
                   )
                 }
                 onClick={() => {
-                  if (files.length !== 0) {
-                    void submitMilestone.mutateAsync({
-                      files: files,
-                      milestone: currentStep + 1,
-                    });
-                  } else {
-                    toast.error('Please upload required files');
+                  if (linkCheck ) {
+                      if(link !== ""){
+                        void submitMilestone.mutateAsync({
+                          files: [link],
+                          milestone: currentStep + 1,
+                          typeofmilestone: linkCheck
+                        });
+                      }
+                      else{
+                        toast.error('Please upload required URL');
+
+                      }
+                  }
+                  else{
+                    if (files.length !== 0) {
+                      void submitMilestone.mutateAsync({
+                        files: files,
+                        milestone: currentStep + 1,
+                        typeofmilestone: linkCheck
+                      });
+                    } else {
+                      toast.error('Please upload required files');
+                    }
                   }
                 }}
                 className=' gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white disabled:bg-red-500'
@@ -517,5 +663,154 @@ const Milestone = ({
     </>
   );
 };
+
+// const Milestones = ({children, currentStep, milestoneData, teamData, setFiles, files }: {
+//   children: string | JSX.Element | JSX.Element[];
+//   currentStep: number;
+//   milestoneData: number;
+//   teamData: TeamDataType;
+//   setFiles: Dispatch<SetStateAction<string[]>>;
+//   files: string[];
+// }) => {
+//   const queryClient = useQueryClient();
+//   const submitMilestone = api.team.mileStoneSubmit.useMutation({
+//     onMutate: () => {
+//       toast.loading('Submitting your files..', { id: toastid });
+//     },
+//     onSuccess: () => {
+//       const mileStoneSubmitKey = getQueryKey(api.team.mileStoneSubmit);
+//       const mileStoneDataKey = getQueryKey(api.team.getMilestone);
+//       console.log(mileStoneDataKey, mileStoneSubmitKey);
+//       void queryClient.invalidateQueries({
+//         queryKey: [...mileStoneSubmitKey],
+//       });
+//       void queryClient.invalidateQueries({
+//         queryKey: [...mileStoneDataKey],
+//       });
+//       setFiles([]);
+//       toast.dismiss(toastid);
+//       toast.success('Submitted your files successfully', { id: toastid });
+//     },
+//     onError: (error) => {
+//       toast.dismiss(toastid);
+//       toast.error(`Error: ${error.message}`, { id: toastid });
+//     },
+//   });
+//   const mutate = api.user.pdfUpload.useMutation();
+//   let toastid: string;
+//   const uploadToS3 = async ({
+//     file,
+//     toastid,
+//     setFiles,
+//   }: {
+//     file: File;
+//     toastid: string;
+//     setFiles: Dispatch<SetStateAction<string[]>>;
+//   }) => {
+//     toast.loading('Uploding File', { id: toastid });
+//     const formData = new FormData();
+
+//     formData.append('file', file);
+
+//     const fileType = file.type;
+//     const { uploadUrl, key } = await mutate.mutateAsync({
+//       extension: fileType,
+//     });
+
+//     const responseAWS = await fetch(uploadUrl, {
+//       body: file,
+//       method: 'PUT',
+//     });
+
+//     if (responseAWS.ok === true) {
+//       toast.dismiss(toastid);
+//       toast.success('File Upload successfully', { id: toastid });
+//       setFiles((prevValue) => [...prevValue, `${key}`]);
+//       return;
+//     }
+//     toast.dismiss(toastid);
+//     toast.error('File Upload Failed', { id: toastid });
+//   };
+//   if(currentStep+1===1)
+//   return (
+//     <div>
+//         <div className='whitespace-pre-wrap'>
+//           <h3 className='text-lg font-bold'>Stage (1): (PPT Formats)</h3>
+//           <br />
+//           <br />
+//           1) Upload Aim: The student uploads a document or statement that
+//           clearly defines the aim or objective of their project. This provides a
+//           clear understanding of what they intend to achieve through their work,
+//           setting the direction for the project.
+//           <br />
+//           <br />
+//           2) Upload Description: The student uploads a detailed description of
+//           their project, outlining the scope, methodology, and expected
+//           outcomes. This document provides a comprehensive overview of the
+//           project, including its purpose, approach, and expected deliverables.
+//           <br />
+//           <br />
+//           3) Upload Your Input in this Project: The student uploads a document
+//           or description highlighting their individual contribution to the
+//           project. This could include their research findings, innovative ideas,
+//           analysis, or any specific tasks they have undertaken. It demonstrates
+//           their unique input and contribution to the project.
+//           <>
+//             {currentStep + 1 < milestoneData ? (
+//               <>
+//                 <div className='mt-4 flex flex-col gap-4'>
+//                   <h4 className='text-bold'>Uploaded Files</h4>
+//                   {teamData.milestone1.map((file, index) => (
+//                     <div
+//                       key={index}
+//                       className='text-bold w-fit rounded-md p-8 shadow-xl'
+//                     >
+//                       {file}
+//                     </div>
+//                   ))}
+//                 </div>
+//               </>
+//             ) : (
+//               <div className='py-8'>
+//                 <AddFile
+//                   onFileSelect={(file: File) =>
+//                     void uploadToS3({
+//                       file: file,
+//                       setFiles: setFiles,
+//                       toastid: toastid,
+//                     })
+//                   }
+//                 />
+//                 <FileUpload files={files} />
+//                 <button
+//                   disabled={
+//                     !(
+//                       teamData.approvedMilestone + 1 ===
+//                       teamData.presentMilestone
+//                     )
+//                   }
+//                   onClick={() => {
+//                     if (files.length !== 0) {
+//                       void submitMilestone.mutateAsync({
+//                         files: files,
+//                         milestone: currentStep + 1,
+//                       });
+//                     } else {
+//                       toast.error('Please upload required files');
+//                     }
+//                   }}
+//                   className=' gradient-btn blue-orange-gradient hover:orange-white-gradient flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white disabled:bg-red-500'
+//                 >
+//                   Submit
+//                 </button>
+//               </div>
+//             )}
+//           </>
+//         </div>
+
+//     </div>
+//   )
+// }
+
 
 export default Milestone;
