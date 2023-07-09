@@ -3,9 +3,8 @@ import type { GetServerSidePropsContext, NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { getSession, signIn } from 'next-auth/react';
-import Link from 'next/link';
 
-import LandingPageCard from '~/components/LandingPageCard';
+import { LandingPageCard } from '~/components/Cards';
 import vector1 from '~/images/vector2.png';
 import vector2 from '~/images/vector3.png';
 import vector3 from '~/images/vector1.png';
@@ -31,6 +30,7 @@ import company17 from '~/images/companies/company17.png';
 import company18 from '~/images/companies/company18.png';
 import company19 from '~/images/companies/company19.png';
 import company20 from '~/images/companies/company20.png';
+import Button from '~/components/Button';
 
 const images = [
   company1,
@@ -88,7 +88,7 @@ const Home: NextPage = () => {
       </Head>
       <main className='mx-10 my-10 md:mx-20 '>
         <div>
-          <div className='flex flex-col-reverse justify-center  text-center md:my-40 md:flex-col'>
+          <section className='flex flex-col-reverse justify-center  text-center md:my-40 md:flex-col'>
             <div>
               <h1 className=' blue-orange-gradient bg-gradient-to-r bg-clip-text pb-5 text-3xl font-bold text-transparent md:text-5xl '>
                 Create your Best Work Together
@@ -97,15 +97,15 @@ const Home: NextPage = () => {
                 All in One solution for connecting link between student,
                 industry and mentors.
               </p>
-              <Link
-                href='/auth/signin'
-                className='Button blue-orange-gradient gradient-btn mb-6 bg-gradient-to-bl text-lg'
-                // onClick={() => {
-                //   void signIn();
-                // }}
+              <Button
+                type='normal'
+                text='text-lg'
+                onClick={() => {
+                  void signIn();
+                }}
               >
                 Sign Up for free
-              </Link>
+              </Button>
             </div>
             <div className='grid place-items-center md:grid-cols-3'>
               <Image
@@ -130,9 +130,8 @@ const Home: NextPage = () => {
                 className='hidden md:block'
               />
             </div>
-          </div>
-          <hr />
-          <div className='my-10 md:my-28'>
+          </section>
+          <section className='my-10 md:my-28'>
             <h1 className='mb-20 text-center text-3xl font-bold md:text-5xl'>
               Perfect fit for everyone
             </h1>
@@ -150,8 +149,8 @@ const Home: NextPage = () => {
                 description="StudoIndustry empowers mentors to shape the future by sharing expertise, guiding students, and contributing to industry development. It offers a platform to stay updated, nurture talent, showcase leadership, expand networks, and find personal fulfillment in positively impacting students' lives."
               />
             </div>
-          </div>
-          <div className='my-20'>
+          </section>
+          <section className='my-20'>
             <h1 className='font-inter mb-20 text-center text-3xl font-bold md:text-5xl'>
               Trusted by well known companies
             </h1>
@@ -166,10 +165,9 @@ const Home: NextPage = () => {
                 />
               ))}
             </div>
-          </div>
-          <hr />
-          <div className='my-20 flex flex-col items-center gap-20 text-center md:mx-20 md:gap-0 '>
-            <div className='flex flex-col items-center gap-20 md:h-screen md:flex-row'>
+          </section>
+          <section className='my-20 flex flex-col items-center gap-20  md:mx-20 md:gap-0 '>
+            <section className='flex flex-col items-center  gap-20 md:h-screen md:flex-row'>
               <Image
                 width={450}
                 height={300}
@@ -177,7 +175,7 @@ const Home: NextPage = () => {
                 alt='vector image1'
               />
               <div>
-                <h1 className='mb-7 text-3xl  font-bold md:text-5xl'>
+                <h1 className='mb-7 text-3xl font-bold md:text-5xl'>
                   Live Industrial Projects
                 </h1>
                 <p>
@@ -196,19 +194,19 @@ const Home: NextPage = () => {
                   offer a dynamic learning experience that prepares students for
                   the demands and expectations of the professional world.
                 </p>
-                <button
-                  className='Button blue-orange-gradient gradient-btn mt-7 bg-gradient-to-bl text-lg'
+                <Button
+                  type='normal'
                   onClick={() => {
                     void signIn();
                   }}
                 >
                   Apply Now
-                </button>
+                </Button>
               </div>
-            </div>
-            <div className='flex flex-col-reverse items-center gap-20  md:h-screen md:flex-row'>
+            </section>
+            <section className='flex flex-col-reverse items-center gap-20  md:h-screen md:flex-row'>
               <div>
-                <h1 className='mb-7 text-3xl  font-bold md:text-5xl'>
+                <h1 className='mb-7 text-3xl font-bold md:text-5xl '>
                   Build for teamwork
                 </h1>
                 <p>
@@ -226,14 +224,14 @@ const Home: NextPage = () => {
                   StudoIndustry emphasizes the value of teamwork in creating a
                   supportive and dynamic learning environment.
                 </p>
-                <button
-                  className='Button blue-orange-gradient gradient-btn mt-7 bg-gradient-to-bl text-lg'
+                <Button
+                  type='normal'
                   onClick={() => {
                     void signIn();
                   }}
                 >
                   Apply Now
-                </button>
+                </Button>
               </div>
               <Image
                 width={450}
@@ -241,8 +239,8 @@ const Home: NextPage = () => {
                 src={image1}
                 alt='vector image1'
               />
-            </div>
-            <div className='flex flex-col items-center  gap-20 md:h-screen md:flex-row'>
+            </section>
+            <section className='flex flex-col items-center  gap-20 md:h-screen md:flex-row'>
               <Image
                 width={450}
                 height={300}
@@ -270,19 +268,18 @@ const Home: NextPage = () => {
                   that are not only academically rigorous but also relevant and
                   recognized by the industry
                 </p>
-                <button
-                  className='Button blue-orange-gradient gradient-btn mt-7 bg-gradient-to-bl text-lg'
+                <Button
+                  type='normal'
                   onClick={() => {
                     void signIn();
                   }}
                 >
                   Apply Now
-                </button>
+                </Button>
               </div>
-            </div>
-          </div>
-          <hr />
-          <div className='my-36 text-center'>
+            </section>
+          </section>
+          <section className='my-36 text-center'>
             <h1 className='font-inter mb-2 text-center text-3xl  font-bold md:text-5xl'>
               Industrial Projects for Everyone
             </h1>
@@ -293,7 +290,7 @@ const Home: NextPage = () => {
               alt='vector image1'
               className=' my-16 md:mx-auto'
             />
-          </div>
+          </section>
         </div>
       </main>
     </>

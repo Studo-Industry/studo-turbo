@@ -12,11 +12,10 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 
 import { api } from '~/utils/api';
 import { env } from '~/env.mjs';
-import ImageCarousel from '~/components/ImageCarousel';
 import img1 from '~/images/wallpaper.jpg';
 import PreLoader from '~/components/PreLoader';
 import Stepper from '~/components/Stepper';
-import Milestone from '~/components/Milestones';
+import Milestones from '~/components/Milestones';
 import MentorMilestone from '~/components/MentorMilestone';
 import Error from '~/components/Error';
 
@@ -320,8 +319,9 @@ const Team = ({
       </div>
       <h1 className='py-10 text-2xl font-bold'>My Project</h1>
       <Link
-      href={`/dashboard/projects/${teamData.projectId}`}
-       className='rounded-xl bg-white px-4 py-10 md:px-10 '>
+        href={`/dashboard/projects/${teamData.projectId}`}
+        className='rounded-xl bg-white px-4 py-10 md:px-10 '
+      >
         <div className='flex flex-col gap-8 pt-9  md:mx-20 md:flex-row'>
           <div
             className='flex flex-1 items-center justify-start rounded-lg bg-white p-4
@@ -330,9 +330,9 @@ const Team = ({
             <div className='max-w-lg rounded-lg bg-slate-400'>
               {teamData?.project?.images.length !== 0 ? (
                 <img
-                src={`${env.NEXT_PUBLIC_AWS_S3}${teamData.project.images[0]}`}
-                alt='project img'
-                 />
+                  src={`${env.NEXT_PUBLIC_AWS_S3}${teamData.project.images[0]}`}
+                  alt='project img'
+                />
               ) : (
                 <img src={img1.src} alt='replacement image' />
               )}
@@ -365,10 +365,10 @@ const Team = ({
             </div>
             <div className='mb-6'>
               <p>Tags-</p>
-              <p className='flex gap-4 py-4 text-sm'>
+              <p className='flex flex-wrap gap-2 py-4 text-sm'>
                 {teamData?.project?.tags.map((tag, index) => (
-                  <span key={index} className=' text-black/75'>
-                    {tag}
+                  <span key={index} className='  p-2 text-black/75 '>
+                    #{tag}
                   </span>
                 ))}
               </p>
@@ -486,7 +486,7 @@ const Team = ({
                       </button>
                     </div>
                   </div>
-                  <Milestone
+                  <Milestones
                     currentStep={currentStep}
                     milestoneData={milestoneData}
                     teamData={teamData}

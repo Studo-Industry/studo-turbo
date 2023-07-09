@@ -21,6 +21,7 @@ import PreLoader from '~/components/PreLoader';
 import { TeamCard } from '~/components/Cards';
 import Error from '~/components/Error';
 import { AppRouter } from 'server';
+import Button from '~/components/Button';
 
 type RouterOutput = inferRouterOutputs<AppRouter>;
 type userDataType = RouterOutput['user']['getOne'];
@@ -163,9 +164,9 @@ const Project = () => {
               </div>
               <div className='mb-4'>
                 <p>Tags-</p>
-                <p className='flex flex-wrap gap-4 py-4 text-sm'>
+                <p className='flex flex-wrap gap-2 py-4 text-sm'>
                   {data?.tags.map((tag, index) => (
-                    <span className=' text-black/75' key={index}>
+                    <span className=' text-sm text-black/75' key={index}>
                       #{tag}
                     </span>
                   ))}
@@ -199,8 +200,9 @@ const Project = () => {
               </div>
               {data.Team.length === 0 && (
                 <div className='flex w-full flex-col gap-4 md:flex-row md:gap-10'>
-                  <button
-                    className='gradient-btn blue-orange-gradient hover:orange-white-gradient flex w-full justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
+                  <Button
+                    type='normal'
+                    icon={<BsLightningFill size={30} />}
                     onClick={() => {
                       document.body.scrollTop = 0;
                       document.documentElement.scrollTop = 0;
@@ -208,13 +210,11 @@ const Project = () => {
                       document.body.style.overflow = 'hidden';
                     }}
                   >
-                    <p className='mr-1 text-xl'>
-                      <BsLightningFill />
-                    </p>
                     Apply
-                  </button>
-                  <button
-                    className='gradient-btn blue-orange-gradient flex  w-full justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white '
+                  </Button>
+                  <Button
+                    type='normal'
+                    icon={<AiFillHeart size={30} />}
                     onClick={() => {
                       user?.wishlist.find(
                         (project) => project?.id === data?.id,
@@ -225,15 +225,12 @@ const Project = () => {
                           });
                     }}
                   >
-                    <p className='mr-1 text-xl'>
-                      <AiFillHeart />
-                    </p>
                     {user?.wishlist.find(
                       (project) => project?.id === data?.id,
                     ) === undefined
                       ? 'Wishlist'
                       : 'Remove'}
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
@@ -317,6 +314,7 @@ const Apply = ({
 }) => {
   const [createTeam, setCreateTeam] = useState(false);
   const queryClient = useQueryClient();
+  const router = useRouter();
   return (
     <div className='flex flex-col gap-10 rounded-md bg-white px-10 py-10'>
       {createTeam ? (
@@ -341,29 +339,27 @@ const Apply = ({
             />
           </div>
           <div className='flex flex-col gap-10 p-10'>
-            <button
+            <Button
+              icon={<BsLightningFill />}
+              type='normal'
+              text='text-xl'
               onClick={() => {
                 setCreateTeam(true);
                 const userKey = getQueryKey(api.user.getOne);
                 console.log(userKey);
                 void queryClient.invalidateQueries({ queryKey: [...userKey] });
               }}
-              className='Button gradient-btn blue-orange-gradient hover:orange-white-gradient  flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
             >
-              <p className='mr-1 text-xl'>
-                <BsLightningFill />
-              </p>
               Create Team
-            </button>
-            <Link
-              href='/dashboard/team/join'
-              className='Button gradient-btn blue-orange-gradient hover:orange-white-gradient  flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
+            </Button>
+            <Button
+              text='text-xl'
+              icon={<BsLightningFill />}
+              type='normal'
+              onClick={() => router.push('/dashboard/team/join')}
             >
-              <p className='mr-1 text-xl'>
-                <BsLightningFill />
-              </p>
               Join Team
-            </Link>
+            </Button>
           </div>
         </>
       )}
@@ -516,7 +512,8 @@ const CreateTeam = ({
         </p>
       </div>
 
-      <button
+      <Button
+        type='normal'
         onClick={() => {
           if (agreed === true) {
             if (college.length === 0) {
@@ -533,13 +530,12 @@ const CreateTeam = ({
           }
           document.body.style.overflow = 'unset';
         }}
-        className='Button gradient-btn blue-orange-gradient hover:orange-white-gradient  flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
       >
-        <p className='mr-1 text-xl'>
+        <p className='text-xl'>
           <BsLightningFill />
+          Create Team
         </p>
-        Create Team
-      </button>
+      </Button>
     </div>
   );
 };

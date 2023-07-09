@@ -18,6 +18,7 @@ import { api } from '~/utils/api';
 import PreLoader from '~/components/PreLoader';
 import { ProjectCard } from '~/components/Cards';
 import Error from '~/components/Error';
+import Button from '~/components/Button';
 
 const links = [
   { name: 'View Wishlist', link: '/dashboard/profile/wishlist' },
@@ -152,13 +153,14 @@ const Dashboard = ({
         </h1>
         <div className='scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-400 mt-7 flex items-center gap-10 overflow-x-scroll whitespace-nowrap rounded-xl px-2 py-6 shadow-xl md:px-10 '>
           {links.map((link, index) => (
-            <Link
+            <Button
+              type='normal'
+              text='text-md'
               key={index}
-              href={link.link}
-              className='gradient-btn blue-orange-gradient text-sm'
+              onClick={() => router.push(link.link)}
             >
               {link.name}
-            </Link>
+            </Button>
           ))}
         </div>
       </div>

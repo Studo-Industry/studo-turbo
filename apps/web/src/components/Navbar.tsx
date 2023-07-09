@@ -8,6 +8,7 @@ import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
 
 import LOGO from '~/images/studoindustry logo.png';
+import Button from './Button';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
@@ -133,16 +134,14 @@ const Navbar: NextPage = () => {
               />
             )
           ) : (
-            <button
-              className='Button blue-orange-gradient rounded-full bg-gradient-to-bl px-1 py-1'
+            <Button
+              type='outline'
               onClick={() => {
                 void signIn();
               }}
             >
-              <div className='h-full w-full rounded-full bg-white px-8 py-2 font-semibold'>
-                Sign In
-              </div>
-            </button>
+              Sign In
+            </Button>
           )}
 
           {/* <button><img src={require("../images/SignIn Button.png")}  alt="LOGO" /></button> */}
