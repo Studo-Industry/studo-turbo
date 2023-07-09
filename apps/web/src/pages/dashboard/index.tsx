@@ -8,6 +8,11 @@ import { useRouter } from 'next/router';
 import { getSession } from 'next-auth/react';
 import { FaSearch } from 'react-icons/fa';
 import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
+import {
+  AiOutlineLeft,
+  AiOutlineLoading,
+  AiOutlineRight,
+} from 'react-icons/ai';
 
 import { api } from '~/utils/api';
 import PreLoader from '~/components/PreLoader';
@@ -89,6 +94,7 @@ const Dashboard = ({
           {
             getNextPageParam: (lastPage) => lastPage.nextCursor,
             keepPreviousData: true,
+            refetchOnWindowFocus: false,
           },
         )
       : api.project.getBatchByCategory.useInfiniteQuery(
@@ -99,6 +105,7 @@ const Dashboard = ({
           {
             getNextPageParam: (lastPage) => lastPage.nextCursor,
             keepPreviousData: true,
+            refetchOnWindowFocus: false,
           },
         )
     : api.project.getBatchBySearch.useInfiniteQuery(
@@ -109,6 +116,7 @@ const Dashboard = ({
         {
           getNextPageParam: (lastPage) => lastPage.nextCursor,
           keepPreviousData: true,
+          refetchOnWindowFocus: false,
         },
       );
   const toShow = projects?.pages[page]?.items;
@@ -154,7 +162,7 @@ const Dashboard = ({
           ))}
         </div>
       </div>
-      <div className='mx-6 my-20 rounded-lg pb-5 shadow-2xl md:mx-20'>
+      <div className='my-20 pb-5 md:mx-20 md:rounded-lg md:shadow-2xl '>
         <div className='flex flex-col justify-items-start gap-10 whitespace-nowrap px-8 py-8 md:flex-row md:gap-56 md:px-16'>
           <h1 className='mt-4 text-2xl font-bold'>View Projects</h1>
           <div className='flex w-full items-center justify-center rounded-full border-black px-4 shadow-xl md:gap-6 md:px-10'>
@@ -219,13 +227,13 @@ const Dashboard = ({
               </div>
             )}
           </div>
-          <div className='flex w-full items-center justify-between'>
+          <div className='hidden w-full items-center justify-between md:flex'>
             <button
               className='rounded-md bg-black p-4 font-bold text-white disabled:cursor-not-allowed disabled:bg-red-500/50'
               onClick={() => {
                 setPage((prev) => prev - 1);
               }}
-              disabled={page === 0}
+              disabled={page === 0 || isFetchingNextPage}
             >
               Previous Page
             </button>
@@ -236,9 +244,42 @@ const Dashboard = ({
                 fetchNextPage();
                 setPage((prev) => prev + 1);
               }}
-              disabled={!hasNextPage || isFetchingNextPage}
+              disabled={!hasNextPage || isFetchingNextPage || isFetching}
             >
-              {isFetchingNextPage ? 'Loading more...' : 'Next Page'}
+              {isFetchingNextPage ? (
+                <div className='flex items-center gap-2'>
+                  <AiOutlineLoading size={20} className='animate-spin' />{' '}
+                  Loading...
+                </div>
+              ) : (
+                'Next Page'
+              )}
+            </button>
+          </div>
+          <div className='flex w-full items-center justify-between md:hidden'>
+            <button
+              className='rounded-md bg-black p-4 font-bold text-white disabled:cursor-not-allowed disabled:bg-red-500/50'
+              onClick={() => {
+                setPage((prev) => prev - 1);
+              }}
+              disabled={page === 0 || isFetchingNextPage || isFetching}
+            >
+              <AiOutlineLeft size={40} />
+            </button>
+            {page + 1}
+            <button
+              className='rounded-md bg-black p-4 font-bold text-white disabled:cursor-not-allowed disabled:bg-red-500/50'
+              onClick={() => {
+                fetchNextPage();
+                setPage((prev) => prev + 1);
+              }}
+              disabled={!hasNextPage || isFetchingNextPage || isFetching}
+            >
+              {isFetchingNextPage ? (
+                <AiOutlineLoading size={40} className='animate-spin' />
+              ) : (
+                <AiOutlineRight size={40} />
+              )}
             </button>
           </div>
         </div>

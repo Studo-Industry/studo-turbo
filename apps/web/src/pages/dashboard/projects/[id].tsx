@@ -197,44 +197,44 @@ const Project = () => {
                   </span>
                 </div>
               </div>
-              {!data.Team && (
+              {data.Team.length === 0 && (
                 <div className='flex w-full flex-col gap-4 md:flex-row md:gap-10'>
-                <button
-                  className='gradient-btn blue-orange-gradient hover:orange-white-gradient flex w-full justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
-                  onClick={() => {
-                    document.body.scrollTop = 0;
-                    document.documentElement.scrollTop = 0;
-                    setModal(true);
-                    document.body.style.overflow = 'hidden';
-                  }}
-                >
-                  <p className='mr-1 text-xl'>
-                    <BsLightningFill />
-                  </p>
-                  Apply
-                </button>
-                <button
-                  className='gradient-btn blue-orange-gradient flex  w-full justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white '
-                  onClick={() => {
-                    user?.wishlist.find(
+                  <button
+                    className='gradient-btn blue-orange-gradient hover:orange-white-gradient flex w-full justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
+                    onClick={() => {
+                      document.body.scrollTop = 0;
+                      document.documentElement.scrollTop = 0;
+                      setModal(true);
+                      document.body.style.overflow = 'hidden';
+                    }}
+                  >
+                    <p className='mr-1 text-xl'>
+                      <BsLightningFill />
+                    </p>
+                    Apply
+                  </button>
+                  <button
+                    className='gradient-btn blue-orange-gradient flex  w-full justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white '
+                    onClick={() => {
+                      user?.wishlist.find(
+                        (project) => project?.id === data?.id,
+                      ) === undefined
+                        ? void mutate.mutateAsync({ projectId: data?.id })
+                        : void deleteWishlist.mutateAsync({
+                            projectId: data?.id,
+                          });
+                    }}
+                  >
+                    <p className='mr-1 text-xl'>
+                      <AiFillHeart />
+                    </p>
+                    {user?.wishlist.find(
                       (project) => project?.id === data?.id,
                     ) === undefined
-                      ? void mutate.mutateAsync({ projectId: data?.id })
-                      : void deleteWishlist.mutateAsync({
-                          projectId: data?.id,
-                        });
-                  }}
-                >
-                  <p className='mr-1 text-xl'>
-                    <AiFillHeart />
-                  </p>
-                  {user?.wishlist.find(
-                    (project) => project?.id === data?.id,
-                  ) === undefined
-                    ? 'Wishlist'
-                    : 'Remove'}
-                </button>
-              </div>
+                      ? 'Wishlist'
+                      : 'Remove'}
+                  </button>
+                </div>
               )}
             </div>
           </div>
@@ -316,6 +316,7 @@ const Apply = ({
   userData: userDataType;
 }) => {
   const [createTeam, setCreateTeam] = useState(false);
+  const queryClient = useQueryClient();
   return (
     <div className='flex flex-col gap-10 rounded-md bg-white px-10 py-10'>
       {createTeam ? (
@@ -343,6 +344,9 @@ const Apply = ({
             <button
               onClick={() => {
                 setCreateTeam(true);
+                const userKey = getQueryKey(api.user.getOne);
+                console.log(userKey);
+                void queryClient.invalidateQueries({ queryKey: [...userKey] });
               }}
               className='Button gradient-btn blue-orange-gradient hover:orange-white-gradient  flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
             >

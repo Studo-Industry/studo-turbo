@@ -25,8 +25,8 @@ const Milestone = ({
   files: string[];
 }) => {
   let toastid: string;
-  const [link, setLink] = useState<string>("")
-  const [linkCheck, setLinkCheck] = useState<boolean>(false)
+  const [link, setLink] = useState<string>('');
+  const [linkCheck, setLinkCheck] = useState<boolean>(false);
   const queryClient = useQueryClient();
   const mutate = api.user.pdfUpload.useMutation();
   const submitMilestone = api.team.mileStoneSubmit.useMutation({
@@ -36,7 +36,7 @@ const Milestone = ({
     onSuccess: () => {
       const mileStoneSubmitKey = getQueryKey(api.team.mileStoneSubmit);
       const mileStoneDataKey = getQueryKey(api.team.getMilestone);
-      setLink("");
+      setLink('');
       setLinkCheck(false);
       console.log(mileStoneDataKey, mileStoneSubmitKey);
       void queryClient.invalidateQueries({
@@ -89,14 +89,6 @@ const Milestone = ({
   };
   return (
     <>
-      {!(teamData.approvedMilestone + 1 === teamData.presentMilestone) &&
-        currentStep + 1 === milestoneData && (
-          <p className='my-10 w-full text-center font-bold'>
-            Get your content <span className='text-red-500'>approved</span> for
-            the previous milestone from mentor before submitting for the below
-            milestone.
-          </p>
-        )}
       {currentStep + 1 === 1 && (
         <div className='whitespace-pre-wrap'>
           <h3 className='text-lg font-bold'>Stage (1): (PPT Formats)</h3>
@@ -135,15 +127,31 @@ const Milestone = ({
                 </div>
               </>
             ) : (
-              <div className='py-8 flex flex-col gap-6'>
+              <div className='flex flex-col gap-6 py-8'>
                 <div className='flex flex-col'>
-                  <label htmlFor="">Check the below box to upload URL instead of files:</label>
-                  <input type="checkbox" name="" id="" checked={linkCheck} onChange={(event) => setLinkCheck(value => !value)} className='h-10 w-10' />
+                  <label htmlFor=''>
+                    Check the below box to upload URL instead of files:
+                  </label>
+                  <input
+                    type='checkbox'
+                    name=''
+                    id=''
+                    checked={linkCheck}
+                    onChange={(event) => setLinkCheck((value) => !value)}
+                    className='h-10 w-10'
+                  />
                 </div>
-                {linkCheck ?
+                {linkCheck ? (
                   <div className='flex flex-row items-center gap-6'>
-                    <label htmlFor="">File URL:</label>
-                    <input type="url" value={link} onChange={(event) => setLink(event.target.value)} className='border-2 flex-1 invalid:border-red-500 focus:outline-none valid:border-green-500 p-2 rounded-md' /></div> :
+                    <label htmlFor=''>File URL:</label>
+                    <input
+                      type='url'
+                      value={link}
+                      onChange={(event) => setLink(event.target.value)}
+                      className='flex-1 rounded-md border-2 p-2 valid:border-green-500 invalid:border-red-500 focus:outline-none'
+                    />
+                  </div>
+                ) : (
                   <>
                     <AddFile
                       onFileSelect={(file: File) =>
@@ -154,8 +162,9 @@ const Milestone = ({
                         })
                       }
                     />
-                    <FileUpload files={files} /></>
-                }
+                    <FileUpload files={files} />
+                  </>
+                )}
                 <button
                   disabled={
                     !(
@@ -164,14 +173,14 @@ const Milestone = ({
                     )
                   }
                   onClick={() => {
-                    if (linkCheck && link !== "") {
-                      setFiles([link])
+                    if (linkCheck && link !== '') {
+                      setFiles([link]);
                     }
                     if (files.length !== 0) {
                       void submitMilestone.mutateAsync({
                         files: files,
                         milestone: currentStep + 1,
-                        typeofmilestone: linkCheck
+                        typeofmilestone: linkCheck,
                       });
                     } else {
                       toast.error('Please upload required files');
@@ -239,15 +248,31 @@ const Milestone = ({
               </div>
             </>
           ) : (
-            <div className='py-8 flex flex-col gap-6'>
+            <div className='flex flex-col gap-6 py-8'>
               <div className='flex flex-col'>
-                <label htmlFor="">Check the below box to upload URL instead of files:</label>
-                <input type="checkbox" name="" id="" checked={linkCheck} onChange={(event) => setLinkCheck(value => !value)} className='h-10 w-10' />
+                <label htmlFor=''>
+                  Check the below box to upload URL instead of files:
+                </label>
+                <input
+                  type='checkbox'
+                  name=''
+                  id=''
+                  checked={linkCheck}
+                  onChange={(event) => setLinkCheck((value) => !value)}
+                  className='h-10 w-10'
+                />
               </div>
-              {linkCheck ?
+              {linkCheck ? (
                 <div className='flex flex-row items-center gap-6'>
-                  <label htmlFor="">File URL:</label>
-                  <input type="url" value={link} onChange={(event) => setLink(event.target.value)} className='border-2 flex-1 invalid:border-red-500 focus:outline-none valid:border-green-500 p-2 rounded-md border-gray-500' /></div> :
+                  <label htmlFor=''>File URL:</label>
+                  <input
+                    type='url'
+                    value={link}
+                    onChange={(event) => setLink(event.target.value)}
+                    className='flex-1 rounded-md border-2 border-gray-500 p-2 valid:border-green-500 invalid:border-red-500 focus:outline-none'
+                  />
+                </div>
+              ) : (
                 <>
                   <AddFile
                     onFileSelect={(file: File) =>
@@ -258,8 +283,9 @@ const Milestone = ({
                       })
                     }
                   />
-                  <FileUpload files={files} /></>
-              }
+                  <FileUpload files={files} />
+                </>
+              )}
               <button
                 disabled={
                   !(
@@ -268,25 +294,22 @@ const Milestone = ({
                   )
                 }
                 onClick={() => {
-                  if (linkCheck ) {
-                      if(link !== ""){
-                        void submitMilestone.mutateAsync({
-                          files: [link],
-                          milestone: currentStep + 1,
-                          typeofmilestone: linkCheck
-                        });
-                      }
-                      else{
-                        toast.error('Please upload required URL');
-
-                      }
-                  }
-                  else{
+                  if (linkCheck) {
+                    if (link !== '') {
+                      void submitMilestone.mutateAsync({
+                        files: [link],
+                        milestone: currentStep + 1,
+                        typeofmilestone: linkCheck,
+                      });
+                    } else {
+                      toast.error('Please upload required URL');
+                    }
+                  } else {
                     if (files.length !== 0) {
                       void submitMilestone.mutateAsync({
                         files: files,
                         milestone: currentStep + 1,
-                        typeofmilestone: linkCheck
+                        typeofmilestone: linkCheck,
                       });
                     } else {
                       toast.error('Please upload required files');
@@ -327,15 +350,31 @@ const Milestone = ({
               </div>
             </>
           ) : (
-            <div className='py-8 flex flex-col gap-6'>
+            <div className='flex flex-col gap-6 py-8'>
               <div className='flex flex-col'>
-                <label htmlFor="">Check the below box to upload URL instead of files:</label>
-                <input type="checkbox" name="" id="" checked={linkCheck} onChange={(event) => setLinkCheck(value => !value)} className='h-10 w-10' />
+                <label htmlFor=''>
+                  Check the below box to upload URL instead of files:
+                </label>
+                <input
+                  type='checkbox'
+                  name=''
+                  id=''
+                  checked={linkCheck}
+                  onChange={(event) => setLinkCheck((value) => !value)}
+                  className='h-10 w-10'
+                />
               </div>
-              {linkCheck ?
+              {linkCheck ? (
                 <div className='flex flex-row items-center gap-6'>
-                  <label htmlFor="">File URL:</label>
-                  <input type="url" value={link} onChange={(event) => setLink(event.target.value)} className='border-2 flex-1 invalid:border-red-500 focus:outline-none valid:border-green-500 p-2 rounded-md' /></div> :
+                  <label htmlFor=''>File URL:</label>
+                  <input
+                    type='url'
+                    value={link}
+                    onChange={(event) => setLink(event.target.value)}
+                    className='flex-1 rounded-md border-2 p-2 valid:border-green-500 invalid:border-red-500 focus:outline-none'
+                  />
+                </div>
+              ) : (
                 <>
                   <AddFile
                     onFileSelect={(file: File) =>
@@ -346,8 +385,9 @@ const Milestone = ({
                       })
                     }
                   />
-                  <FileUpload files={files} /></>
-              }
+                  <FileUpload files={files} />
+                </>
+              )}
               <button
                 disabled={
                   !(
@@ -356,25 +396,22 @@ const Milestone = ({
                   )
                 }
                 onClick={() => {
-                  if (linkCheck ) {
-                      if(link !== ""){
-                        void submitMilestone.mutateAsync({
-                          files: [link],
-                          milestone: currentStep + 1,
-                          typeofmilestone: linkCheck
-                        });
-                      }
-                      else{
-                        toast.error('Please upload required URL');
-
-                      }
-                  }
-                  else{
+                  if (linkCheck) {
+                    if (link !== '') {
+                      void submitMilestone.mutateAsync({
+                        files: [link],
+                        milestone: currentStep + 1,
+                        typeofmilestone: linkCheck,
+                      });
+                    } else {
+                      toast.error('Please upload required URL');
+                    }
+                  } else {
                     if (files.length !== 0) {
                       void submitMilestone.mutateAsync({
                         files: files,
                         milestone: currentStep + 1,
-                        typeofmilestone: linkCheck
+                        typeofmilestone: linkCheck,
                       });
                     } else {
                       toast.error('Please upload required files');
@@ -416,15 +453,31 @@ const Milestone = ({
               </div>
             </>
           ) : (
-            <div className='py-8 flex flex-col gap-6'>
+            <div className='flex flex-col gap-6 py-8'>
               <div className='flex flex-col'>
-                <label htmlFor="">Check the below box to upload URL instead of files:</label>
-                <input type="checkbox" name="" id="" checked={linkCheck} onChange={(event) => setLinkCheck(value => !value)} className='h-10 w-10' />
+                <label htmlFor=''>
+                  Check the below box to upload URL instead of files:
+                </label>
+                <input
+                  type='checkbox'
+                  name=''
+                  id=''
+                  checked={linkCheck}
+                  onChange={(event) => setLinkCheck((value) => !value)}
+                  className='h-10 w-10'
+                />
               </div>
-              {linkCheck ?
+              {linkCheck ? (
                 <div className='flex flex-row items-center gap-6'>
-                  <label htmlFor="">File URL:</label>
-                  <input type="url" value={link} onChange={(event) => setLink(event.target.value)} className='border-2 flex-1 invalid:border-red-500 focus:outline-none valid:border-green-500 p-2 rounded-md' /></div> :
+                  <label htmlFor=''>File URL:</label>
+                  <input
+                    type='url'
+                    value={link}
+                    onChange={(event) => setLink(event.target.value)}
+                    className='flex-1 rounded-md border-2 p-2 valid:border-green-500 invalid:border-red-500 focus:outline-none'
+                  />
+                </div>
+              ) : (
                 <>
                   <AddFile
                     onFileSelect={(file: File) =>
@@ -435,8 +488,9 @@ const Milestone = ({
                       })
                     }
                   />
-                  <FileUpload files={files} /></>
-              }
+                  <FileUpload files={files} />
+                </>
+              )}
               <button
                 disabled={
                   !(
@@ -445,25 +499,22 @@ const Milestone = ({
                   )
                 }
                 onClick={() => {
-                  if (linkCheck ) {
-                      if(link !== ""){
-                        void submitMilestone.mutateAsync({
-                          files: [link],
-                          milestone: currentStep + 1,
-                          typeofmilestone: linkCheck
-                        });
-                      }
-                      else{
-                        toast.error('Please upload required URL');
-
-                      }
-                  }
-                  else{
+                  if (linkCheck) {
+                    if (link !== '') {
+                      void submitMilestone.mutateAsync({
+                        files: [link],
+                        milestone: currentStep + 1,
+                        typeofmilestone: linkCheck,
+                      });
+                    } else {
+                      toast.error('Please upload required URL');
+                    }
+                  } else {
                     if (files.length !== 0) {
                       void submitMilestone.mutateAsync({
                         files: files,
                         milestone: currentStep + 1,
-                        typeofmilestone: linkCheck
+                        typeofmilestone: linkCheck,
                       });
                     } else {
                       toast.error('Please upload required files');
@@ -504,15 +555,43 @@ const Milestone = ({
               </div>
             </>
           ) : (
-            <div className='py-8 flex flex-col gap-6'>
+            <div className='flex flex-col gap-6 py-8'>
               <div className='flex flex-col'>
-                <label htmlFor="">Check the below box to upload URL instead of files:</label>
-                <input type="checkbox" name="" id="" checked={linkCheck} onChange={(event) => setLinkCheck(value => !value)} className='h-10 w-10' />
+                {!(
+                  teamData.approvedMilestone + 1 ===
+                  teamData.presentMilestone
+                ) &&
+                  currentStep + 1 === milestoneData && (
+                    <p className='my-10 w-full text-center font-bold'>
+                      Get your content{' '}
+                      <span className='text-red-500'>approved</span> for the
+                      previous milestone from mentor before submitting for the
+                      below milestone.
+                    </p>
+                  )}
+                <label htmlFor=''>
+                  Check the below box to upload URL instead of files:
+                </label>
+                <input
+                  type='checkbox'
+                  name=''
+                  id=''
+                  checked={linkCheck}
+                  onChange={(event) => setLinkCheck((value) => !value)}
+                  className='h-10 w-10'
+                />
               </div>
-              {linkCheck ?
+              {linkCheck ? (
                 <div className='flex flex-row items-center gap-6'>
-                  <label htmlFor="">File URL:</label>
-                  <input type="url" value={link} onChange={(event) => setLink(event.target.value)} className='border-2 flex-1 invalid:border-red-500 focus:outline-none valid:border-green-500 p-2 rounded-md' /></div> :
+                  <label htmlFor=''>File URL:</label>
+                  <input
+                    type='url'
+                    value={link}
+                    onChange={(event) => setLink(event.target.value)}
+                    className='flex-1 rounded-md border-2 p-2 valid:border-green-500 invalid:border-red-500 focus:outline-none'
+                  />
+                </div>
+              ) : (
                 <>
                   <AddFile
                     onFileSelect={(file: File) =>
@@ -523,8 +602,10 @@ const Milestone = ({
                       })
                     }
                   />
-                  <FileUpload files={files} /></>
-              }
+                  <FileUpload files={files} />
+                </>
+              )}
+
               <button
                 disabled={
                   !(
@@ -533,25 +614,22 @@ const Milestone = ({
                   )
                 }
                 onClick={() => {
-                  if (linkCheck ) {
-                      if(link !== ""){
-                        void submitMilestone.mutateAsync({
-                          files: [link],
-                          milestone: currentStep + 1,
-                          typeofmilestone: linkCheck
-                        });
-                      }
-                      else{
-                        toast.error('Please upload required URL');
-
-                      }
-                  }
-                  else{
+                  if (linkCheck) {
+                    if (link !== '') {
+                      void submitMilestone.mutateAsync({
+                        files: [link],
+                        milestone: currentStep + 1,
+                        typeofmilestone: linkCheck,
+                      });
+                    } else {
+                      toast.error('Please upload required URL');
+                    }
+                  } else {
                     if (files.length !== 0) {
                       void submitMilestone.mutateAsync({
                         files: files,
                         milestone: currentStep + 1,
-                        typeofmilestone: linkCheck
+                        typeofmilestone: linkCheck,
                       });
                     } else {
                       toast.error('Please upload required files');
@@ -598,15 +676,31 @@ const Milestone = ({
               </div>
             </>
           ) : (
-            <div className='py-8 flex flex-col gap-6'>
+            <div className='flex flex-col gap-6 py-8'>
               <div className='flex flex-col'>
-                <label htmlFor="">Check the below box to upload URL instead of files:</label>
-                <input type="checkbox" name="" id="" checked={linkCheck} onChange={(event) => setLinkCheck(value => !value)} className='h-10 w-10' />
+                <label htmlFor=''>
+                  Check the below box to upload URL instead of files:
+                </label>
+                <input
+                  type='checkbox'
+                  name=''
+                  id=''
+                  checked={linkCheck}
+                  onChange={(event) => setLinkCheck((value) => !value)}
+                  className='h-10 w-10'
+                />
               </div>
-              {linkCheck ?
+              {linkCheck ? (
                 <div className='flex flex-row items-center gap-6'>
-                  <label htmlFor="">File URL:</label>
-                  <input type="url" value={link} onChange={(event) => setLink(event.target.value)} className='border-2 flex-1 invalid:border-red-500 focus:outline-none valid:border-green-500 p-2 rounded-md' /></div> :
+                  <label htmlFor=''>File URL:</label>
+                  <input
+                    type='url'
+                    value={link}
+                    onChange={(event) => setLink(event.target.value)}
+                    className='flex-1 rounded-md border-2 p-2 valid:border-green-500 invalid:border-red-500 focus:outline-none'
+                  />
+                </div>
+              ) : (
                 <>
                   <AddFile
                     onFileSelect={(file: File) =>
@@ -617,8 +711,9 @@ const Milestone = ({
                       })
                     }
                   />
-                  <FileUpload files={files} /></>
-              }
+                  <FileUpload files={files} />
+                </>
+              )}
               <button
                 disabled={
                   !(
@@ -627,25 +722,22 @@ const Milestone = ({
                   )
                 }
                 onClick={() => {
-                  if (linkCheck ) {
-                      if(link !== ""){
-                        void submitMilestone.mutateAsync({
-                          files: [link],
-                          milestone: currentStep + 1,
-                          typeofmilestone: linkCheck
-                        });
-                      }
-                      else{
-                        toast.error('Please upload required URL');
-
-                      }
-                  }
-                  else{
+                  if (linkCheck) {
+                    if (link !== '') {
+                      void submitMilestone.mutateAsync({
+                        files: [link],
+                        milestone: currentStep + 1,
+                        typeofmilestone: linkCheck,
+                      });
+                    } else {
+                      toast.error('Please upload required URL');
+                    }
+                  } else {
                     if (files.length !== 0) {
                       void submitMilestone.mutateAsync({
                         files: files,
                         milestone: currentStep + 1,
-                        typeofmilestone: linkCheck
+                        typeofmilestone: linkCheck,
                       });
                     } else {
                       toast.error('Please upload required files');
@@ -661,8 +753,10 @@ const Milestone = ({
         </div>
       )}
       {currentStep + 1 > 6 && (
-        <div className='flex flex-row justify-center items-center w-full py-20'>
-          <h2 className='text-green-500 font-bold'>All Milestones Have Been Submitted!</h2>
+        <div className='flex w-full flex-row items-center justify-center py-20'>
+          <h2 className='font-bold text-green-500'>
+            All Milestones Have Been Submitted!
+          </h2>
         </div>
       )}
     </>
@@ -816,6 +910,5 @@ const Milestone = ({
 //     </div>
 //   )
 // }
-
 
 export default Milestone;
