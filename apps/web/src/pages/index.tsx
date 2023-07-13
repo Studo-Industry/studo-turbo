@@ -174,8 +174,8 @@ const Home: NextPage = () => {
                 src={image1}
                 alt='vector image1'
               />
-              <div>
-                <h1 className='mb-7 text-3xl font-bold md:text-5xl'>
+              <div className='flex flex-col gap-4'>
+                <h1 className='text-3xl font-bold md:text-5xl'>
                   Live Industrial Projects
                 </h1>
                 <p>
@@ -205,8 +205,8 @@ const Home: NextPage = () => {
               </div>
             </section>
             <section className='flex flex-col-reverse items-center gap-20  md:h-screen md:flex-row'>
-              <div>
-                <h1 className='mb-7 text-3xl font-bold md:text-5xl '>
+              <div className='flex flex-col gap-4'>
+                <h1 className='text-3xl font-bold md:text-5xl '>
                   Build for teamwork
                 </h1>
                 <p>
@@ -247,8 +247,8 @@ const Home: NextPage = () => {
                 src={image1}
                 alt='vector image1'
               />
-              <div>
-                <h1 className='mb-7 text-3xl  font-bold md:text-5xl'>
+              <div className='flex flex-col gap-4'>
+                <h1 className='text-3xl  font-bold md:text-5xl'>
                   Industry Certified Projects
                 </h1>
                 <p>

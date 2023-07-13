@@ -3,11 +3,12 @@ const Terms = () => {
     <div className='mx-10 my-6 flex flex-col gap-6 whitespace-pre-wrap md:mx-20'>
       <h3 className='text-xl font-bold'>Terms and Conditions - </h3>
       <p>
-        Please read these Terms and Conditions ("Terms") carefully before using
-        the Studoindustry platform ("Platform"). These Terms constitute a
-        legally binding agreement between you ("User" or "you") and
-        Studoindustry ("we," "us," or "our"). By accessing or using the
-        Platform, you agree to be bound by these Terms.
+        Please read these Terms and Conditions (&#34;Terms&#34;) carefully
+        before using the Studoindustry platform (&#34;Platform&#34;). These
+        Terms constitute a legally binding agreement between you (&#34; Use
+        r&#34 or&#34;you&#34;) and Studoindustry (&#34;we,&#34;&#34;
+        us,&#34;or&#34;our&#34;). By accessing or using the Platform, you agree
+        to be bound by these Terms.
       </p>
       <div>
         <h5 className='font-bold'>1. Platform Usage</h5>
@@ -73,7 +74,7 @@ const Terms = () => {
         </p>
       </div>
       <div>
-        <h5 className='font-bold'>7. Participants' Certificates</h5>
+        <h5 className='font-bold'>7. Participants&#39; Certificates</h5>
         <p>
           a. All participating students will receive a certificate from the
           respective industry partner upon successful completion of the project.
@@ -82,9 +83,9 @@ const Terms = () => {
       <div>
         <h5 className='font-bold'>8. Termination</h5>
         <p>
-          a. Studoindustry reserves the right to suspend or terminate a user's
-          access to the Platform at any time, without prior notice or liability,
-          for any violation of these Terms or any other valid reason.
+          a. Studoindustry reserves the right to suspend or terminate a
+          user&#39;s access to the Platform at any time, without prior notice or
+          liability, for any violation of these Terms or any other valid reason.
         </p>
       </div>
       <div>

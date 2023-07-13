@@ -2,8 +2,12 @@ import Link from 'next/link';
 import { IoLogoWhatsapp } from 'react-icons/io';
 import { RiInstagramFill } from 'react-icons/ri';
 import { AiFillTwitterCircle } from 'react-icons/ai';
+import { useRouter } from 'next/router';
+
+import Button from './Button';
 
 const Footer = () => {
+  const router = useRouter();
   return (
     <div
       className='blue-orange-gradient scroll-smooth bg-gradient-to-bl'
@@ -13,17 +17,14 @@ const Footer = () => {
         <div>
           <div className='flex flex-col items-start gap-4 md:flex-row'>
             <div>
-              <h1 className='text-4xl font-bold '>StudioIndustry</h1>
+              <h1 className='text-4xl font-bold '>StudoIndustry</h1>
               <p className='pt-2 text-xs'>
-                Lorem ipsum dolor sit amet consectetur <br /> adipisicing elit.
-                Porro, fuga.
+                Bridging the gap between students and industry!
               </p>
             </div>
-            <button className='Button blue-orange-gradient rounded-full bg-gradient-to-bl px-1 py-1'>
-              <div className='h-full w-full whitespace-nowrap rounded-full bg-white px-8 py-2 text-base font-semibold text-gray-600'>
-                Download App
-              </div>
-            </button>
+            <Button onClick={() => router.push('/coming-soon')} type='outline'>
+              <p className='font-bold text-black'>Download App</p>
+            </Button>
           </div>
           <ul className='mt-10 flex flex-col gap-2 text-sm'>
             <li className='text-base font-bold'>Quick Links</li>
@@ -45,15 +46,15 @@ const Footer = () => {
 
             <ul className='mx-3 mt-2 flex gap-6 text-3xl md:justify-evenly'>
               <a
-                href='https://www.instagram.com/studoindustry_projects/'
+                href='https://instagram.com/studoindustry_projects'
                 target='new'
               >
                 <RiInstagramFill />
               </a>
-              <a href='#'>
+              <a href='#' target='new'>
                 <AiFillTwitterCircle />
               </a>
-              <a href='#'>
+              <a href='https://wa.me/message/VZDVI4VQX7MOB1' target='new'>
                 <IoLogoWhatsapp />
               </a>
             </ul>
@@ -61,17 +62,17 @@ const Footer = () => {
 
           <h3 className='mt-10 text-base font-bold'>Contact Us</h3>
           <ul className='mt-4 text-sm '>
-            <li>
-              Address - Lorem ipsum dolor sit amet consectetur <br />{' '}
-              adipisicing elit. Repudiandae cumque voluptatem facilis!
+            <li className='flex max-w-xl flex-wrap'>
+              Address - 8 & 9, SIDDHIVINAYAK COMPLEX, KHANIWALI, AT POST
+              KHANIWALI, TALUKA WADA, DIST-PALGHAR, MAHARASHTRA - 421312, INDIA
             </li>
             <li>Email - studioindustry@gmail.com</li>
-            <li>Phone - +91 75990 92690</li>
+            <li>Phone - +91 87678 38106</li>
           </ul>
         </div>
       </div>
 
-      <p className='pb-2 text-center text-xs text-white'>
+      <p className='pb-4 text-center text-xs text-white'>
         &#169; Studo Industry 2023
       </p>
     </div>

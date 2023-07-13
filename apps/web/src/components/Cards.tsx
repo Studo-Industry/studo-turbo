@@ -7,7 +7,6 @@ import { env } from '~/env.mjs';
 import img1 from '~/images/wallpaper.jpg';
 import team from '~/images/team.png';
 import { api } from '~/utils/api';
-import Button from './Button';
 
 export const LandingPageCard = ({
   title,
@@ -22,9 +21,6 @@ export const LandingPageCard = ({
       <div className='overflow-y-hidden'>
         <p className='mb-12 text-sm '>{description}</p>
       </div>
-      <Button type='normal' onClick={() => {}}>
-        Submit
-      </Button>
     </div>
   );
 };

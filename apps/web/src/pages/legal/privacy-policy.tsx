@@ -3,10 +3,11 @@ const Privacy = () => {
     <div className='mx-10 my-10 flex flex-col gap-4 whitespace-pre-wrap md:mx-20'>
       <h3 className='text-xl font-bold'>Privacy Policy</h3>
       <p>
-        This Privacy Policy describes how Studoindustry ("we," "us," or "our")
-        collects, uses, discloses, and protects the personal information of
-        users ("you" or "your") who access and use our website, services, and
-        related applications (collectively, the "Platform").
+        This Privacy Policy describes how Studoindustry (&#34;we,&#34;
+        &#34;us,&#34; or &#34;our&#34;) collects, uses, discloses, and protects
+        the personal information of users (&#34;you&#34; or &#34;your&#34;) who
+        access and use our website, services, and related applications
+        (collectively, the &#34;Platform&#34;).
       </p>
       <div>
         <h5 className='font-bold'>1. Collection of Personal Information:</h5>
@@ -50,8 +51,8 @@ const Privacy = () => {
         <p>
           We may use cookies and similar tracking technologies to collect
           information about your usage of the Platform. These technologies help
-          us analyze trends, administer the Platform, track users' movements,
-          and gather demographic information.
+          us analyze trends, administer the Platform, track users&#39;
+          movements, and gather demographic information.
         </p>
       </div>
       <div>
@@ -64,7 +65,7 @@ const Privacy = () => {
         </p>
       </div>
       <div>
-        <h5 className='font-bold'>7. Children's Privacy:</h5>
+        <h5 className='font-bold'>7. Children&#39;s Privacy:</h5>
         <p>
           Our services are not intended for individuals under the age of 13. We
           do not knowingly collect personal information from children. If we
