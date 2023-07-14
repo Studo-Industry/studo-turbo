@@ -18,10 +18,10 @@ const About = () => {
 
         <p>
           At Studoindustry, we believe that hands-on experience and exposure to
-          real projects are crucial for students' professional development. Our
-          platform enables students to gain practical skills, industry insights,
-          and networking opportunities, preparing them for successful careers in
-          their chosen fields.
+          real projects are crucial for students&#39; professional development.
+          Our platform enables students to gain practical skills, industry
+          insights, and networking opportunities, preparing them for successful
+          careers in their chosen fields.
         </p>
         <p>
           We partner with leading companies across various industries to offer a
