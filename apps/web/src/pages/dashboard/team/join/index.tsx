@@ -5,6 +5,7 @@ import { BsLightningFill } from 'react-icons/bs';
 import { AiOutlineLeft } from 'react-icons/ai';
 
 import { api } from '~/utils/api';
+import Button from '~/components/Button';
 
 const Join = () => {
   let toastid: string;
@@ -50,17 +51,15 @@ const Join = () => {
               setReferral(event.target.value);
             }}
           />
-          <button
+          <Button
             onClick={() => {
               void mutate.mutateAsync({ referral });
             }}
-            className='Button gradient-btn blue-orange-gradient hover:orange-white-gradient  flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
+            type='normal'
+            icon={<BsLightningFill />}
           >
-            <p className='mr-1 text-xl'>
-              <BsLightningFill />
-            </p>
             Join Team
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -9,6 +9,7 @@ import { toast } from 'react-hot-toast';
 import PreLoader from '~/components/PreLoader';
 import { api } from '~/utils/api';
 import { env } from '~/env.mjs';
+import Button from '~/components/Button';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
@@ -86,20 +87,18 @@ const JoinTeam = ({
             ))}
           </div>
         </div>
-        <button
+        <Button
+        type='normal'
+        icon={<BsLightningFill />}
           onClick={() => {
             void mutate.mutateAsync({
               referral: teamData.referral_code,
             });
             document.body.style.overflow = 'unset';
           }}
-          className='Button gradient-btn blue-orange-gradient hover:orange-white-gradient  flex justify-center bg-gradient-to-bl text-base drop-shadow-lg hover:font-semibold hover:text-white'
         >
-          <p className='mr-1 text-xl'>
-            <BsLightningFill />
-          </p>
           Join Team
-        </button>
+        </Button>
       </div>
     </div>
   );

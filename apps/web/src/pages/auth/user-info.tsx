@@ -5,6 +5,7 @@ import { toast } from 'react-hot-toast';
 
 import LOGO from '~/images/studoindustry logo.png';
 import { api } from '~/utils/api';
+import Button from '~/components/Button';
 
 const UserInfo = () => {
   const router = useRouter();
@@ -260,9 +261,14 @@ const UserInfo = () => {
             </select>
           </div>
         )}
-        <button className='hover:blue-orange-gradient rounded-md border-2 border-black bg-transparent p-2 font-semibold text-black shadow-xl transition-all hover:border-none hover:bg-gradient-to-bl hover:text-white md:col-span-3'>
+        <div className='md:col-span-3'>
+        <Button 
+        type='normal'
+        onClick={()=>submitForm}
+        >
           Submit
-        </button>
+        </Button>
+        </div>
       </form>
     </div>
   );

@@ -8,6 +8,7 @@ import { api } from '~/utils/api';
 import PreLoader from '~/components/PreLoader';
 import { SampleProjectCard } from '~/components/Cards';
 import Error from '~/components/Error';
+import Button from '~/components/Button';
 
 const projectCategories = [
   { name: 'Computer science engineering' },
@@ -96,14 +97,15 @@ const SampleProjects = () => {
         </div>
         <div className='mb-20 flex flex-col items-center gap-3'>
           <h2 className='text-lg'>Sign In For Full Access!</h2>
-          <button
-            className='Button blue-orange-gradient gradient-btn bg-gradient-to-bl text-lg'
+          <Button
+          text='text-lg'
             onClick={() => {
               void signIn();
             }}
+            type='normal'
           >
             Sign Up
-          </button>
+          </Button>
         </div>
       </div>
     </>
