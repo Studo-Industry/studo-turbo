@@ -169,4 +169,31 @@ export const userRouter = createTRPCRouter({
       });
       return info;
     }),
+
+    editingInfo: protectedProcedure
+    .input(
+      z.object({
+        firstName: z.string(),
+        middleName: z.string(),
+        lastName: z.string(),
+        year: z.number().min(1).max(4).optional(),
+        contact: z.number().min(8),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const info = await ctx.prisma.user.update({
+        where: {
+          id: ctx.session.user.id,
+        },
+        data: {
+          firstName: input.firstName,
+          middleName: input.middleName,
+          lastName: input.lastName,
+          year: input.year,
+          contact: Number(input.contact),
+        },
+      });
+      return info;
+    }),
+
 });
