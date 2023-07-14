@@ -17,7 +17,7 @@ const Button = ({
     return (
       <button
         onClick={() => onClick()}
-        className={`${text} gradient-btn blue-orange-gradient hover:orange-white-gradient flex items-center justify-center bg-gradient-to-bl drop-shadow-lg hover:font-semibold hover:text-white`}
+        className={`${text} gradient-btn blue-orange-gradient hover:orange-white-gradient flex items-center justify-center bg-gradient-to-bl drop-shadow-lg  hover:font-semibold `}
       >
         <div className='flex items-center gap-2'>
           {icon}
@@ -30,9 +30,9 @@ const Button = ({
     return (
       <button
         onClick={() => onClick()}
-        className={`${text} blue-orange-gradient items-center rounded-full bg-gradient-to-bl px-1 py-1`}
+        className={`${text} blue-orange-gradient flex items-center justify-center rounded-full bg-gradient-to-bl px-1 py-1  hover:scale-105`}
       >
-        <div className='h-full w-full rounded-full bg-white px-8 py-2 font-semibold'>
+        <div className='flex h-full w-full items-center justify-center rounded-full bg-white px-8 py-2 font-semibold hover:bg-transparent hover:text-white'>
           {children}
         </div>
       </button>

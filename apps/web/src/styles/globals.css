@@ -6,6 +6,6 @@
     @apply from-orange to-blue;
   }
   .gradient-btn {
-    @apply mx-auto flex-1 rounded-full bg-gradient-to-bl p-4 px-6 text-center font-semibold text-white shadow-md transition-all hover:scale-110 hover:shadow-lg;
+    @apply mx-auto flex-1 rounded-full bg-gradient-to-bl p-4 px-6 text-center font-semibold text-white shadow-md transition-all hover:scale-105 hover:shadow-lg;
   }
 }
