@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { GetServerSidePropsContext, NextPage } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { getSession, signIn, signOut, useSession } from 'next-auth/react';
 import { IoIosArrowDown, IoIosArrowUp } from 'react-icons/io';
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai';
@@ -20,7 +19,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 const Navbar: NextPage = () => {
   const [position1, setPosition1] = useState(false);
-  const [position2, setPosition2] = useState(false);
   const [position3, setPosition3] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const { data, status } = useSession();
@@ -35,7 +33,6 @@ const Navbar: NextPage = () => {
     // };
     const closeDropdowns = (event) => {
       setPosition1(false);
-      setPosition2(false);
       setPosition3(false);
     };
     window.addEventListener('scroll', closeDropdowns, { passive: true });
@@ -45,7 +42,7 @@ const Navbar: NextPage = () => {
       window.removeEventListener('scroll', closeDropdowns);
       // document.body.removeEventListener('mousedown', closeDropdownsClick);
     };
-  }, [position1, position2, position3]);
+  }, [position1, position3]);
 
   const projectCategories = [
     { name: 'All Projects' },
@@ -82,7 +79,6 @@ const Navbar: NextPage = () => {
               className='flex items-center gap-2 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300'
               onClick={() => {
                 setPosition1((previousvalue) => {
-                  setPosition2(false);
                   setPosition3(false);
                   return !previousvalue;
                 });
@@ -95,21 +91,15 @@ const Navbar: NextPage = () => {
               href='/sample-projects'
               className='flex items-center gap-2 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300'
             >
-              View Projects <IoIosArrowDown />
+              View Projects
             </Link>
           )}
-          <li
+          <Link
+            href='/help'
             className='flex items-center gap-2 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300'
-            onClick={() => {
-              setPosition2((previousvalue) => {
-                setPosition1(false);
-                setPosition3(false);
-                return !previousvalue;
-              });
-            }}
           >
-            Learn{position2 ? <IoIosArrowUp /> : <IoIosArrowDown />}
-          </li>
+            Help
+          </Link>
           <Link
             className='flex items-center gap-2 scroll-smooth rounded-md p-4 hover:cursor-pointer hover:bg-gray-300'
             href='#footer'
@@ -126,7 +116,6 @@ const Navbar: NextPage = () => {
                 className='rounded-full selection:border-4 hover:border-4'
                 onClick={() => {
                   setPosition3((previousvalue) => {
-                    setPosition2(false);
                     setPosition1(false);
                     return !previousvalue;
                   });
@@ -198,15 +187,16 @@ const Navbar: NextPage = () => {
                     </Link>
                   </li>
                 )}
-                <li
+                <Link
+                  href='/help'
                   onClick={() => {
                     setOpenMenu(false);
                     document.body.style.overflow = 'unset';
                   }}
                   className='flex items-center gap-2 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300'
                 >
-                  Learn
-                </li>
+                  Help
+                </Link>
                 <li
                   onClick={() => {
                     setOpenMenu(false);
@@ -285,7 +275,6 @@ const Navbar: NextPage = () => {
               key={index}
               onClick={() => {
                 setPosition1(false);
-                setPosition2(false);
                 setPosition3(false);
               }}
             >
@@ -294,13 +283,7 @@ const Navbar: NextPage = () => {
           ))}
         </div>
       </div>
-      <div
-        className={`${
-          position2 ? 'absolute' : 'hidden'
-        } right-1/4 top-24 z-10 rounded-md bg-white p-10 shadow-2xl`}
-      >
-        <p className='font-bold'>Learn With Us</p>
-      </div>
+
       <div
         className={`${
           position3 ? 'absolute' : 'hidden'
@@ -311,7 +294,6 @@ const Navbar: NextPage = () => {
           href='/dashboard/profile'
           onClick={() => {
             setPosition3((previousvalue) => {
-              setPosition2(false);
               setPosition1(false);
               return !previousvalue;
             });
@@ -336,7 +318,6 @@ const Navbar: NextPage = () => {
             href='/dashboard/team'
             onClick={() => {
               setPosition3((previousvalue) => {
-                setPosition2(false);
                 setPosition1(false);
                 return !previousvalue;
               });
@@ -348,7 +329,6 @@ const Navbar: NextPage = () => {
           <Link
             onClick={() => {
               setPosition3((previousvalue) => {
-                setPosition2(false);
                 setPosition1(false);
                 return !previousvalue;
               });
@@ -361,7 +341,6 @@ const Navbar: NextPage = () => {
           <p
             onClick={() => {
               setPosition3((previousvalue) => {
-                setPosition2(false);
                 setPosition1(false);
                 return !previousvalue;
               });
@@ -374,7 +353,6 @@ const Navbar: NextPage = () => {
         <div
           onClick={() => {
             setPosition3((previousvalue) => {
-              setPosition2(false);
               setPosition1(false);
               return !previousvalue;
             });

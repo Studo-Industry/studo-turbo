@@ -25,7 +25,7 @@ const links = [
   { name: 'My Team', link: '/dashboard/team' },
   { name: 'Join Team', link: '/dashboard/team/join' },
   { name: 'My Profile', link: '/dashboard/profile' },
-  { name: 'Yet To Fill', link: '/dashboard' },
+  { name: 'Help', link: '/help' },
 ];
 // changing regions bruh
 const projectCategories = [
