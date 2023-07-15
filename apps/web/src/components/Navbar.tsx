@@ -212,14 +212,14 @@ const Navbar: NextPage = () => {
               </ul>
               {status === 'unauthenticated' && (
                 <li
-                  onClick={() => {
-                    setOpenMenu(false);
-                    document.body.style.overflow = 'unset';
-                    void signIn();
-                  }}
+                  // onClick={() => {
+                  //   setOpenMenu(false);
+                  //   document.body.style.overflow = 'unset';
+                  //   void signIn();
+                  // }}
                   className='flex items-center justify-center gap-2  rounded-full bg-gray-300 p-4  font-bold  hover:cursor-pointer hover:border-2 hover:border-gray-300 hover:bg-transparent'
                 >
-                  Sign In
+                  Sign In is currently disabled
                 </li>
               )}
               {status === 'authenticated' && (
