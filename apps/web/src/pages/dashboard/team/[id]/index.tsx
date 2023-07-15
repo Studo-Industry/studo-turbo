@@ -43,6 +43,7 @@ const Team = ({
   let toastid: string;
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [currentStep, setCurrentStep] = useState(0);
   const [copied, setCopied] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
   const [files, setFiles] = useState<Array<string>>([]);
@@ -102,14 +103,15 @@ const Team = ({
       toast.error(`Error: ${error.message}`, { id: toastid });
     },
   });
-
+  const { data: userData, status: userStatus } = api.user.getOne.useQuery({
+    id: data.user.id,
+  });
   const { data: milestoneData, status: mileStoneStatus } =
     api.team.getMilestone.useQuery(undefined, {
       onSuccess: (data) => {
         setCurrentStep(data - 1);
       },
     });
-  const [currentStep, setCurrentStep] = useState(0);
 
   const { data: teamData, status: teamStatus } = api.team.getTeam.useQuery({
     id: String(router.query.id),
@@ -197,9 +199,14 @@ const Team = ({
     });
   };
 
-  if (mileStoneStatus === 'loading' || teamStatus === 'loading')
+  if (
+    mileStoneStatus === 'loading' ||
+    teamStatus === 'loading' ||
+    userStatus === 'loading'
+  )
     return <PreLoader />;
 
+  // if (userData.team.map((team) => team.id))
   if (mileStoneStatus === 'error' || teamStatus === 'error')
     return <Error error='Error Loading data, Please try again in some time.' />;
 
@@ -270,7 +277,9 @@ const Team = ({
                   )}
                   <div>
                     <p className='font-bold'>{leader?.name}</p>
-                    <p className='text-black/75'>{leader?.email}</p>
+                    <p className='text-black/75'>
+                      {leader?.email.slice(0, 24) + '...'}
+                    </p>
                   </div>
                 </Link>
               )}
@@ -293,8 +302,23 @@ const Team = ({
                   )}
                   <div>
                     <p className='font-bold'>{mentor?.name}</p>
-                    <p className='text-black/75'>{mentor?.email}</p>
+                    <p className='text-black/75'>
+                      {mentor?.email.slice(0, 24) + '...'}
+                    </p>
                   </div>
+                  {teamData.leader === data.user.id && (
+                    <button
+                      className=' h-5 w-5 rounded-full bg-red-500 text-sm font-semibold text-white shadow-xl transition-all hover:scale-125'
+                      onClick={() => {
+                        void removeTeam.mutateAsync({
+                          teamId: teamData.id,
+                          userId: mentor.id,
+                        });
+                      }}
+                    >
+                      X
+                    </button>
+                  )}
                 </Link>
               ) : (
                 <p>Mentor doesnt exist</p>
@@ -330,11 +354,13 @@ const Team = ({
                           />
                         )}
                         <div>
-                          <p className='font-bold'>{member.name}</p>
-                          <p className='text-black/75'>{member.email}</p>
+                          <p className='flex-wrap font-bold'>{member.name}</p>
+                          <p className='flex-wrap text-black/75'>
+                            {member.email.slice(0, 24) + '...'}
+                          </p>
                         </div>
                       </Link>
-                      {teamData.leader === teamData.id && (
+                      {teamData.leader === data.user.id && (
                         <button
                           className=' h-5 w-5 rounded-full bg-red-500 text-sm font-semibold text-white shadow-xl transition-all hover:scale-125'
                           onClick={() => {
