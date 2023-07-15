@@ -123,14 +123,15 @@ const Navbar: NextPage = () => {
               />
             )
           ) : (
-            <Button
-              type='outline'
-              onClick={() => {
-                void signIn();
-              }}
-            >
-              Sign In
-            </Button>
+            <>Sign In is currently disabled</>
+            // <Button
+            //   type='outline'
+            //   onClick={() => {
+            //     void signIn();
+            //   }}
+            // >
+            //   Sign In
+            // </Button>
           )}
 
           {/* <button><img src={require("../images/SignIn Button.png")}  alt="LOGO" /></button> */}

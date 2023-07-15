@@ -97,7 +97,8 @@ const Home: NextPage = () => {
                 All in One solution for connecting link between student,
                 industry and mentors.
               </p>
-              <Button
+              <p>Sign In is currently disabled</p>
+              {/* <Button
                 type='normal'
                 text='text-lg'
                 onClick={() => {
@@ -105,7 +106,7 @@ const Home: NextPage = () => {
                 }}
               >
                 Sign Up for free
-              </Button>
+              </Button> */}
             </div>
             <div className='grid place-items-center md:grid-cols-3'>
               <Image
