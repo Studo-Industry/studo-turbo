@@ -2,15 +2,16 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["jsonProtocol"]
+  provider = "prisma-client-js"
 }
+
 datasource db {
-  provider = "postgresql"
-  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider          = "postgresql"
+  url               = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl         = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
   shadowDatabaseUrl = env("POSTGRES_URL_NON_POOLING") // used for migrations
 }
+
 model Example {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
@@ -126,9 +127,21 @@ model Team {
   presentMilestone    Int
   approvedMilestone   Int
   payment_status      Boolean  @default(false)
+  order               Order[]
 }
 
 model College {
   code String @id @unique
   name String
+}
+
+model Order {
+  id        String   @id @unique
+  paymentId String?
+  teamId    String
+  team      Team     @relation(fields: [teamId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status    Boolean
+  payee     String
 }

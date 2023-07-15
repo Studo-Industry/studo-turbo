@@ -32,6 +32,7 @@ export const env = createEnv({
     DISCORD_CLIENT_SECRET: z.string(),
     GITHUB_CLIENT_ID: z.string(),
     GITHUB_CLIENT_SECRET: z.string(),
+    RAZORPAY_KEY_ID: z.string(),
   },
 
   /**
@@ -42,6 +43,7 @@ export const env = createEnv({
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
     NEXT_PUBLIC_AWS_S3: z.string().url(),
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string(),
   },
 
   /**
@@ -65,6 +67,8 @@ export const env = createEnv({
     DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
+    RAZORPAY_KEY_ID: process.env.RAZORPAY_KEY_ID,
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

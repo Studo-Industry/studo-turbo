@@ -2,7 +2,7 @@ import { getSession } from 'next-auth/react';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { useRouter } from 'next/router';
 import { FormEvent, useState } from 'react';
-import { AiFillEdit } from 'react-icons/ai'
+import { AiFillEdit } from 'react-icons/ai';
 import { GrClose } from 'react-icons/gr';
 import { toast } from 'react-hot-toast';
 import { useQueryClient } from '@tanstack/react-query';
@@ -70,7 +70,10 @@ const Profile = ({
             <Button
               type='normal'
               icon={<AiFillEdit size={24} />}
-              onClick={() => setModal(true)} children={'Edit'}></Button>
+              onClick={() => setModal(true)}
+            >
+              Edit
+            </Button>
             <div>
               <p className='font-bold'>Full Name:</p>
               <p>
@@ -124,11 +127,7 @@ const Profile = ({
 
 export default Profile;
 
-const Edit = ({
-  setModal
-}: {
-  setModal: (value: boolean) => void;
-}) => {
+const Edit = ({ setModal }: { setModal: (value: boolean) => void }) => {
   let toastId: string;
 
   const router = useRouter();
@@ -141,7 +140,7 @@ const Edit = ({
       toast.dismiss(toastId);
       toast.success('Profile updated successfully');
       void router.push('/dashboard/profile');
-      setModal(false)
+      setModal(false);
       const userKey = getQueryKey(api.user.getOne);
       void queryClient.invalidateQueries({ queryKey: [...userKey] });
     },
@@ -262,10 +261,14 @@ const Edit = ({
                 ))}
               </select>
             </div>
-            <div className='md:col-span-3'><Button type='normal' onClick={() => submitForm}>Update</Button></div>
+            <div className='md:col-span-3'>
+              <Button type='normal' onClick={() => submitForm}>
+                Update
+              </Button>
+            </div>
           </form>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
