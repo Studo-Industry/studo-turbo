@@ -616,9 +616,18 @@ const Team = ({
                   Please complete your payment before submitting/approving
                   milestones.
                 </p>
-                <Button type='normal' onClick={() => displayRazorPay()}>
+                <p className='font-bold text-red-500'>
+                  Payment is currently disabled.
+                </p>
+                <button
+                  className='rounded-md border-2 p-4 font-bold'
+                  disabled={true}
+                  onClick={() => {
+                    // displayRazorPay()
+                  }}
+                >
                   Pay with Razorpay
-                </Button>
+                </button>
               </div>
             )
           ) : (
