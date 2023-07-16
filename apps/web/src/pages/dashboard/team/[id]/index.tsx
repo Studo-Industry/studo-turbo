@@ -620,7 +620,7 @@ const Team = ({
                   Payment is currently disabled.
                 </p>
                 <button
-                  className='rounded-md border-2 p-4 font-bold'
+                  className='rounded-md border-2 p-4 font-bold text-white hover:bg-black'
                   // disabled={true}
                   onClick={() => {
                     displayRazorPay();
