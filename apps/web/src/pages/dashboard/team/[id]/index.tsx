@@ -621,9 +621,9 @@ const Team = ({
                 </p>
                 <button
                   className='rounded-md border-2 p-4 font-bold'
-                  disabled={true}
+                  // disabled={true}
                   onClick={() => {
-                    // displayRazorPay()
+                    displayRazorPay();
                   }}
                 >
                   Pay with Razorpay
