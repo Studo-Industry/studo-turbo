@@ -198,7 +198,7 @@ const Project = () => {
                   </span>
                 </div>
               </div>
-              {data.Team.length === 0 && (
+              {user.team.length === 0 && (
                 <div className='flex w-full flex-col gap-4 md:flex-row md:gap-10'>
                   <Button
                     type='normal'
@@ -489,6 +489,10 @@ const CreateTeam = ({
         </Link>{' '}
         to add your college.
       </p>
+      <br />
+      <p className='text-sm text-gray-500 font-semibold'>
+      <span className='text-red-500'>Note-</span> For projects requiring approval from the college or other educational institutions, the responsibility <br />of obtaining the necessary approvals lies with the students themselves. Studoindustry will provide guidance and <br />support to students in the process, but the students are solely responsible for seeking and obtaining the required approvals <br />from their respective colleges or institutions. <Link href="/rules" className='text-blue underline' onClick={()=> document.body.style.overflow = 'set'}>more</Link>
+      </p> 
 
       {/* <div className="w-full py-10 text-base text-gray-600">
         <p>Is your Mentor going to join the website ?</p>
@@ -540,7 +544,7 @@ const CreateTeam = ({
           document.body.style.overflow = 'unset';
         }}
       >
-        <p className='text-xl'>
+        <p className='text-xl flex flex-row items-center'>
           <BsLightningFill />
           Create Team
         </p>
