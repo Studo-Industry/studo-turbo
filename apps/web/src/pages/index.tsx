@@ -10,6 +10,10 @@ import vector2 from '~/images/vector3.png';
 import vector3 from '~/images/vector1.png';
 import image1 from '~/images/image 1.png';
 import image2 from '~/images/image 2.png';
+import live_industry_project from '~/images/Live_industrial_projects.png'
+import build_for_teamwork from '~/images/Build_for_teamwork.png'
+import Industry_Certified_Projects from '~/images/Industry_Certified_Projects.png'
+import projects_for_everyone from '~/images/Industrial_Projects_for_Everyone.png'
 import company1 from '~/images/companies/company1.png';
 import company2 from '~/images/companies/company2.png';
 import company3 from '~/images/companies/company3.png';
@@ -170,9 +174,9 @@ const Home: NextPage = () => {
           <section className='my-20 flex flex-col items-center gap-20  md:mx-20 md:gap-0 '>
             <section className='flex flex-col items-center  gap-20 md:h-screen md:flex-row'>
               <Image
-                width={450}
-                height={300}
-                src={image1}
+                width={500}
+                height={350}
+                src={live_industry_project}
                 alt='vector image1'
               />
               <div className='flex flex-col gap-4'>
@@ -235,17 +239,17 @@ const Home: NextPage = () => {
                 </Button>
               </div>
               <Image
-                width={450}
-                height={300}
-                src={image1}
+                width={500}
+                height={350}
+                src={build_for_teamwork}
                 alt='vector image1'
               />
             </section>
             <section className='flex flex-col items-center  gap-20 md:h-screen md:flex-row'>
               <Image
-                width={450}
-                height={300}
-                src={image1}
+                width={500}
+                height={350}
+                src={Industry_Certified_Projects}
                 alt='vector image1'
               />
               <div className='flex flex-col gap-4'>
@@ -287,9 +291,9 @@ const Home: NextPage = () => {
             <p>Make your projects with the guidance of industrial experts.</p>
             <Image
               width={1100}
-              src={image2}
+              src={projects_for_everyone}
               alt='vector image1'
-              className=' my-16 md:mx-auto'
+              className=' md:mx-auto'
             />
           </section>
         </div>
