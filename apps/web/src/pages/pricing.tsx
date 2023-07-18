@@ -4,7 +4,8 @@ const Pricing = () => {
       <h3 className='text-xl font-bold'>Pricing</h3>
       <div className='flex flex-col gap-4'>
         <p>
-          1. The processing fee of Rs. 399 is applicable per project for a team.
+          1. The processing fee of <span className='font-bold'> Rs. 399</span>{' '}
+          is applicable per project for a team.
         </p>
         <p>
           2. Each team can consist of a maximum of 4 or 5 team members,
@@ -30,7 +31,7 @@ const Pricing = () => {
             the industry who will bring their expertise and industry knowledge
             to guide and mentor the teams collectively. The common mentor from
             the industry will provide insights, feedback, and professional
-            guidance to enhance the students' learning experience and ensure
+            guidance to enhance the students&#39; learning experience and ensure
             alignment with industry standards. The dual mentorship model aims to
             provide a comprehensive learning environment that combines academic
             guidance with real-world industry perspectives.
@@ -68,7 +69,7 @@ const Pricing = () => {
         </p>
         <p>
           12. The selection of projects by the respective companies is based on
-          their evaluation of the work done by the team and the project's
+          their evaluation of the work done by the team and the project&#39;s
           alignment with their requirements. The final decision regarding
           project selection rests with the company, and Studoindustry and the
           respective industry partners reserve all rights in this regard.
