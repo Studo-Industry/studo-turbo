@@ -70,7 +70,10 @@ const Profile = ({
             <Button
               type='normal'
               icon={<AiFillEdit size={24} />}
-              onClick={() => setModal(true)}
+              onClick={() => 
+                {setModal(true);
+                  document.body.style.overflow = 'hidden';
+                } }
             >
               Edit
             </Button>
@@ -129,7 +132,6 @@ export default Profile;
 
 const Edit = ({ setModal }: { setModal: (value: boolean) => void }) => {
   let toastId: string;
-
   const router = useRouter();
   const queryClient = useQueryClient();
   const info = api.user.editingInfo.useMutation({
@@ -187,6 +189,7 @@ const Edit = ({ setModal }: { setModal: (value: boolean) => void }) => {
           className='text-2xl'
           onClick={() => {
             setModal(false);
+            document.body.style.overflow = 'scroll';
           }}
         >
           <GrClose />
