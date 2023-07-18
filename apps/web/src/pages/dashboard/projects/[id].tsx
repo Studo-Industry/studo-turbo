@@ -483,7 +483,11 @@ const CreateTeam = ({
       </div>
       <p className='text-sm font-semibold text-gray-500'>
         <span className='text-red-500'>Note-</span>If your college is not in the
-        list, Please contact 1233456789 to add your college.
+        list, Please contact{' '}
+        <Link href='tel:+917620158234' className='text-blue underline'>
+          +91 7620158234
+        </Link>{' '}
+        to add your college.
       </p>
 
       {/* <div className="w-full py-10 text-base text-gray-600">
@@ -506,8 +510,13 @@ const CreateTeam = ({
         />
         <p>
           I agree to the{' '}
-          <span className='font-semibold'>Terms & Conditions</span> and I
-          understand that <span className='font-semibold'>processing fees</span>{' '}
+          <Link href='/terms' className='text-blue font-semibold underline'>
+            Terms & Conditions
+          </Link>{' '}
+          and I understand that{' '}
+          <Link href='/pricing' className='text-blue font-semibold underline'>
+            processing fees
+          </Link>{' '}
           is required to complete applying for the project.
         </p>
       </div>

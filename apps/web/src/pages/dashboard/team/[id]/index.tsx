@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -18,7 +18,6 @@ import Stepper from '~/components/Stepper';
 import Milestones from '~/components/Milestones';
 import MentorMilestone from '~/components/MentorMilestone';
 import Error from '~/components/Error';
-import Button from '~/components/Button';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
@@ -631,7 +630,22 @@ const Team = ({
               </div>
             )
           ) : (
-            <p>Please complete your team before submitting milestones.</p>
+            <div className='flex flex-col items-center gap-10 md:m-10'>
+              <p className='font-bold text-red-500'>
+                Please complete your team before submitting milestones.
+              </p>
+              <p>
+                <p className='font-semibold'> Note -</p>
+                <ul>
+                  <li>
+                    1. After filling up the team with all the members, the team
+                    has to pay a processing fee of Rs. 399 .
+                  </li>
+                  <li>2. Team memers cannot leave after payment is done.</li>
+                  <li>3. Team cannot be deleted after payment is done. </li>
+                </ul>
+              </p>
+            </div>
           )}
         </div>
       </div>
