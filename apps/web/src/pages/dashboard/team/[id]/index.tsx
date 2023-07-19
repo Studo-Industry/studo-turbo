@@ -13,11 +13,13 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
 import { api } from '~/utils/api';
 import { env } from '~/env.mjs';
 import img1 from '~/images/wallpaper.jpg';
+import payment from '~/images/payment.png';
 import PreLoader from '~/components/PreLoader';
 import Stepper from '~/components/Stepper';
 import Milestones from '~/components/Milestones';
 import MentorMilestone from '~/components/MentorMilestone';
 import Error from '~/components/Error';
+import Button from '~/components/Button';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
@@ -553,7 +555,9 @@ const Team = ({
             )}
           </div>
         </Link>
-        <h1 className='py-10 text-2xl font-bold'>Milestones</h1>
+        <h1 className='py-10 text-2xl font-bold'>
+          {teamData.payment_status ? 'Milestones' : 'Payment'}
+        </h1>
         <div className='relative  rounded-xl bg-white px-10 py-10 shadow-xl '>
           {(teamData.members.length === 5 && teamData.mentor !== null) ||
           teamData.members.length === 6 ? (
@@ -615,10 +619,7 @@ const Team = ({
                   Please complete your payment before submitting/approving
                   milestones.
                 </p>
-                <p className='font-bold text-red-500'>
-                  Payment is currently disabled.
-                </p>
-                <button
+                {/* <button
                   className='rounded-md border-2 p-4 font-bold text-white hover:bg-black'
                   // disabled={true}
                   onClick={() => {
@@ -626,7 +627,12 @@ const Team = ({
                   }}
                 >
                   Pay with Razorpay
-                </button>
+                </button> */}
+                <img
+                  src={payment.src}
+                  alt='payment qr'
+                  className='max-w-[400px]'
+                />
               </div>
             )
           ) : (
@@ -634,19 +640,34 @@ const Team = ({
               <p className='font-bold text-red-500'>
                 Please complete your team before submitting milestones.
               </p>
-              <p>
-                <p className='font-semibold'> Note -</p>
-                <ul>
-                  <li>
-                    1. After filling up the team with all the members, the team
-                    has to pay a processing fee of Rs. 399 .
-                  </li>
-                  <li>2. Team members cannot leave after payment is done.</li>
-                  <li>3. Team cannot be deleted after payment is done. </li>
-                </ul>
-              </p>
             </div>
           )}
+          <div>
+            <p className='font-semibold'> Note -</p>
+            <ul>
+              <li>
+                1. After filling up the team with all the members, the team has
+                to pay a processing fee of Rs. 399 .
+              </li>
+              <li>2. Team members cannot leave after payment is done.</li>
+              <li>3. Team cannot be deleted after payment is done. </li>
+            </ul>
+          </div>
+          <div className='flex flex-col gap-10 py-10'>
+            <p className='font-bold'>
+              After completing the mayment please upload the screenshot over
+              here!
+            </p>
+            <input type='file' name='' id='' />
+            <Button onClick={() => {}} type='normal'>
+              Submit
+            </Button>
+            <p>
+              After completing the payment and uploading the screenshot, wait
+              for 24hours, the admin will verify the payment and send a e-mail
+              via your registered account.
+            </p>
+          </div>
         </div>
       </div>
     </>
