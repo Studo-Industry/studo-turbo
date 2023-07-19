@@ -9,7 +9,7 @@ export const paymentRouter = createTRPCRouter({
     .input(z.object({ projectId: z.string(), teamId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       const options = {
-        amount: '30000',
+        amount: '39900',
         currency: 'INR',
         receipt: randomUUID(),
         payment_capture: true,

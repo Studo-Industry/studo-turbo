@@ -641,7 +641,7 @@ const Team = ({
                     1. After filling up the team with all the members, the team
                     has to pay a processing fee of Rs. 399 .
                   </li>
-                  <li>2. Team memers cannot leave after payment is done.</li>
+                  <li>2. Team members cannot leave after payment is done.</li>
                   <li>3. Team cannot be deleted after payment is done. </li>
                 </ul>
               </p>
