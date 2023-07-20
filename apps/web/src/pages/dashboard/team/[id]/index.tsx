@@ -514,7 +514,7 @@ const Team = ({
                   size={20}
                   onClick={() => {
                     void navigator.clipboard.writeText(
-                      'https://studo-web.vercel.app/' +
+                      'https://www.studoindustry.com/' +
                         'dashboard/team/join/' +
                         teamData?.referral_code,
                     );
@@ -760,6 +760,19 @@ const Team = ({
                   <p className='text-center text-xl font-bold'>
                     Please wait while we confirm your payment
                   </p>
+                  <div>
+                    <p className='font-semibold'> Note -</p>
+                    <ul>
+                      <li>
+                        1. After filling up the team with all the members, the
+                        team has to pay a processing fee of Rs. 399 .
+                      </li>
+                      <li>
+                        2. Team members cannot leave after payment is done.
+                      </li>
+                      <li>3. Team cannot be deleted after payment is done. </li>
+                    </ul>
+                  </div>
                 </>
               ) : (
                 <>
@@ -791,6 +804,19 @@ const Team = ({
                     wait for 24hours, the admin will verify the payment and send
                     a e-mail via your registered account.
                   </p>
+                  <div>
+                    <p className='font-semibold'> Note -</p>
+                    <ul>
+                      <li>
+                        1. After filling up the team with all the members, the
+                        team has to pay a processing fee of Rs. 399 .
+                      </li>
+                      <li>
+                        2. Team members cannot leave after payment is done.
+                      </li>
+                      <li>3. Team cannot be deleted after payment is done. </li>
+                    </ul>
+                  </div>
                 </>
               ))}
           </div>
