@@ -41,7 +41,6 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 const Team = ({
   data,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-
   let toastid: string;
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -50,15 +49,15 @@ const Team = ({
   const [copiedLink, setCopiedLink] = useState(false);
   const [files, setFiles] = useState<Array<string>>([]);
   const steps = [1, 2, 3, 4, 5, 6];
-  const [images, setImages] = useState<string>("");
+  const [images, setImages] = useState<string>('');
 
   const image = api.team.paymentSSUpload.useMutation({
     onMutate: () => {
-      toast.loading("Uploading Screenshot...", { id: toastid })
+      toast.loading('Uploading Screenshot...', { id: toastid });
     },
     onSuccess: () => {
       toast.dismiss(toastid);
-      toast.success('Screenshot uploaded successfully', { id: toastid });;
+      toast.success('Screenshot uploaded successfully', { id: toastid });
     },
     onError: (error) => {
       toast.dismiss(toastid);
@@ -68,7 +67,7 @@ const Team = ({
   const uploadToS3 = async (file: File) => {
     const formData = new FormData();
 
-    formData.append("file", file);
+    formData.append('file', file);
 
     const fileType = file.type;
     const { uploadUrl, key } = await image.mutateAsync({
@@ -77,7 +76,7 @@ const Team = ({
 
     const responseAWS = await fetch(uploadUrl, {
       body: file,
-      method: "PUT",
+      method: 'PUT',
     });
 
     if (responseAWS.ok === true) {
@@ -97,13 +96,13 @@ const Team = ({
       }
     };
     return (
-      <div className="flex flex-col">
-        <label htmlFor="file">Upload Image:</label>
+      <div className='flex flex-col'>
+        <label htmlFor='file'>Upload Image:</label>
         <input
-          className="rounded-md p-2 focus:outline-none"
-          type="file"
-          accept="image/jpg,image/png,image/jpeg"
-          name="file"
+          className='rounded-md p-2 focus:outline-none'
+          type='file'
+          accept='image/jpg,image/png,image/jpeg'
+          name='file'
           onChange={handleImageSelect}
         />
       </div>
@@ -112,15 +111,13 @@ const Team = ({
 
   const ImageUpload = () => {
     return (
-      <div className="flex flex-col">
+      <div className='flex flex-col'>
         <label> Images:</label>
-        <div
-          className="m-2 flex items-center justify-between gap-4 rounded-md bg-white px-4 py-2 text-black"
-        >
-          <div className="flex items-center gap-4">
+        <div className='m-2 flex items-center justify-between gap-4 rounded-md bg-white px-4 py-2 text-black'>
+          <div className='flex items-center gap-4'>
             <img
               width={60}
-              className="rounded-md"
+              className='rounded-md'
               src={`${env.NEXT_PUBLIC_AWS_PAYMENT_SS}${images}`}
             />
             <span>Image Uploaded</span>
@@ -140,13 +137,13 @@ const Team = ({
         queryKey: [...getTeamKey],
       });
       toast.dismiss(toastid);
-      toast.success('Screenshot submitted successfully', { id: toastid });;
+      toast.success('Screenshot submitted successfully', { id: toastid });
     },
     onError: (error) => {
       toast.dismiss(toastid);
       toast.error(`Error: ${error.message}`, { id: toastid });
     },
-  })
+  });
 
   const deleteTeam = api.team.deleteTeam.useMutation({
     onMutate: () => {
@@ -212,12 +209,13 @@ const Team = ({
       },
     });
 
-  const { data: teamData, status: teamStatus } = api.team.getTeam.useQuery({
-    id: String(router.query.id),
-  },
+  const { data: teamData, status: teamStatus } = api.team.getTeam.useQuery(
     {
-      retry: false
-    }
+      id: String(router.query.id),
+    },
+    {
+      retry: false,
+    },
   );
   const paymentVerification = api.payment.verify.useMutation({
     onMutate: () => {
@@ -334,28 +332,26 @@ const Team = ({
         <div className='flex flex-row items-center justify-between'>
           <h1 className='pb-10 text-2xl font-bold'>My Team</h1>
           {teamData.leader === data.user.id ? (
-            <>
-              <Link
-                href='/dashboard/'
-                className='rounded-2xl bg-red-500 p-3 font-semibold text-white shadow-xl transition-all hover:scale-110'
-                onClick={() => {
-                  void deleteTeam.mutateAsync({ teamId: teamData?.id });
-                }}
-              >
-                Delete Team
-              </Link>
-            </>
+            <button
+              className=' rounded-2xl bg-red-500 p-3 font-semibold text-white shadow-xl transition-all hover:scale-110 disabled:cursor-not-allowed disabled:opacity-75'
+              disabled={teamData.payment_status}
+              onClick={() =>
+                void deleteTeam.mutateAsync({ teamId: teamData?.id })
+              }
+            >
+              Delete Team
+            </button>
           ) : (
             <>
-              <Link
-                href='/dashboard/'
-                className='rounded-2xl bg-red-500 p-3 font-semibold text-white shadow-xl transition-all hover:scale-110'
+              <button
+                className='rounded-2xl bg-red-500 p-3 font-semibold text-white shadow-xl transition-all hover:scale-110 disabled:cursor-not-allowed disabled:opacity-75'
+                disabled={teamData.payment_status}
                 onClick={() => {
                   void leaveTeam.mutateAsync({ teamId: teamData?.id });
                 }}
               >
                 Leave Team
-              </Link>
+              </button>
             </>
           )}
         </div>
@@ -409,19 +405,20 @@ const Team = ({
                       {mentor?.email.slice(0, 24) + '...'}
                     </p>
                   </div>
-                  {teamData.leader === data.user.id && (
-                    <button
-                      className=' h-5 w-5 rounded-full bg-red-500 text-sm font-semibold text-white shadow-xl transition-all hover:scale-125'
-                      onClick={() => {
-                        void removeTeam.mutateAsync({
-                          teamId: teamData.id,
-                          userId: mentor.id,
-                        });
-                      }}
-                    >
-                      X
-                    </button>
-                  )}
+                  {!teamData.payment_status &&
+                    teamData.leader === data.user.id && (
+                      <button
+                        className=' h-5 w-5 rounded-full bg-red-500 text-sm font-semibold text-white shadow-xl transition-all hover:scale-125'
+                        onClick={() => {
+                          void removeTeam.mutateAsync({
+                            teamId: teamData.id,
+                            userId: mentor.id,
+                          });
+                        }}
+                      >
+                        X
+                      </button>
+                    )}
                 </Link>
               ) : (
                 <p>Mentor doesnt exist</p>
@@ -463,19 +460,20 @@ const Team = ({
                           </p>
                         </div>
                       </Link>
-                      {teamData.leader === data.user.id && (
-                        <button
-                          className=' h-5 w-5 rounded-full bg-red-500 text-sm font-semibold text-white shadow-xl transition-all hover:scale-125'
-                          onClick={() => {
-                            void removeTeam.mutateAsync({
-                              teamId: teamData.id,
-                              userId: member.id,
-                            });
-                          }}
-                        >
-                          X
-                        </button>
-                      )}
+                      {!teamData.payment_status &&
+                        teamData.leader === data.user.id && (
+                          <button
+                            className=' h-5 w-5 rounded-full bg-red-500 text-sm font-semibold text-white shadow-xl transition-all hover:scale-125'
+                            onClick={() => {
+                              void removeTeam.mutateAsync({
+                                teamId: teamData.id,
+                                userId: member.id,
+                              });
+                            }}
+                          >
+                            X
+                          </button>
+                        )}
                     </div>
                   ))
               ) : (
@@ -517,8 +515,8 @@ const Team = ({
                   onClick={() => {
                     void navigator.clipboard.writeText(
                       'https://studo-web.vercel.app/' +
-                      'dashboard/team/join/' +
-                      teamData?.referral_code,
+                        'dashboard/team/join/' +
+                        teamData?.referral_code,
                     );
                     setCopiedLink(true);
                     setTimeout(() => {
@@ -662,14 +660,14 @@ const Team = ({
         </h1>
         <div className='relative  rounded-xl bg-white px-10 py-10 shadow-xl '>
           {(teamData.members.length === 5 && teamData.mentor !== null) ||
-            teamData.members.length === 6 ? (
+          teamData.members.length === 6 ? (
             teamData.payment_status ? (
               <>
                 <div className='flex w-full flex-col items-start justify-start py-8'>
                   {data.user.id === teamData.mentor ? (
                     <MentorMilestone
                       teamData={teamData}
-                    // currentStep={currentStep}
+                      // currentStep={currentStep}
                     />
                   ) : (
                     <>
@@ -757,29 +755,44 @@ const Team = ({
           </div>
           <div className='flex flex-col gap-10 py-10'>
             {teamData.payment_status === false &&
-             (
-              teamData.paymentSS !== null ? <><p className='font-bold text-xl text-center'>Please wait while we confirm your payment</p></> : <>
-              <p className='font-bold'>
-                After completing the payment please upload the screenshot over
-                here!
-              </p>
-              {images.length !== 0 && <ImageUpload />}
-              <AddImage onImageSelect={(file: File) => void uploadToS3(file)} />
-              <Button type='normal' onClick={() => {
-                if (images === "") {
-                  toast.error("Please upload image!")
-                }
-                else {
-                  void submit.mutateAsync({ image: images, teamid: teamData.id })
-                }
-              }}>Submit</Button>
-              <p>
-                After completing the payment and uploading the screenshot, wait
-                for 24hours, the admin will verify the payment and send a e-mail
-                via your registered account.
-              </p>
-            </>
-             )}
+              (teamData.paymentSS !== null ? (
+                <>
+                  <p className='text-center text-xl font-bold'>
+                    Please wait while we confirm your payment
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className='font-bold'>
+                    After completing the payment please upload the screenshot
+                    over here!
+                  </p>
+                  {images.length !== 0 && <ImageUpload />}
+                  <AddImage
+                    onImageSelect={(file: File) => void uploadToS3(file)}
+                  />
+                  <Button
+                    type='normal'
+                    onClick={() => {
+                      if (images === '') {
+                        toast.error('Please upload image!');
+                      } else {
+                        void submit.mutateAsync({
+                          image: images,
+                          teamid: teamData.id,
+                        });
+                      }
+                    }}
+                  >
+                    Submit
+                  </Button>
+                  <p>
+                    After completing the payment and uploading the screenshot,
+                    wait for 24hours, the admin will verify the payment and send
+                    a e-mail via your registered account.
+                  </p>
+                </>
+              ))}
           </div>
         </div>
       </div>
