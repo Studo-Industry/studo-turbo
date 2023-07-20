@@ -1,6 +1,16 @@
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
+import { randomUUID } from 'crypto';
+import S3 from 'aws-sdk/clients/s3';
+
+const s3 = new S3({
+  apiVersion: '2006-03-01',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET,
+  region: process.env.AWS_REGION,
+  signatureVersion: 'v4',
+});
 
 function generateRandomCharacter() {
   let result = '';
@@ -168,7 +178,7 @@ export const teamRouter = createTRPCRouter({
       });
       return updatedUser;
     }),
-  // TODO: bad syntax fix later
+
   getTeam: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -182,7 +192,13 @@ export const teamRouter = createTRPCRouter({
             project: true,
           },
         });
-        return team;
+        const check= team?.members.find(member=>member.id===ctx.session.user.id)
+        if(check){
+          return team;
+        }
+        else{
+          throw new TRPCError({ code: 'BAD_REQUEST', message: 'Team not found' });
+        }
       } catch (error) {
         console.log(error);
         throw new TRPCError({ code: 'BAD_REQUEST', message: 'Team not found' });
@@ -592,4 +608,73 @@ export const teamRouter = createTRPCRouter({
     }
     return ctx.prisma.team.findMany();
   }),
+  getApprovalRequestingTeams: protectedProcedure
+  .query(async({ctx})=>{
+    return await ctx.prisma.team.findMany({
+      where:{
+        orderStatus:true,
+        payment_status:false,
+      },
+    })
+  }),
+  approveTeamPayment:protectedProcedure
+  .input(z.object({id:z.string()}))
+  .mutation(async ({ctx,input})=>{
+    const team= await ctx.prisma.team.update({
+      where:{
+        id:input.id
+      },
+      data:{
+        payment_status:true,
+      }
+    })
+    return team
+  }),
+  rejectTeamPayment:protectedProcedure
+  .input(z.object({id:z.string()}))
+  .mutation(async ({ctx,input})=>{
+    const team= await ctx.prisma.team.update({
+      where:{
+        id:input.id
+      },
+      data:{
+        orderStatus:false,
+        paymentSS:null
+      }
+    })
+    return team
+  }),
+  paymentSSUpload:protectedProcedure
+  .input(z.object({ extension: z.string() }))
+    .mutation(({ input }) => {
+      const ex = input.extension.split('/')[1]!;
+      console.log(ex);
+      const key = `${randomUUID()}.${ex}`;
+      const params = {
+        Bucket: process.env.AWS_BUCKET_SS,
+        Key: key,
+        Expires: 60,
+        ContentType: `image/${ex}`,
+      };
+      const uploadUrl = s3.getSignedUrl('putObject', params);
+
+      return {
+        uploadUrl,
+        key,
+      };
+    }),
+    submitForPaymentApproval: protectedProcedure
+    .input(z.object({image:z.string(),teamid:z.string()}))
+    .mutation(({ctx,input})=>{
+      const team=ctx.prisma.team.update({
+        where:{
+          id:input.teamid
+        },
+        data:{
+          paymentSS:input.image,
+          orderStatus:true
+        }
+      })
+      return team
+    })
 });

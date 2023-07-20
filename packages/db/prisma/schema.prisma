@@ -128,6 +128,8 @@ model Team {
   approvedMilestone   Int
   payment_status      Boolean  @default(false)
   order               Order[]
+  orderStatus         Boolean @default(false)
+  paymentSS           String?
 }
 
 model College {

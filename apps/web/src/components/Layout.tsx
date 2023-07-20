@@ -22,6 +22,7 @@ const Layout = ({
   if (data?.user.role === "ADMIN") {
     return (
       <div className="grid h-screen grid-cols-8">
+      <Toaster />
         <div className=" col-span-2 grid h-screen overflow-hidden rounded-md p-10 ">
           <AdminNav />
         </div>
