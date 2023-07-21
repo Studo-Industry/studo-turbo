@@ -10,10 +10,10 @@ import vector2 from '~/images/vector3.png';
 import vector3 from '~/images/vector1.png';
 import image1 from '~/images/image 1.png';
 import image2 from '~/images/image 2.png';
-import live_industry_project from '~/images/Live_industrial_projects.png'
-import build_for_teamwork from '~/images/Build_for_teamwork.png'
-import Industry_Certified_Projects from '~/images/Industry_Certified_Projects.png'
-import projects_for_everyone from '~/images/Industrial_Projects_for_Everyone.png'
+import live_industry_project from '~/images/Live_industrial_projects.png';
+import build_for_teamwork from '~/images/Build_for_teamwork.png';
+import Industry_Certified_Projects from '~/images/Industry_Certified_Projects.png';
+import projects_for_everyone from '~/images/Industrial_Projects_for_Everyone.png';
 import company1 from '~/images/companies/company1.png';
 import company2 from '~/images/companies/company2.png';
 import company3 from '~/images/companies/company3.png';
@@ -101,8 +101,7 @@ const Home: NextPage = () => {
                 All in One solution for connecting link between student,
                 industry and mentors.
               </p>
-              <p>Sign In is currently disabled</p>
-              {/* <Button
+              <Button
                 type='normal'
                 text='text-lg'
                 onClick={() => {
@@ -110,7 +109,7 @@ const Home: NextPage = () => {
                 }}
               >
                 Sign Up for free
-              </Button> */}
+              </Button>
             </div>
             <div className='grid place-items-center md:grid-cols-3'>
               <Image
