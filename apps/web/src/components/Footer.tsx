@@ -73,7 +73,7 @@ const Footer = () => {
               Address - 8 & 9, SIDDHIVINAYAK COMPLEX, KHANIWALI, AT POST
               KHANIWALI, TALUKA WADA, DIST-PALGHAR, MAHARASHTRA - 421312, INDIA
             </li>
-            <li>Email - studoindustry@gmail.com</li>
+            <li>Email - studoindustryprojects@gmail.com</li>
             <li>Phone - +91 87678 38106</li>
           </ul>
         </div>
