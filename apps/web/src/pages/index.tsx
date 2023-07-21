@@ -3,7 +3,6 @@ import type { GetServerSidePropsContext, NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import { getSession, signIn } from 'next-auth/react';
-
 import { LandingPageCard } from '~/components/Cards';
 import vector1 from '~/images/vector2.png';
 import vector2 from '~/images/vector3.png';
