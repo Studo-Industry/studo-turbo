@@ -35,7 +35,7 @@ const Help = () => {
         <h1 className='mx-10 my-10 text-2xl font-bold'>How to Use</h1>
         <div className='flex flex-col items-center gap-10 m-10'>
           {guidelines.map((guideline) => (
-              <Image src={guideline} height={100} width={1000} alt='guideline' className='my-2 rounded-lg shadow-md' />
+              <Image key={guideline.src} src={guideline} height={100} width={1000} alt='guideline' className='my-2 rounded-lg shadow-md' />
           ))}
         </div>
       </div>
