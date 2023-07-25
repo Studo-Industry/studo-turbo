@@ -123,6 +123,7 @@ const Navbar: NextPage = () => {
               />
             )
           ) : (
+          
             <Button
               type='outline'
               onClick={() => {

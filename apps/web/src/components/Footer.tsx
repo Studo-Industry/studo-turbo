@@ -8,6 +8,7 @@ import Button from './Button';
 
 const Footer = () => {
   const router = useRouter();
+
   return (
     <div
       className='blue-orange-gradient scroll-smooth bg-gradient-to-bl'
@@ -32,10 +33,16 @@ const Footer = () => {
               <Link href='/about'>About Us</Link>
             </li>
             <li>
+              <Link href='/pricing'>Pricing</Link>
+            </li>
+            <li>
               <Link href='/legal/terms'>Terms and Conditions</Link>
             </li>
             <li>
               <Link href='/legal/privacy-policy'>Privacy Policy</Link>
+            </li>
+            <li>
+              <Link href='/legal/refund-policy'>Refund Policy</Link>
             </li>
           </ul>
         </div>
@@ -66,7 +73,7 @@ const Footer = () => {
               Address - 8 & 9, SIDDHIVINAYAK COMPLEX, KHANIWALI, AT POST
               KHANIWALI, TALUKA WADA, DIST-PALGHAR, MAHARASHTRA - 421312, INDIA
             </li>
-            <li>Email - studioindustry@gmail.com</li>
+            <li>Email - studoindustryprojects@gmail.com</li>
             <li>Phone - +91 87678 38106</li>
           </ul>
         </div>

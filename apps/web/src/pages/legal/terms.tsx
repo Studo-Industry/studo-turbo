@@ -5,8 +5,8 @@ const Terms = () => {
       <p>
         Please read these Terms and Conditions (&#34;Terms&#34;) carefully
         before using the Studoindustry platform (&#34;Platform&#34;). These
-        Terms constitute a legally binding agreement between you (&#34; Use
-        r&#34 or&#34;you&#34;) and Studoindustry (&#34;we,&#34;&#34;
+        Terms constitute a legally binding agreement between you (&#34;
+        User&#34; or&#34;you&#34;) and Studoindustry (&#34;we,&#34;&#34;
         us,&#34;or&#34;our&#34;). By accessing or using the Platform, you agree
         to be bound by these Terms.
       </p>

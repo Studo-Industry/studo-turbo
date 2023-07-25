@@ -8,8 +8,10 @@ import { LandingPageCard } from '~/components/Cards';
 import vector1 from '~/images/vector2.png';
 import vector2 from '~/images/vector3.png';
 import vector3 from '~/images/vector1.png';
-import image1 from '~/images/image 1.png';
-import image2 from '~/images/image 2.png';
+import live_industry_project from '~/images/dashboard/2.svg'
+import build_for_teamwork from '~/images/dashboard/5.svg'
+import Industry_Certified_Projects from '~/images/dashboard/3.svg'
+import projects_for_everyone from '~/images/Industrial_Projects_for_Everyone.png'
 import company1 from '~/images/companies/company1.png';
 import company2 from '~/images/companies/company2.png';
 import company3 from '~/images/companies/company3.png';
@@ -167,11 +169,11 @@ const Home: NextPage = () => {
             </div>
           </section>
           <section className='my-20 flex flex-col items-center gap-20  md:mx-20 md:gap-0 '>
-            <section className='flex flex-col items-center  gap-20 md:h-screen md:flex-row'>
+            <section className='flex flex-col items-center md:h-screen md:flex-row'>
               <Image
-                width={450}
-                height={300}
-                src={image1}
+                width={650}
+                height={350}
+                src={live_industry_project}
                 alt='vector image1'
               />
               <div className='flex flex-col gap-4'>
@@ -204,7 +206,7 @@ const Home: NextPage = () => {
                 </Button>
               </div>
             </section>
-            <section className='flex flex-col-reverse items-center gap-20  md:h-screen md:flex-row'>
+            <section className='flex flex-col-reverse items-center md:h-screen md:flex-row'>
               <div className='flex flex-col gap-4'>
                 <h1 className='text-3xl font-bold md:text-5xl '>
                   Build for teamwork
@@ -234,17 +236,17 @@ const Home: NextPage = () => {
                 </Button>
               </div>
               <Image
-                width={450}
-                height={300}
-                src={image1}
+                width={650}
+                height={350}
+                src={build_for_teamwork}
                 alt='vector image1'
               />
             </section>
-            <section className='flex flex-col items-center  gap-20 md:h-screen md:flex-row'>
+            <section className='flex flex-col items-center md:h-screen md:flex-row'>
               <Image
-                width={450}
-                height={300}
-                src={image1}
+                width={650}
+                height={350}
+                src={Industry_Certified_Projects}
                 alt='vector image1'
               />
               <div className='flex flex-col gap-4'>
@@ -286,9 +288,9 @@ const Home: NextPage = () => {
             <p>Make your projects with the guidance of industrial experts.</p>
             <Image
               width={1100}
-              src={image2}
+              src={projects_for_everyone}
               alt='vector image1'
-              className=' my-16 md:mx-auto'
+              className=' md:mx-auto'
             />
           </section>
         </div>

@@ -54,6 +54,7 @@ const Profile = ({
         </div>
       )}
       <div className='mx-10 my-10 md:mx-20'>
+      <title>User Profile</title>
         <div className='my-4 grid grid-cols-1 md:my-10 md:grid-cols-4'>
           <div className='flex flex-row items-center justify-center gap-4'>
             <div className='flex flex-col items-center justify-center gap-5'>
@@ -70,7 +71,10 @@ const Profile = ({
             <Button
               type='normal'
               icon={<AiFillEdit size={24} />}
-              onClick={() => setModal(true)}
+              onClick={() => 
+                {setModal(true);
+                  document.body.style.overflow = 'hidden';
+                } }
             >
               Edit
             </Button>
@@ -129,7 +133,6 @@ export default Profile;
 
 const Edit = ({ setModal }: { setModal: (value: boolean) => void }) => {
   let toastId: string;
-
   const router = useRouter();
   const queryClient = useQueryClient();
   const info = api.user.editingInfo.useMutation({
@@ -187,6 +190,7 @@ const Edit = ({ setModal }: { setModal: (value: boolean) => void }) => {
           className='text-2xl'
           onClick={() => {
             setModal(false);
+            document.body.style.overflow = 'scroll';
           }}
         >
           <GrClose />

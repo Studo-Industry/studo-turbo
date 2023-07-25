@@ -13,6 +13,7 @@ const Profile = () => {
   });
   return (
     <>
+      <title>Admin Profile</title>
       <h1 className=" ml-20 mt-16 text-2xl">My Profile,</h1>
       <div className="my-24 flex flex-col gap-24 md:flex-row">
         <div className="my-5 flex flex-col items-center justify-center gap-5 md:ml-44">

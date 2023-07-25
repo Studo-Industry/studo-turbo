@@ -29,12 +29,6 @@ const RecentTeamTable = ({recentTeams}) => {
               </tbody>
             ))}
           </table>
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          { recentTeams?.map((team)=>
-            <TeamCard code={team.referral_code} leader={team.leader}/>
-          )
-          }
-          </div> */}
         </div>
     </div>
   )

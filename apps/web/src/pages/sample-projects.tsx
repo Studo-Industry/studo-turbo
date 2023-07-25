@@ -47,6 +47,7 @@ const SampleProjects = () => {
     return <Error error='Error Loading data, Please try again in some time.' />;
   return (
     <>
+    <title>Sample Projects</title>
       <div className='my-10'>
         <h1 className='font-inter mb-20 text-center text-4xl font-bold'>
           Sample Projects

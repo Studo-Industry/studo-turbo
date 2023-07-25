@@ -1,6 +1,27 @@
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure, protectedProcedure } from '../trpc';
 import { TRPCError } from '@trpc/server';
+import { randomUUID } from 'crypto';
+import S3 from 'aws-sdk/clients/s3';
+import nodemailer from 'nodemailer';
+
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  auth: {
+    // TODO: replace `user` and `pass` values from <https://forwardemail.net>
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
+const s3 = new S3({
+  apiVersion: '2006-03-01',
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET,
+  region: process.env.AWS_REGION,
+  signatureVersion: 'v4',
+});
 
 function generateRandomCharacter() {
   let result = '';
@@ -58,12 +79,12 @@ export const teamRouter = createTRPCRouter({
           payment_status: false,
           presentMilestone: 1,
           approvedMilestone: 0,
-          milestone1LinkCheck:false,
-          milestone2LinkCheck:false,
-          milestone3LinkCheck:false,
-          milestone4LinkCheck:false,
-          milestone5LinkCheck:false,
-          milestone6LinkCheck:false,
+          milestone1LinkCheck: false,
+          milestone2LinkCheck: false,
+          milestone3LinkCheck: false,
+          milestone4LinkCheck: false,
+          milestone5LinkCheck: false,
+          milestone6LinkCheck: false,
         },
       });
       await ctx.prisma.user.update({
@@ -147,7 +168,7 @@ export const teamRouter = createTRPCRouter({
           message: `This team is for year ${team.year}.`,
         });
       }
-      if (user.team.length!==0) {
+      if (user.team.length !== 0) {
         throw new TRPCError({
           code: 'FORBIDDEN',
           message: 'You are already part of a team.',
@@ -168,7 +189,7 @@ export const teamRouter = createTRPCRouter({
       });
       return updatedUser;
     }),
-  // TODO: bad syntax fix later
+
   getTeam: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -182,7 +203,17 @@ export const teamRouter = createTRPCRouter({
             project: true,
           },
         });
-        return team;
+        const check = team?.members.find(
+          (member) => member.id === ctx.session.user.id,
+        );
+        if (check) {
+          return team;
+        } else {
+          throw new TRPCError({
+            code: 'BAD_REQUEST',
+            message: 'Team not found',
+          });
+        }
       } catch (error) {
         console.log(error);
         throw new TRPCError({ code: 'BAD_REQUEST', message: 'Team not found' });
@@ -306,7 +337,7 @@ export const teamRouter = createTRPCRouter({
       z.object({
         milestone: z.number().max(6).min(1),
         files: z.string().array(),
-        typeofmilestone: z.boolean()
+        typeofmilestone: z.boolean(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -334,7 +365,7 @@ export const teamRouter = createTRPCRouter({
                   milestone1: {
                     push: input.files,
                   },
-                  milestone1LinkCheck:input.typeofmilestone,
+                  milestone1LinkCheck: input.typeofmilestone,
                   presentMilestone: 2,
                 },
               });
@@ -348,7 +379,7 @@ export const teamRouter = createTRPCRouter({
                   milestone2: {
                     push: input.files,
                   },
-                  milestone2LinkCheck:input.typeofmilestone,
+                  milestone2LinkCheck: input.typeofmilestone,
                   presentMilestone: 3,
                 },
               });
@@ -362,7 +393,7 @@ export const teamRouter = createTRPCRouter({
                   milestone3: {
                     push: input.files,
                   },
-                  milestone3LinkCheck:input.typeofmilestone,
+                  milestone3LinkCheck: input.typeofmilestone,
                   presentMilestone: 4,
                 },
               });
@@ -376,7 +407,7 @@ export const teamRouter = createTRPCRouter({
                   milestone4: {
                     push: input.files,
                   },
-                  milestone4LinkCheck:input.typeofmilestone,
+                  milestone4LinkCheck: input.typeofmilestone,
                   presentMilestone: 5,
                 },
               });
@@ -390,7 +421,7 @@ export const teamRouter = createTRPCRouter({
                   milestone5: {
                     push: input.files,
                   },
-                  milestone5LinkCheck:input.typeofmilestone,
+                  milestone5LinkCheck: input.typeofmilestone,
                   presentMilestone: 6,
                 },
               });
@@ -404,7 +435,7 @@ export const teamRouter = createTRPCRouter({
                   milestone6: {
                     push: input.files,
                   },
-                  milestone6LinkCheck:input.typeofmilestone,
+                  milestone6LinkCheck: input.typeofmilestone,
                   presentMilestone: 7,
                 },
               });
@@ -592,4 +623,136 @@ export const teamRouter = createTRPCRouter({
     }
     return ctx.prisma.team.findMany();
   }),
+  getApprovalRequestingTeams: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.team.findMany({
+      where: {
+        orderStatus: true,
+        payment_status: false,
+      },
+    });
+  }),
+  approveTeamPayment: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const team = await ctx.prisma.team.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            payment_status: true,
+          },
+          include: {
+            members: true,
+          },
+        });
+        if (team) {
+          team.members.map(async (member) => {
+            const content: string = `Dear ${member.firstName} ${member.lastName},<br/><br/>
+          Congratulations! We have successfully received your payment for the Studoindustry project. Your payment has been processed and approved, and we are excited to have you onboard.<br/><br/>
+          Please find the details of the payment below:<br/>
+          Payment Amount: 399/- <br/>
+          Payment Method: UPI MODE<br/><br/>
+          Your payment has been credited, and you can now proceed with your participation in the project. We appreciate your commitment and look forward to witnessing the valuable contributions you will make.<br/>
+          If you have any questions or require any assistance, please do not hesitate to contact our support team at [Email: <a href="mailto:help.studoindustry@gmail.com">help.studoindustry@gmail.com</a> / Whatsapp Number: <a href="tel:+917620158234">+91 7620158234</a> ]. <br/><br/>
+          Thank you for being a part of the Studoindustry community.<br/><br/>
+          Best regards,<br/>
+          The Studoindustry Team`;
+            const info = await transporter.sendMail({
+              from: '"Studo Industry" <studoindustry.com@gmail.com>',
+              to: `${member.email}`,
+              subject:
+                'Payment Confirmation & Project Approval- Studoindustry Project',
+              html: content,
+            });
+            console.log('Message sent: %s', info.messageId);
+          });
+        }
+        return team;
+      } catch (error) {
+        console.log(error);
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Something went wrong',
+        });
+      }
+    }),
+  rejectTeamPayment: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const team = await ctx.prisma.team.update({
+          where: {
+            id: input.id,
+          },
+          data: {
+            orderStatus: false,
+            paymentSS: null,
+          },
+          include: {
+            members: true,
+          },
+        });
+        if (team) {
+          team.members.map(async (member) => {
+            const content: string = `Dear ${member.firstName} ${member.lastName},<br/><br/>
+            We regret to inform you that your payment for the Studoindustry project has been rejected. We apologize for any inconvenience this may cause.<br/><br/>
+        Please find the details of the payment below:<br/><br/>
+        We kindly request you to review the payment details and ensure that all the necessary information is accurate and up-to-date.<br/> If you believe there has been an error, please feel free to contact our support team at [Email: <a href="mailto:help.studoindustry@gmail.com">help.studoindustry@gmail.com</a> / Whatsapp Number: <a href="tel:+917620158234">+91 7620158234</a> ]. <br/><br/>
+        Please note that your participation in the project will not be confirmed until the payment is successfully processed. You may resubmit the payment for further consideration.<br/>
+        Thank you for your understanding. We value your interest in the project and hope to see you participate soon.<br/>
+
+        Best regards,<br/>
+        The Studoindustry Team`;
+            const info = await transporter.sendMail({
+              from: '"Studo Industry" <studoindustry.com@gmail.com>',
+              to: `${member.email}`,
+              subject: 'Congratulations on the approval of your payment!🥳',
+              html: content,
+            });
+            console.log('Message sent: %s', info.messageId);
+          });
+        }
+        return team;
+      } catch (error) {
+        console.log(error);
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: 'Something went wrong',
+        });
+      }
+    }),
+  paymentSSUpload: protectedProcedure
+    .input(z.object({ extension: z.string() }))
+    .mutation(({ input }) => {
+      const ex = input.extension.split('/')[1]!;
+      console.log(ex);
+      const key = `${randomUUID()}.${ex}`;
+      const params = {
+        Bucket: process.env.AWS_BUCKET_SS,
+        Key: key,
+        Expires: 60,
+        ContentType: `image/${ex}`,
+      };
+      const uploadUrl = s3.getSignedUrl('putObject', params);
+
+      return {
+        uploadUrl,
+        key,
+      };
+    }),
+  submitForPaymentApproval: protectedProcedure
+    .input(z.object({ image: z.string(), teamid: z.string() }))
+    .mutation(({ ctx, input }) => {
+      const team = ctx.prisma.team.update({
+        where: {
+          id: input.teamid,
+        },
+        data: {
+          paymentSS: input.image,
+          orderStatus: true,
+        },
+      });
+      return team;
+    }),
 });

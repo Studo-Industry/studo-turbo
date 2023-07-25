@@ -108,6 +108,7 @@ const Project = () => {
         </div>
       )}
       <div className='m-10 md:m-20'>
+      <title>Project Description</title>
         <div className=''>
           <button
             onClick={() => router.back()}
@@ -198,7 +199,7 @@ const Project = () => {
                   </span>
                 </div>
               </div>
-              {data.Team.length === 0 && (
+              {user.team.length === 0 && (
                 <div className='flex w-full flex-col gap-4 md:flex-row md:gap-10'>
                   <Button
                     type='normal'
@@ -260,14 +261,14 @@ const Project = () => {
               <p>{data?.description}</p>
             </>
           )}
-          {data?.videoLink && (
+          {/* {data?.videoLink && (
             <>
               <h2 className='pb-3 text-xl font-medium text-black'>
                 Description
               </h2>
               <p>{data?.videoLink}</p>
             </>
-          )}
+          )} */}
 
           {data?.skills && (
             <>
@@ -483,8 +484,16 @@ const CreateTeam = ({
       </div>
       <p className='text-sm font-semibold text-gray-500'>
         <span className='text-red-500'>Note-</span>If your college is not in the
-        list, Please contact 1233456789 to add your college.
+        list, Please contact{' '}
+        <Link href='tel:+917620158234' className='text-blue underline'>
+          +91 7620158234
+        </Link>{' '}
+        to add your college.
       </p>
+      <br />
+      <p className='text-sm text-gray-500 font-semibold'>
+      <span className='text-red-500'>Note-</span> For projects requiring approval from the college or other educational institutions, the responsibility <br />of obtaining the necessary approvals lies with the students themselves. Studoindustry will provide guidance and <br />support to students in the process, but the students are solely responsible for seeking and obtaining the required approvals <br />from their respective colleges or institutions. <Link href="/rules" className='text-blue underline' onClick={()=> document.body.style.overflow = 'set'}>more</Link>
+      </p> 
 
       {/* <div className="w-full py-10 text-base text-gray-600">
         <p>Is your Mentor going to join the website ?</p>
@@ -506,8 +515,13 @@ const CreateTeam = ({
         />
         <p>
           I agree to the{' '}
-          <span className='font-semibold'>Terms & Conditions</span> and I
-          understand that <span className='font-semibold'>processing fees</span>{' '}
+          <Link href='/terms' className='text-blue font-semibold underline'>
+            Terms & Conditions
+          </Link>{' '}
+          and I understand that{' '}
+          <Link href='/pricing' className='text-blue font-semibold underline'>
+            processing fees
+          </Link>{' '}
           is required to complete applying for the project.
         </p>
       </div>
@@ -531,7 +545,7 @@ const CreateTeam = ({
           document.body.style.overflow = 'unset';
         }}
       >
-        <p className='text-xl'>
+        <p className='text-xl flex flex-row items-center'>
           <BsLightningFill />
           Create Team
         </p>

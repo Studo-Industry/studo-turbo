@@ -1,8 +1,11 @@
 import { GetServerSidePropsContext } from "next";
 import { getSession, useSession } from "next-auth/react";
+import Admins from "~/components/Admins";
+import Mentors from "~/components/Mentors";
 
 import PreLoader from "~/components/PreLoader";
 import RecentTeamTable from "~/components/RecentTeam";
+import Users from "~/components/Users";
 import { api } from "~/utils/api";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -47,6 +50,7 @@ const AdminDashboard = () => {
     return <PreLoader />;
   return (
     <div className="mx-10 my-14">
+      <title>Admin Dashboard</title>
       <h1 className="text-2xl font-semibold">Hi {data?.user.name},</h1>
       <div className="mx-5">
         <div className="my-12 flex flex-col justify-evenly gap-5 md:flex-row">
@@ -68,6 +72,15 @@ const AdminDashboard = () => {
         </div>
         <div>
           <RecentTeamTable recentTeams={recentTeams} />
+        </div>
+        <div className="my-10">
+          <Users/> 
+        </div>
+        <div className="my-10">
+          <Mentors/> 
+        </div>
+        <div className="my-10">
+          <Admins/> 
         </div>
       </div>
     </div>
