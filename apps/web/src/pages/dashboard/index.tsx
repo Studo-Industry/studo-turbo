@@ -147,6 +147,7 @@ const Dashboard = ({
 
   return (
     <div className='my-20'>
+      <title>Team Dashboard</title>
       <div className='mx-6 my-16 md:mx-20'>
         <h1 className='font-inter text-2xl font-semibold'>
           Hi {data?.user.name},

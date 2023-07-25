@@ -22,6 +22,7 @@ const Wishlist = () => {
   });
   return (
     <div className='px-8 py-20 md:px-20'>
+      <title>Wishlist</title>
       <h2 className='pb-10 text-xl font-bold'>Wishlist</h2>
       <div className='grid grid-cols-1 gap-8 md:grid-cols-3'>
         {userStatus === 'loading' && (

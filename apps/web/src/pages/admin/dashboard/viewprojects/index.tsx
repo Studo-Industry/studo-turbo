@@ -29,6 +29,7 @@ const ViewProjects = () => {
 
   return (
     <div className="py-10">
+      <title>Projects</title>
       <h1 className="text-center text-3xl font-bold">Projects</h1>
       <div className="my-2 grid grid-cols-1 gap-3 px-10 py-10 md:grid-cols-3">
         {projects.map((project) => (

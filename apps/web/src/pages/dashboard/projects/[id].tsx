@@ -108,6 +108,7 @@ const Project = () => {
         </div>
       )}
       <div className='m-10 md:m-20'>
+      <title>Project Description</title>
         <div className=''>
           <button
             onClick={() => router.back()}

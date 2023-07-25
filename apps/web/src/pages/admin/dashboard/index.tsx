@@ -50,6 +50,7 @@ const AdminDashboard = () => {
     return <PreLoader />;
   return (
     <div className="mx-10 my-14">
+      <title>Admin Dashboard</title>
       <h1 className="text-2xl font-semibold">Hi {data?.user.name},</h1>
       <div className="mx-5">
         <div className="my-12 flex flex-col justify-evenly gap-5 md:flex-row">

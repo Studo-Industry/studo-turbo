@@ -54,6 +54,7 @@ const Profile = ({
         </div>
       )}
       <div className='mx-10 my-10 md:mx-20'>
+      <title>User Profile</title>
         <div className='my-4 grid grid-cols-1 md:my-10 md:grid-cols-4'>
           <div className='flex flex-row items-center justify-center gap-4'>
             <div className='flex flex-col items-center justify-center gap-5'>

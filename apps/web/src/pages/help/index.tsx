@@ -31,6 +31,7 @@ const questionNo = [
 const Help = () => {
   return (
     <div>
+      <title>Help</title>
       <div className='my-20'>
         <h1 className='mx-10 my-10 text-2xl font-bold'>How to Use</h1>
         <div className='flex flex-col items-center gap-10 m-10'>

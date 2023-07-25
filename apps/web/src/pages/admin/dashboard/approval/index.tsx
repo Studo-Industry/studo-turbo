@@ -15,6 +15,7 @@ const approval = () => {
   }
   return (
     <div className='m-10'>
+      <title>Payment Approval</title>
       <h1 className='mb-10 text-center text-3xl font-bold'>Payment Approval</h1>
       <div className='grid grid-cols-2 gap-6'>
         {teamsData?.map((team) => {

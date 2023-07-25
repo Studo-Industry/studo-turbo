@@ -190,6 +190,7 @@ const Home = () => {
 
   return (
     <>
+      <title>Add Projects</title>
       <main className="flex flex-col bg-gray-100 px-10 py-16">
         <h1 className="text-2xl font-semibold">Hi {session?.user.name}!</h1>
         <form
