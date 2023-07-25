@@ -195,5 +195,29 @@ export const userRouter = createTRPCRouter({
       });
       return info;
     }),
+    UsersForAdmin : protectedProcedure
+    .query(async({ctx})=>{
+      return await ctx.prisma.user.findMany({
+        where:{
+          role:'USER'
+        }
+      })
+    }),
+    MentorsForAdmin : protectedProcedure
+    .query(async({ctx})=>{
+      return await ctx.prisma.user.findMany({
+        where:{
+          role:'MENTOR'
+        }
+      })
+    }),
+    AdminsForAdmin : protectedProcedure
+    .query(async({ctx})=>{
+      return await ctx.prisma.user.findMany({
+        where:{
+          role:'ADMIN'
+        }
+      })
+    }),
 
 });

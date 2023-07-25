@@ -260,14 +260,14 @@ const Project = () => {
               <p>{data?.description}</p>
             </>
           )}
-          {data?.videoLink && (
+          {/* {data?.videoLink && (
             <>
               <h2 className='pb-3 text-xl font-medium text-black'>
                 Description
               </h2>
               <p>{data?.videoLink}</p>
             </>
-          )}
+          )} */}
 
           {data?.skills && (
             <>

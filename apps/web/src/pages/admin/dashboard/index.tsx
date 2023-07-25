@@ -1,8 +1,11 @@
 import { GetServerSidePropsContext } from "next";
 import { getSession, useSession } from "next-auth/react";
+import Admins from "~/components/Admins";
+import Mentors from "~/components/Mentors";
 
 import PreLoader from "~/components/PreLoader";
 import RecentTeamTable from "~/components/RecentTeam";
+import Users from "~/components/Users";
 import { api } from "~/utils/api";
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -68,6 +71,15 @@ const AdminDashboard = () => {
         </div>
         <div>
           <RecentTeamTable recentTeams={recentTeams} />
+        </div>
+        <div className="my-10">
+          <Users/> 
+        </div>
+        <div className="my-10">
+          <Mentors/> 
+        </div>
+        <div className="my-10">
+          <Admins/> 
         </div>
       </div>
     </div>
