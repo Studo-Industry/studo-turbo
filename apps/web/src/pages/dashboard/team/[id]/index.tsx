@@ -20,6 +20,7 @@ import Milestones from '~/components/Milestones';
 import MentorMilestone from '~/components/MentorMilestone';
 import Error from '~/components/Error';
 import Button from '~/components/Button';
+import Script from 'next/script';
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const session = await getSession(context);
@@ -208,7 +209,42 @@ const Team = ({
         setCurrentStep(data - 1);
       },
     });
+  const pay = api.payment.pay.useMutation({
+    onSuccess: () => {
+      let config = {
+        root: '',
+        flow: 'DEFAULT',
+        data: {
+          orderId: 'something' /* update order id */,
+          token: '' /* update token value */,
+          tokenType: 'TXN_TOKEN',
+          amount: '399.00' /* update amount */,
+        },
+        handler: {
+          notifyMerchant: function (eventName, data) {
+            console.log('notifyMerchant handler function called');
+            console.log('eventName => ', eventName);
+            console.log('data => ', data);
+          },
+        },
+      };
 
+      new (window as any).Paytm.CheckoutJS.onLoad(
+        function excecuteAfterCompleteLoad() {
+          (window as any).Paytm.CheckoutJS.init(config)
+            .then(function onSuccess() {
+              (window as any).Paytm.CheckoutJS.invoke();
+            })
+            .catch(function onError(error) {
+              console.log('error => ', error);
+            });
+        },
+      );
+    },
+    onError: () => {
+      console.log('nahi hoga payment');
+    },
+  });
   const { data: teamData, status: teamStatus } = api.team.getTeam.useQuery(
     {
       id: String(router.query.id),
@@ -217,88 +253,6 @@ const Team = ({
       retry: false,
     },
   );
-  const paymentVerification = api.payment.verify.useMutation({
-    onMutate: () => {
-      toast.loading('Completing payment');
-    },
-    onSuccess: (data) => {
-      console.log(data);
-      toast.dismiss(toastid);
-      const getTeamKey = getQueryKey(api.team.getTeam);
-      void queryClient.invalidateQueries({
-        queryKey: [...getTeamKey],
-      });
-      toast.success('Payment completed successfully');
-      router.push({
-        pathname: '/dashboard/team/thankyou',
-        query: { teamId: teamData.id },
-      });
-    },
-    onError: (error) => {
-      console.log(error);
-      toast.dismiss(toastid);
-      toast.error(error.message);
-    },
-  });
-  const paymentMutation = api.payment.pay.useMutation({
-    onSuccess: (paymentData) => {
-      console.log(paymentData);
-      const options = {
-        key_id: String(env.NEXT_PUBLIC_RAZORPAY_KEY_ID),
-        amount: paymentData.amount,
-        currency: paymentData.currency,
-        order_id: paymentData.id,
-        name: 'Studo Industry',
-        handler: async (response) => {
-          console.log(response);
-          paymentVerification.mutateAsync({
-            teamId: teamData.id,
-            orderDetails: response,
-          });
-        },
-        prefill: {
-          name: data.user.name,
-          email: data.user.email,
-        },
-      };
-      const rzp1 = new (window as any).Razorpay(options);
-      rzp1.on('payment.failed', function (response) {
-        console.log(response);
-        toast.error(response?.error?.description);
-      });
-      rzp1.open();
-    },
-    onError: (error) => {
-      console.log(error);
-      toast.error(error.message);
-    },
-  });
-
-  const displayRazorPay = async () => {
-    const res = await loadRazorPay();
-    // console.log(res);
-    if (!res) {
-      alert('RazorPay failed to load, Please try again later.');
-      return;
-    }
-    void paymentMutation.mutateAsync({
-      projectId: teamData.project.id,
-      teamId: teamData.id,
-    });
-  };
-  const loadRazorPay = async () => {
-    return new Promise((resolve) => {
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-      script.onload = () => {
-        resolve(true);
-      };
-      script.onerror = () => {
-        resolve(false);
-      };
-      document.body.appendChild(script);
-    });
-  };
 
   if (
     mileStoneStatus === 'loading' ||
@@ -320,8 +274,16 @@ const Team = ({
     (member) => member.id === teamData?.mentor,
   );
 
+  function onScriptLoad() {}
   return (
     <>
+      <Script
+        type='application/javascript'
+        crossOrigin='anonymous'
+        src='https://securegw.paytm.in/merchantpgpui/checkoutjs/merchants/OjwpNw47314293518016.js'
+        onLoad={() => onScriptLoad()}
+      ></Script>
+
       <div className='px-8 py-20 md:px-20'>
         <button
           onClick={() => router.back()}
@@ -772,17 +734,12 @@ const Team = ({
                         <Button
                           type='normal'
                           onClick={() => {
-                            if (images === '') {
-                              toast.error('Please upload image!');
-                            } else {
-                              void submit.mutateAsync({
-                                image: images,
-                                teamid: teamData.id,
-                              });
-                            }
+                            void pay.mutateAsync({
+                              teamId: teamData.id,
+                            });
                           }}
                         >
-                          Submit
+                          Pay Now
                         </Button>
                         <p>
                           After completing the payment and uploading the

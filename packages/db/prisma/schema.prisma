@@ -128,7 +128,7 @@ model Team {
   approvedMilestone   Int
   payment_status      Boolean  @default(false)
   order               Order[]
-  orderStatus         Boolean @default(false)
+  orderStatus         Boolean  @default(false)
   paymentSS           String?
 }
 
@@ -138,7 +138,7 @@ model College {
 }
 
 model Order {
-  id        String   @id @unique
+  id        String   @id @unique @default(cuid())
   paymentId String?
   teamId    String
   team      Team     @relation(fields: [teamId], references: [id])
