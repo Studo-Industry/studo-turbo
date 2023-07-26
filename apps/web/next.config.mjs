@@ -10,7 +10,7 @@ const config = {
   env: {
     NEXT_PUBLIC_WEBSITE_URL: process.env.NEXT_PUBLIC_WEBSITE_URL,
     NEXT_PUBLIC_AWS_S3: process.env.NEXT_PUBLIC_AWS_S3,
-    NEXT_PUBLIC_AWS_PAYMENT_SS: process.env.NEXT_PUBLIC_AWS_PAYMENT_SS
+    NEXT_PUBLIC_AWS_PAYMENT_SS: process.env.NEXT_PUBLIC_AWS_PAYMENT_SS,
   },
   images: {
     remotePatterns: [
@@ -42,9 +42,5 @@ const config = {
    *
    * @see https://github.com/vercel/next.js/issues/41980
    */
-  i18n: {
-    locales: ['en'],
-    defaultLocale: 'en',
-  },
 };
 export default config;
