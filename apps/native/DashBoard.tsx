@@ -12,9 +12,12 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import Card from './Components/Card';
-import { RootStackParamList } from '../App';
+import type { RootStackParamList } from './App';
 import { api } from './utils/trpc';
 import { RouteProp } from '@react-navigation/native';
+import { Icon } from 'react-native-vector-icons/Icon';
+import { StackNavigationProp } from '@react-navigation/stack';
+import GoogleLogIn from './utils/google';
 
 const buttonsData = [
   { icon: 'groups', text: 'My Team' },
@@ -78,6 +81,11 @@ const projectCategories = [
   { name: 'Instrumentation technology engineering' },
 ];
 
+type DashboardProps = {
+  navigation: StackNavigationProp<RootStackParamList, 'Dashboard'>;
+  route: RouteProp<RootStackParamList, 'Dashboard'>;
+};
+
 const Dashboard: React.FC<DashboardProps> = ({ navigation }) => {
   const handleCardPress = (categoryName: string) => {
     navigation.navigate('Screen4', { categoryName });
@@ -90,7 +98,7 @@ const Dashboard: React.FC<DashboardProps> = ({ navigation }) => {
     category: 'All Projects',
   });
 
-  const handleButtonPress = (text) => {
+  const handleButtonPress = (text: string) => {
     switch (text) {
       case 'My Team':
         navigation.navigate('MyTeam');
@@ -173,13 +181,15 @@ const Dashboard: React.FC<DashboardProps> = ({ navigation }) => {
         <Text style={styles.sectionTitle}>Quick Access</Text>
         <View style={styles.buttonWrapper}>{renderButtons()}</View>
       </View>
-
+      <View>
+        <GoogleLogIn />
+      </View>
       <View style={styles.section}>
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Browse By Category</Text>
           <TouchableOpacity
             style={styles.viewAllLink}
-            onPress={() => handleViewAllPress(null)}
+            onPress={() => handleViewAllPress()}
           >
             <Text style={styles.viewAllText}>View All</Text>
           </TouchableOpacity>
@@ -203,32 +213,32 @@ const Dashboard: React.FC<DashboardProps> = ({ navigation }) => {
           <Text style={styles.sectionTitle}>Browse By Projects</Text>
           <TouchableOpacity
             style={styles.viewAllLink}
-            onPress={() => handleCardPress("All Projects")}
+            onPress={() => handleCardPress('All Projects')}
           >
             <Text style={styles.viewAllText}>View All</Text>
           </TouchableOpacity>
         </View>
       </View>
       <View style={styles.container}>
-      <ScrollView
-      horizontal={true} // Set horizontal prop to true
-      showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollViewContent}
-      >
-        {data?.map((project, index) => (
-          <TouchableOpacity
-            key={project.id}
-            onPress={() => navigation.navigate('Screen3', { id: project.id })}
-          >
-            <Card
-              imageUri={`https://studoindustry.s3.ap-south-1.amazonaws.com/${project.images[0]}`}
-              // imageUri={`https://studoindustry.s3.ap-south-1.amazonaws.com/c529779b-6e63-4462-a815-5afa537871b7.jpeg`}
-              title={project.title}
-            />
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    </View>
+        <ScrollView
+          horizontal={true} // Set horizontal prop to true
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollViewContent}
+        >
+          {data?.map((project, index) => (
+            <TouchableOpacity
+              key={project.id}
+              onPress={() => navigation.navigate('Screen3', { id: project.id })}
+            >
+              <Card
+                imageUri={`https://studoindustry.s3.ap-south-1.amazonaws.com/${project.images[0]}`}
+                // imageUri={`https://studoindustry.s3.ap-south-1.amazonaws.com/c529779b-6e63-4462-a815-5afa537871b7.jpeg`}
+                title={project.title}
+              />
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
     </ScrollView>
   );
 };
@@ -301,7 +311,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom:25,
+    marginBottom: 25,
   },
   card: {
     width: width / 2 - 24,
@@ -317,7 +327,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     marginBottom: 8,
     marginRight: 3,
-    marginLeft:5,
+    marginLeft: 5,
   },
   cardIcon: {
     marginBottom: 8,

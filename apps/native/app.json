@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "StudioI",
-    "slug": "StudioI",
+    "slug": "studo-industry",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -29,8 +29,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "378a929e-c590-42ee-bdcd-743cfc44f4e3"
+        "projectId": "09352912-7876-4a1b-8b27-7df768bc0b09"
       }
-    }
+    },
+    "owner": "sanketp16"
   }
 }
