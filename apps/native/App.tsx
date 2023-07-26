@@ -20,7 +20,7 @@ import AllBranches from './screens/AllBranches';
 import BottomNavigation from './Components/BottomNavigation';
 import HelpScreen from './screens/HelpScreen';
 
-type RootStackParamList = {
+export type RootStackParamList = {
   Dashboard: { categoryName: string };
   MyTeam: undefined;
   Main: undefined;
@@ -34,7 +34,7 @@ type RootStackParamList = {
   Projects: undefined;
   AllBranches: undefined;
   Home: undefined;
-  Wishlist: { projectName: string, wishlistItems: WishlistItem[] };
+  Wishlist: { projectName: string; wishlistItems: WishlistItem[] };
   Screen2: undefined;
   Screen3: {
     id: string;
@@ -58,21 +58,21 @@ const App = () => {
   return (
     <TRPCProvider>
       <NavigationContainer>
-        <Stack.Navigator headerMode="none">
-          <Stack.Screen name="Main" component={BottomNavigation} />
-          <Stack.Screen name="Dashboard" component={Dashboard} />
-          <Stack.Screen name="Help" component={HelpScreen} />
-          <Stack.Screen name="Profile" component={Profile} />
-          <Stack.Screen name="Milestone" component={MileStoneScreen} />
-          <Stack.Screen name="MyTeam" component={MyTeam} />
-          <Stack.Screen name="MyProject" component={MyProjectScreen} />
-          <Stack.Screen name="Website" component={Website} />
-          <Stack.Screen name="About" component={AboutUsScreen} />
-          <Stack.Screen name="Wishlist" component={WishlistScreen} />
-          <Stack.Screen name="Screen4" component={Screen4} />
-          <Stack.Screen name="AllBranches" component={AllBranches} />
-          <Stack.Screen name="Screen3" component={Screen3} />
-          <Stack.Screen name="Screen2" component={Screen2} />
+        <Stack.Navigator headerMode='none'>
+          <Stack.Screen name='Main' component={BottomNavigation} />
+          <Stack.Screen name='Dashboard' component={Dashboard} />
+          <Stack.Screen name='Help' component={HelpScreen} />
+          <Stack.Screen name='Profile' component={Profile} />
+          <Stack.Screen name='Milestone' component={MileStoneScreen} />
+          <Stack.Screen name='MyTeam' component={MyTeam} />
+          <Stack.Screen name='MyProject' component={MyProjectScreen} />
+          <Stack.Screen name='Website' component={Website} />
+          <Stack.Screen name='About' component={AboutUsScreen} />
+          {/* <Stack.Screen name="Wishlist" component={WishlistScreen} /> */}
+          <Stack.Screen name='Screen4' component={Screen4} />
+          <Stack.Screen name='AllBranches' component={AllBranches} />
+          <Stack.Screen name='Screen3' component={Screen3} />
+          <Stack.Screen name='Screen2' component={Screen2} />
         </Stack.Navigator>
       </NavigationContainer>
     </TRPCProvider>
