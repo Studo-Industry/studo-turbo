@@ -714,12 +714,13 @@ const Team = ({
                 </div>
               </>
             ) : (
-              <div className='m-4 flex flex-col items-center justify-center gap-6'>
-                <p>
-                  Please complete your payment before submitting/approving
-                  milestones.
-                </p>
-                {/* <button
+              <>
+                <div className='m-4 flex flex-col items-center justify-center gap-6'>
+                  <p>
+                    Please complete your payment before submitting/approving
+                    milestones.
+                  </p>
+                  {/* <button
                   className='rounded-md border-2 p-4 font-bold text-white hover:bg-black'
                   // disabled={true}
                   onClick={() => {
@@ -728,12 +729,87 @@ const Team = ({
                 >
                   Pay with Razorpay
                 </button> */}
-                <img
-                  src={payment.src}
-                  alt='payment qr'
-                  className='max-w-[400px]'
-                />
-              </div>
+                  <img
+                    src={payment.src}
+                    alt='payment qr'
+                    className='max-w-[400px]'
+                  />
+                </div>
+                <div className='flex flex-col gap-10 py-10'>
+                  {teamData.payment_status === false &&
+                    (teamData.paymentSS !== null ? (
+                      <>
+                        <p className='text-center text-xl font-bold'>
+                          Please wait while we confirm your payment
+                        </p>
+                        <div>
+                          <p className='font-semibold'> Note -</p>
+                          <ul>
+                            <li>
+                              1. After filling up the team with all the members,
+                              the team has to pay a processing fee of Rs. 399 .
+                            </li>
+                            <li>
+                              2. Team members cannot leave after payment is
+                              done.
+                            </li>
+                            <li>
+                              3. Team cannot be deleted after payment is done.{' '}
+                            </li>
+                          </ul>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <p className='font-bold'>
+                          After completing the payment please upload the
+                          screenshot over here!
+                        </p>
+                        {images.length !== 0 && <ImageUpload />}
+                        <AddImage
+                          onImageSelect={(file: File) => void uploadToS3(file)}
+                        />
+                        <Button
+                          type='normal'
+                          onClick={() => {
+                            if (images === '') {
+                              toast.error('Please upload image!');
+                            } else {
+                              void submit.mutateAsync({
+                                image: images,
+                                teamid: teamData.id,
+                              });
+                            }
+                          }}
+                        >
+                          Submit
+                        </Button>
+                        <p>
+                          After completing the payment and uploading the
+                          screenshot, wait for 24hours, the admin will verify
+                          the payment and send a e-mail via your registered
+                          account.
+                        </p>
+                        <div>
+                          <p className='font-semibold'> Note -</p>
+                          <ul>
+                            <li>
+                              1. After filling up the team with all the members,
+                              the team has to pay a processing fee of Rs. 399 .
+                            </li>
+                            <li>
+                              2. Team members cannot leave after payment is
+                              done.
+                            </li>
+                            <li>
+                              3. Team cannot be deleted after payment is done.{' '}
+                            </li>
+                          </ul>
+                        </div>
+                      </>
+                    ))}
+                </div>
+              </>
             )
           ) : (
             <div className='flex flex-col items-center gap-10 md:m-10'>
@@ -752,73 +828,6 @@ const Team = ({
               <li>2. Team members cannot leave after payment is done.</li>
               <li>3. Team cannot be deleted after payment is done. </li>
             </ul>
-          </div>
-          <div className='flex flex-col gap-10 py-10'>
-            {teamData.payment_status === false &&
-              (teamData.paymentSS !== null ? (
-                <>
-                  <p className='text-center text-xl font-bold'>
-                    Please wait while we confirm your payment
-                  </p>
-                  <div>
-                    <p className='font-semibold'> Note -</p>
-                    <ul>
-                      <li>
-                        1. After filling up the team with all the members, the
-                        team has to pay a processing fee of Rs. 399 .
-                      </li>
-                      <li>
-                        2. Team members cannot leave after payment is done.
-                      </li>
-                      <li>3. Team cannot be deleted after payment is done. </li>
-                    </ul>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <p className='font-bold'>
-                    After completing the payment please upload the screenshot
-                    over here!
-                  </p>
-                  {images.length !== 0 && <ImageUpload />}
-                  <AddImage
-                    onImageSelect={(file: File) => void uploadToS3(file)}
-                  />
-                  <Button
-                    type='normal'
-                    onClick={() => {
-                      if (images === '') {
-                        toast.error('Please upload image!');
-                      } else {
-                        void submit.mutateAsync({
-                          image: images,
-                          teamid: teamData.id,
-                        });
-                      }
-                    }}
-                  >
-                    Submit
-                  </Button>
-                  <p>
-                    After completing the payment and uploading the screenshot,
-                    wait for 24hours, the admin will verify the payment and send
-                    a e-mail via your registered account.
-                  </p>
-                  <div>
-                    <p className='font-semibold'> Note -</p>
-                    <ul>
-                      <li>
-                        1. After filling up the team with all the members, the
-                        team has to pay a processing fee of Rs. 399 .
-                      </li>
-                      <li>
-                        2. Team members cannot leave after payment is done.
-                      </li>
-                      <li>3. Team cannot be deleted after payment is done. </li>
-                    </ul>
-                  </div>
-                </>
-              ))}
           </div>
         </div>
       </div>
