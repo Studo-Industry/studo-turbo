@@ -162,7 +162,7 @@ export const paymentRouter = createTRPCRouter({
 
         const checksum = await PaytmChecksum.generateSignature(
           JSON.stringify(paytmParams.body),
-          process.env.PAYTM_MERCHANT_KEY,
+          String(process.env.PAYTM_MERCHANT_KEY),
         );
         console.log(checksum);
         paytmParams.head = {
@@ -228,7 +228,7 @@ export const paymentRouter = createTRPCRouter({
 
         const checksum = await PaytmChecksum.generateSignature(
           JSON.stringify(paytmParams.body),
-          process.env.PAYTM_MERCHANT_KEY,
+          String(process.env.PAYTM_MERCHANT_KEY),
         );
         console.log(checksum);
         paytmParams.head = {
