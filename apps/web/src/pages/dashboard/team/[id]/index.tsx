@@ -9,6 +9,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { AiFillCopy, AiOutlineLeft } from 'react-icons/ai';
 import { HiClipboardCheck } from 'react-icons/hi';
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from 'next';
+import Head from 'next/head';
 
 import { api } from '~/utils/api';
 import { env } from '~/env.mjs';
@@ -50,101 +51,6 @@ const Team = ({
   const [copiedLink, setCopiedLink] = useState(false);
   const [files, setFiles] = useState<Array<string>>([]);
   const steps = [1, 2, 3, 4, 5, 6];
-  const [images, setImages] = useState<string>('');
-
-  const image = api.team.paymentSSUpload.useMutation({
-    onMutate: () => {
-      toast.loading('Uploading Screenshot...', { id: toastid });
-    },
-    onSuccess: () => {
-      toast.dismiss(toastid);
-      toast.success('Screenshot uploaded successfully', { id: toastid });
-    },
-    onError: (error) => {
-      toast.dismiss(toastid);
-      toast.error(`Error: ${error.message}`, { id: toastid });
-    },
-  });
-  const uploadToS3 = async (file: File) => {
-    const formData = new FormData();
-
-    formData.append('file', file);
-
-    const fileType = file.type;
-    const { uploadUrl, key } = await image.mutateAsync({
-      extension: fileType,
-    });
-
-    const responseAWS = await fetch(uploadUrl, {
-      body: file,
-      method: 'PUT',
-    });
-
-    if (responseAWS.ok === true) {
-      setImages(key);
-    }
-  };
-
-  const AddImage = ({
-    onImageSelect,
-  }: {
-    onImageSelect: (file: File) => void;
-  }) => {
-    const handleImageSelect = (event: ChangeEvent<HTMLInputElement>) => {
-      const file = event.target.files?.[0];
-      if (file) {
-        onImageSelect(file);
-      }
-    };
-    return (
-      <div className='flex flex-col'>
-        <label htmlFor='file'>Upload Image:</label>
-        <input
-          className='rounded-md p-2 focus:outline-none'
-          type='file'
-          accept='image/jpg,image/png,image/jpeg'
-          name='file'
-          onChange={handleImageSelect}
-        />
-      </div>
-    );
-  };
-
-  const ImageUpload = () => {
-    return (
-      <div className='flex flex-col'>
-        <label> Images:</label>
-        <div className='m-2 flex items-center justify-between gap-4 rounded-md bg-white px-4 py-2 text-black'>
-          <div className='flex items-center gap-4'>
-            <img
-              width={60}
-              className='rounded-md'
-              src={`${env.NEXT_PUBLIC_AWS_PAYMENT_SS}${images}`}
-            />
-            <span>Image Uploaded</span>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const submit = api.team.submitForPaymentApproval.useMutation({
-    onMutate: () => {
-      toast.loading('Submitting Payment Screenshot...', { id: toastid });
-    },
-    onSuccess: () => {
-      const getTeamKey = getQueryKey(api.team.getTeam);
-      void queryClient.invalidateQueries({
-        queryKey: [...getTeamKey],
-      });
-      toast.dismiss(toastid);
-      toast.success('Screenshot submitted successfully', { id: toastid });
-    },
-    onError: (error) => {
-      toast.dismiss(toastid);
-      toast.error(`Error: ${error.message}`, { id: toastid });
-    },
-  });
 
   const deleteTeam = api.team.deleteTeam.useMutation({
     onMutate: () => {
@@ -209,14 +115,33 @@ const Team = ({
         setCurrentStep(data - 1);
       },
     });
+  const loadPaytm = async () => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src =
+        'https://securegw.paytm.in/merchantpgpui/checkoutjs/merchants/EUCZgP91858578513498.js';
+      script.type = 'application/javascript';
+      script.crossOrigin = 'anonymous';
+      script.onload = () => {
+        resolve(true);
+        console.log('script loaded');
+      };
+      script.onerror = () => {
+        resolve(false);
+        console.log('script not loaded');
+      };
+      document.body.appendChild(script);
+    });
+  };
   const pay = api.payment.pay.useMutation({
-    onSuccess: () => {
+    onSuccess: async (data) => {
+      console.log(data);
       let config = {
         root: '',
         flow: 'DEFAULT',
         data: {
-          orderId: 'something' /* update order id */,
-          token: '' /* update token value */,
+          orderId: data?.order?.id /* update order id */,
+          token: data?.paytm?.body?.txnToken /* update token value */,
           tokenType: 'TXN_TOKEN',
           amount: '399.00' /* update amount */,
         },
@@ -229,17 +154,24 @@ const Team = ({
         },
       };
 
-      new (window as any).Paytm.CheckoutJS.onLoad(
-        function excecuteAfterCompleteLoad() {
-          (window as any).Paytm.CheckoutJS.init(config)
-            .then(function onSuccess() {
-              (window as any).Paytm.CheckoutJS.invoke();
-            })
-            .catch(function onError(error) {
+      await loadPaytm();
+      const paytmWindow = (window as any).Paytm;
+      if (paytmWindow && paytmWindow.CheckoutJS) {
+        console.log('paytm config hit 2');
+        console.log(paytmWindow.CheckoutJS);
+        try {
+          paytmWindow.CheckoutJS.onLoad(function excecuteAfterCompleteLoad() {
+            try {
+              paytmWindow.CheckoutJS.init(config);
+              paytmWindow.CheckoutJS.invoke();
+            } catch (error) {
               console.log('error => ', error);
-            });
-        },
-      );
+            }
+          });
+        } catch (error) {
+          console.log(error);
+        }
+      }
     },
     onError: () => {
       console.log('nahi hoga payment');
@@ -274,16 +206,8 @@ const Team = ({
     (member) => member.id === teamData?.mentor,
   );
 
-  function onScriptLoad() {}
   return (
     <>
-      <Script
-        type='application/javascript'
-        crossOrigin='anonymous'
-        src='https://securegw.paytm.in/merchantpgpui/checkoutjs/merchants/OjwpNw47314293518016.js'
-        onLoad={() => onScriptLoad()}
-      ></Script>
-
       <div className='px-8 py-20 md:px-20'>
         <button
           onClick={() => router.back()}
@@ -682,89 +606,18 @@ const Team = ({
                     Please complete your payment before submitting/approving
                     milestones.
                   </p>
-                  {/* <button
-                  className='rounded-md border-2 p-4 font-bold text-white hover:bg-black'
-                  // disabled={true}
-                  onClick={() => {
-                    displayRazorPay();
-                  }}
-                >
-                  Pay with Razorpay
-                </button> */}
-                  <img
-                    src={payment.src}
-                    alt='payment qr'
-                    className='max-w-[400px]'
-                  />
                 </div>
                 <div className='flex flex-col gap-10 py-10'>
-                  {teamData.payment_status === false &&
-                    (teamData.paymentSS !== null ? (
-                      <>
-                        <p className='text-center text-xl font-bold'>
-                          Please wait while we confirm your payment
-                        </p>
-                        <div>
-                          <p className='font-semibold'> Note -</p>
-                          <ul>
-                            <li>
-                              1. After filling up the team with all the members,
-                              the team has to pay a processing fee of Rs. 399 .
-                            </li>
-                            <li>
-                              2. Team members cannot leave after payment is
-                              done.
-                            </li>
-                            <li>
-                              3. Team cannot be deleted after payment is done.{' '}
-                            </li>
-                          </ul>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <p className='font-bold'>
-                          After completing the payment please upload the
-                          screenshot over here!
-                        </p>
-                        {images.length !== 0 && <ImageUpload />}
-                        <AddImage
-                          onImageSelect={(file: File) => void uploadToS3(file)}
-                        />
-                        <Button
-                          type='normal'
-                          onClick={() => {
-                            void pay.mutateAsync({
-                              teamId: teamData.id,
-                            });
-                          }}
-                        >
-                          Pay Now
-                        </Button>
-                        <p>
-                          After completing the payment and uploading the
-                          screenshot, wait for 24hours, the admin will verify
-                          the payment and send a e-mail via your registered
-                          account.
-                        </p>
-                        <div>
-                          <p className='font-semibold'> Note -</p>
-                          <ul>
-                            <li>
-                              1. After filling up the team with all the members,
-                              the team has to pay a processing fee of Rs. 399 .
-                            </li>
-                            <li>
-                              2. Team members cannot leave after payment is
-                              done.
-                            </li>
-                            <li>
-                              3. Team cannot be deleted after payment is done.{' '}
-                            </li>
-                          </ul>
-                        </div>
-                      </>
-                    ))}
+                  <Button
+                    type='normal'
+                    onClick={() => {
+                      void pay.mutateAsync({
+                        teamId: teamData.id,
+                      });
+                    }}
+                  >
+                    Pay Now
+                  </Button>
                 </div>
               </>
             )

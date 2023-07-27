@@ -133,38 +133,43 @@ export const paymentRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      const order = await ctx.prisma.order.create({
-        data: {
-          payee: ctx.session.user.id,
-          teamId: input.teamId,
-          status: false,
-        },
-      });
-      let paytmParams = {
-        head: {},
-        body: {
-          requestType: 'Payment',
-          mid: process.env.PAYTM_MERCHANT_ID,
-          websiteName: 'DEFAULT',
-          orderId: order.id,
-          callbackUrl: false,
-          txnAmount: {
-            value: '399.00',
-            currency: 'INR',
+      try {
+        const order = await ctx.prisma.order.create({
+          data: {
+            payee: ctx.session.user.id,
+            teamId: input.teamId,
+            status: false,
           },
-        },
-      };
+        });
+        let paytmParams: {
+          [key: string]: any;
+        } = {
+          body: {
+            requestType: 'Payment',
+            mid: String(process.env.PAYTM_MERCHANT_ID),
+            websiteName: 'DEFAULT',
+            orderId: order.id,
+            callbackUrl: `http://localhost:3000/dashboard/team/thankyou?teamId=${input.teamId}&orderId=${order.id}`,
+            txnAmount: {
+              value: '399.00',
+              currency: 'INR',
+            },
+            userInfo: {
+              custId: ctx.session.user.id,
+            },
+          },
+        };
 
-      PaytmChecksum.generateSignature(
-        JSON.stringify(paytmParams.body),
-        process.env.PAYTM_MERCHANT_KEY,
-      ).then(async function (checksum) {
+        const checksum = await PaytmChecksum.generateSignature(
+          JSON.stringify(paytmParams.body),
+          process.env.PAYTM_MERCHANT_KEY,
+        );
         console.log(checksum);
         paytmParams.head = {
           signature: checksum,
         };
 
-        var post_data = JSON.stringify(paytmParams);
+        var post_data = await JSON.stringify(paytmParams);
 
         let response = await fetch(
           `https://securegw.paytm.in/theia/api/v1/initiateTransaction?mid=${process.env.PAYTM_MERCHANT_ID}&orderId=${order.id}`,
@@ -179,6 +184,117 @@ export const paymentRouter = createTRPCRouter({
         );
         let res = await response.json();
         console.log(res);
-      });
+        if (!res || !order) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Something went wrong, pLease try again.',
+          });
+        }
+        return {
+          paytm: res,
+          order: order,
+        };
+      } catch (error) {
+        console.log(error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong, pLease try again.',
+        });
+      }
+    }),
+  verify: protectedProcedure
+    .input(z.object({ orderId: z.string() }))
+    .query(async ({ ctx, input }) => {
+      try {
+        const order = await ctx.prisma.order.findUnique({
+          where: {
+            id: input.orderId,
+          },
+        });
+        if (!order) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Something went wrong , contact admin.',
+          });
+        }
+        let paytmParams: {
+          [key: string]: any;
+        } = {
+          body: {
+            mid: String(process.env.PAYTM_MERCHANT_ID),
+            orderId: order.id,
+          },
+        };
+
+        const checksum = await PaytmChecksum.generateSignature(
+          JSON.stringify(paytmParams.body),
+          process.env.PAYTM_MERCHANT_KEY,
+        );
+        console.log(checksum);
+        paytmParams.head = {
+          signature: checksum,
+        };
+
+        var post_data = await JSON.stringify(paytmParams);
+
+        let response = await fetch(
+          `https://securegw.paytm.in/v3/order/status/`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Content-Length': `${post_data.length}`,
+            },
+            body: post_data,
+          },
+        );
+        let res = await response.json();
+        console.log(res);
+        if (!res || !order) {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Something went wrong, pLease try again.',
+          });
+        }
+        if (res.body.resultInfo.resultStatus === 'TXN_FAILURE') {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Payment Failed',
+          });
+        }
+        if (res.body.resultInfo.resultStatus === 'NO_RECORD_FOUND') {
+          throw new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Payment Failed',
+          });
+        }
+        if (res.body.resultInfo.resultStatus === 'PENDING') {
+          return {
+            status: 'PENDING',
+            message:
+              'Please wait for a while and refresh the page the payment is being processed.',
+          };
+        }
+        await ctx.prisma.order.update({
+          where: { id: order.id },
+          data: { status: true },
+        });
+        await ctx.prisma.team.update({
+          where: { id: order.teamId },
+          data: {
+            payment_status: true,
+          },
+        });
+        return {
+          status: 'SUCCESS',
+          message: 'Done',
+        };
+      } catch (error) {
+        console.log(error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Something went wrong, pLease try again.',
+        });
+      }
     }),
 });
