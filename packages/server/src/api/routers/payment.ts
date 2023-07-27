@@ -149,7 +149,7 @@ export const paymentRouter = createTRPCRouter({
             mid: String(process.env.PAYTM_MERCHANT_ID),
             websiteName: 'DEFAULT',
             orderId: order.id,
-            callbackUrl: `http://localhost:3000/dashboard/team/thankyou?teamId=${input.teamId}&orderId=${order.id}`,
+            callbackUrl: `https://www.studoindustry.com/dashboard/team/thankyou?teamId=${input.teamId}&orderId=${order.id}`,
             txnAmount: {
               value: '399.00',
               currency: 'INR',
