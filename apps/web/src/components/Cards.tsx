@@ -106,8 +106,9 @@ export const TeamCard = ({ team, index }: { team: Team; index: number }) => {
       <p>{Math.round(((team.presentMilestone - 1) * 100) / 6)}%</p>
       <div className=' hidden bg-gray-300 p-2  md:col-span-2 md:flex md:h-3 md:w-full md:items-center md:rounded-full'>
         <div
-          className={`blue-orange-gradient h-2 rounded-full bg-gradient-to-bl ${width[team.presentMilestone - 2]
-            }`}
+          className={`blue-orange-gradient h-2 rounded-full bg-gradient-to-bl ${
+            width[team.presentMilestone - 2]
+          }`}
         ></div>
       </div>
     </div>
@@ -157,64 +158,3 @@ export const AdminTeamCard = ({
     </>
   );
 };
-
-
-export const ApprovalTeamCard = ({ team }: { team: Team }) => {
-  let toastid: string;
-  const queryClient = useQueryClient();
-  const approve = api.team.approveTeamPayment.useMutation({
-    onMutate: () => {
-      toast.loading('Approving Payment..', { id: toastid });
-    },
-    onSuccess: () => {
-      const getApprovalRequestingTeamsKey = getQueryKey(api.team.getApprovalRequestingTeams);
-      void queryClient.invalidateQueries({
-        queryKey: [...getApprovalRequestingTeamsKey],
-      });
-      toast.dismiss(toastid);
-      toast.success('Payment accepted successfully', { id: toastid });
-    },
-    onError: (error) => {
-      toast.dismiss(toastid);
-      toast.error(`Error: ${error.message}`, { id: toastid });
-    },
-  });
-  const reject = api.team.rejectTeamPayment.useMutation({
-    onMutate: () => {
-      toast.loading('Rejecting Payment..', { id: toastid });
-    },
-    onSuccess: () => {
-      const getApprovalRequestingTeamsKey = getQueryKey(api.team.getApprovalRequestingTeams);
-      void queryClient.invalidateQueries({
-        queryKey: [...getApprovalRequestingTeamsKey],
-      });
-      toast.dismiss(toastid);
-      toast.success('Payment rejected successfully', { id: toastid });
-    },
-    onError: (error) => {
-      toast.dismiss(toastid);
-      toast.error(`Error: ${error.message}`, { id: toastid });
-    },
-  });
-  return (
-    <div className='p-10 shadow-md'>
-      <div className='flex flex-col gap-5'>
-        <p>Team ID: {team?.id}</p>
-        <p>Team College: {team?.college}</p>
-        <button>View Team</button>
-        <img src={`${env.NEXT_PUBLIC_AWS_PAYMENT_SS}${team?.paymentSS}`} alt="Payment SS" className='max-w-[200px] text-center'/>
-      </div>
-      <div className=' m-10 flex w-full  items-center justify-center gap-10'>
-        <button className='flex items-center justify-center  gap-4 rounded-md bg-green-500 p-4 text-white' onClick={() => void approve.mutateAsync({ id: team?.id }) } >
-          <MdOutlineDone size={40} />
-          Approve
-        </button>
-        <button className='flex items-center justify-center gap-4 rounded-md  bg-red-500 p-4 text-white' onClick={() => void reject.mutateAsync({ id: team?.id }) } >
-          <RxCross1 size={40} />
-          Reject
-        </button>
-      </div>
-    </div>
-  )
-}
-
