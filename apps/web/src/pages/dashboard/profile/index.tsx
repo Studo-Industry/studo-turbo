@@ -148,12 +148,18 @@ const Edit = ({ setModal }: { setModal: (value: boolean) => void }) => {
       void queryClient.invalidateQueries({ queryKey: [...userKey] });
     },
   });
+  const { data: colleges, status: collegeStatus } =
+  api.college.getAll.useQuery();
   const [firstName, setFirstName] = useState<string>('');
   const [middleName, setMiddleName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const year = [1, 2, 3, 4];
   const [selectYear, setYear] = useState<number>();
   const [contact, setContact] = useState<number>();
+  const [college, setCollege] = useState<string>('');
+  const [showColleges, setShowColleges] = useState(false);
+
+
 
   const submitForm = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -161,7 +167,7 @@ const Edit = ({ setModal }: { setModal: (value: boolean) => void }) => {
       firstName !== '' &&
       middleName !== '' &&
       lastName !== '' &&
-      contact !== null
+      contact !== null 
     ) {
       await info
         .mutateAsync({
@@ -170,6 +176,7 @@ const Edit = ({ setModal }: { setModal: (value: boolean) => void }) => {
           lastName,
           contact,
           year: selectYear,
+          college
         })
         .then(() => {
           setFirstName('');
@@ -177,6 +184,7 @@ const Edit = ({ setModal }: { setModal: (value: boolean) => void }) => {
           setLastName('');
           setYear(null);
           setContact(null);
+          setCollege('')
         });
     } else {
       toast.error('Please fill in the details properly.');
@@ -265,6 +273,45 @@ const Edit = ({ setModal }: { setModal: (value: boolean) => void }) => {
                 ))}
               </select>
             </div>
+            <div className='flex flex-col gap-2 md:col-span-3 md:flex-1'>
+          <input
+            className='rounded-md border-2 border-gray-300 p-2'
+            type='text'
+            placeholder='College'
+            value={college}
+            onClick={() =>
+              setShowColleges((previousValue) => {
+                return !previousValue;
+              })
+            }
+            onChange={(event) => {
+              setCollege(event.target.value);
+            }}
+          />
+          {showColleges && (
+            <div className='scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-400 ml-5 h-52 overflow-y-scroll'>
+              {collegeStatus === 'loading' && 'loading'}
+              {collegeStatus === 'success' &&
+                colleges
+                  .filter((data) =>
+                    data.name.toLowerCase().includes(college.toLowerCase()),
+                  )
+                  .map((data) => (
+                    <p
+                      className='m-2 w-96 rounded-md p-4 hover:cursor-pointer hover:bg-gray-300 '
+                      key={data.code}
+                      onClick={() => {
+                        setCollege(data.name);
+                        setShowColleges(false);
+                      }}
+                      placeholder='College'
+                    >
+                      {data.name}
+                    </p>
+                  ))}
+            </div>
+          )}
+        </div>
             <div className='md:col-span-3'>
               <Button type='normal' onClick={() => submitForm}>
                 Update

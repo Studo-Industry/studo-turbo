@@ -178,6 +178,7 @@ export const userRouter = createTRPCRouter({
         lastName: z.string(),
         year: z.number().min(1).max(4).optional(),
         contact: z.number().min(8),
+        college: z.string()
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -191,6 +192,7 @@ export const userRouter = createTRPCRouter({
           lastName: input.lastName,
           year: input.year,
           contact: Number(input.contact),
+          college: input.college
         },
       });
       return info;
