@@ -66,6 +66,10 @@ This Turborepo has some additional tools already setup for you:
  - Real time Industry Projects For Students
  - Using Cloud Computing for Project Data
  - AWS cloud Services for User Login
+   
+
+ #### Upcoming Features
+ - User can Create Team From Phone
 
 
 
