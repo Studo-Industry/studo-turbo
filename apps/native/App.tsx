@@ -19,6 +19,7 @@ import AllBranches from './screens/AllBranches';
 
 import BottomNavigation from './Components/BottomNavigation';
 import HelpScreen from './screens/HelpScreen';
+import Team from './screens/Team';
 
 export type RootStackParamList = {
   Dashboard: { categoryName: string };
@@ -28,6 +29,7 @@ export type RootStackParamList = {
   Milestone: undefined;
   Profile: undefined;
   MyProject: undefined;
+  Team: undefined;
   Website: undefined;
   About: undefined;
   Project: undefined;
@@ -62,6 +64,7 @@ const App = () => {
           <Stack.Screen name='Main' component={BottomNavigation} />
           <Stack.Screen name='Dashboard' component={Dashboard} />
           <Stack.Screen name='Help' component={HelpScreen} />
+          <Stack.Screen name='Team' component={Team} />
           <Stack.Screen name='Profile' component={Profile} />
           <Stack.Screen name='Milestone' component={MileStoneScreen} />
           <Stack.Screen name='MyTeam' component={MyTeam} />

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, TextInput } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import * as ImagePicker from "expo-image-picker";
 
 const Profile = () => {
-  const profileImageUrl =
-    "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
+  const [profileImageUrl, setProfileImageUrl] = useState(
+    "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"
+  );
 
-  // Define the profile data using state
   const [profileData, setProfileData] = useState({
     name: "John Doe",
     email: "johndoe@example.com",
@@ -19,68 +19,83 @@ const Profile = () => {
     applied: "2",
   });
 
-  // Function to handle the edit profile button press
+  const [editMode, setEditMode] = useState(false); // Add edit mode state
+
   const handleEditProfile = () => {
-    // Navigate to the edit profile screen or show a modal
-    // where the user can edit the profile data
+    if (editMode) {
+      // Save changes when exiting edit mode
+      setEditMode(false);
+      // Save profile data changes to backend or storage
+      Alert.alert("Changes Saved", "Profile changes have been saved.");
+    } else {
+      // Enter edit mode
+      setEditMode(true);
+    }
+  };
 
-    // Example: Update the profile data and show a notification
-    const updatedProfileData = {
-      ...profileData,
-      name: "Jane Doe", // Example: Update the name
-      email: "janedoe@example.com", // Example: Update the email
-    };
+  const handleSelectProfileImage = async () => {
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    setProfileData(updatedProfileData);
+    if (!permissionResult.granted) {
+      Alert.alert(
+        "Permission Denied",
+        "You need to grant access to your photos to select a profile image."
+      );
+      return;
+    }
 
-    // Show a notification for successful profile editing
-    Alert.alert("Profile Edited Successfully");
+    const imageResult = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!imageResult.cancelled) {
+      setProfileImageUrl(imageResult.uri);
+    }
   };
 
   return (
     <ScrollView>
-    <View style={styles.container}>
-      <Image source={{ uri: profileImageUrl }} style={styles.profileImage} />
-      <View style={styles.profileInfo}>
-        <View style={styles.detailsContainer}>
-          <View style={styles.detailItem}>
-            <Text style={styles.label}>Name:</Text>
-            <Text style={styles.value}>{profileData.name}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.label}>Email:</Text>
-            <Text style={styles.value}>{profileData.email}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.label}>College:</Text>
-            <Text style={styles.value}>{profileData.college}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.label}>Branch:</Text>
-            <Text style={styles.value}>{profileData.branch}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.label}>Done Projects:</Text>
-            <Text style={styles.value}>{profileData.doneProjects}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.label}>Skills:</Text>
-            <Text style={styles.value}>{profileData.skills}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.label}>Team Name:</Text>
-            <Text style={styles.value}>{profileData.teamName}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.label}>Applied Projects:</Text>
-            <Text style={styles.value}>{profileData.applied}</Text>
+      <View style={styles.container}>
+        <Image source={{ uri: profileImageUrl }} style={styles.profileImage} />
+        <TouchableOpacity style={styles.editButton} onPress={handleSelectProfileImage}>
+          <Text style={styles.editButtonText}>Select Profile Image</Text>
+        </TouchableOpacity>
+        <View style={styles.profileInfo}>
+          <View style={styles.detailsContainer}>
+            <View style={styles.detailItem}>
+              <Text style={styles.label}>Name:</Text>
+              {editMode ? (
+                <TextInput
+                  style={styles.editableInput}
+                  value={profileData.name}
+                  onChangeText={(text) => setProfileData({ ...profileData, name: text })}
+                />
+              ) : (
+                <Text style={styles.value}>{profileData.name}</Text>
+              )}
+            </View>
+            <View style={styles.detailItem}>
+              <Text style={styles.label}>Email:</Text>
+              {editMode ? (
+                <TextInput
+                  style={styles.editableInput}
+                  value={profileData.email}
+                  onChangeText={(text) => setProfileData({ ...profileData, email: text })}
+                />
+              ) : (
+                <Text style={styles.value}>{profileData.email}</Text>
+              )}
+            </View>
+            {/* ... (other profile details) */}
           </View>
         </View>
+        <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
+          <Text style={styles.editButtonText}>{editMode ? "Save Changes" : "Edit Profile"}</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
-        <Text style={styles.editButtonText}>Edit Profile</Text>
-      </TouchableOpacity>
-    </View>
     </ScrollView>
   );
 };
@@ -93,22 +108,32 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "white",
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 30,
-  },
   profileImage: {
     width: "55%",
     aspectRatio: 1,
     resizeMode: "cover",
-    marginBottom: 30,
+    marginBottom: 20,
     borderRadius: 20,
+  },
+  editButton: {
+    backgroundColor: "#39B9B6",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    elevation: 5,
+    marginTop: 20,
+  },
+  editButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
   },
   profileInfo: {
     flexDirection: "row",
-    marginBottom: 30,
+    marginBottom: 20,
     backgroundColor: "#FFFFFF",
     borderRadius: 20,
     elevation: 5,
@@ -134,21 +159,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#666",
   },
-  editButton: {
-    backgroundColor: "#39B9B6",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+  editableInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 8,
     borderRadius: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.8,
-    shadowRadius: 4,
-    elevation: 5,
-    marginTop: 20,
-  },
-  editButtonText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
+    fontSize: 16,
+    color: "#333",
   },
 });
 

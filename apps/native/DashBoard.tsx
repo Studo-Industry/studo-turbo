@@ -103,9 +103,9 @@ const Dashboard: React.FC<DashboardProps> = ({ navigation }) => {
       case 'My Team':
         navigation.navigate('MyTeam');
         break;
-      case 'Wishlist':
-        navigation.navigate('Wishlist');
-        break;
+      // case 'Wishlist':
+      //   navigation.navigate('Wishlist');
+      //   break;
       case 'Milestone':
         navigation.navigate('Milestone');
         break;
